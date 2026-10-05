@@ -1,21 +1,8 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="brand/banner-dark.png" />
-  <img src="brand/banner-light.png" alt="The PocketBot mark" width="100%" />
-</picture>
-
-<h1 align="center">PocketBot</h1>
-
 <p align="center">
-  The AI chat app that sweats the details. Every top model, real memory,<br />
-  living documents, and your own tools, in one fast and friendly place.
+  <img src="https://files.catbox.moe/nn1qw5.png" alt="PocketBot" width="220" />
 </p>
 
-<p align="center">
-  <a href="https://whirl.chat">whirl.chat</a> ·
-  <a href="docs/self-hosting.md">Self-hosting</a> ·
-  <a href="docs/architecture.md">Architecture</a> ·
-  <a href="CONTRIBUTING.md">Contributing</a>
-</p>
+<h3 align="center">OpenBot is now PocketBot.<br/>Releasing soon.</h3>
 
 ---
 
