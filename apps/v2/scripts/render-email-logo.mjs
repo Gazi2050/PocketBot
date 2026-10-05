@@ -1,11 +1,11 @@
 /**
- * Rasterize the Whirl mark to a PNG for use in transactional email.
+ * Rasterize the PocketBot mark to a PNG for use in transactional email.
  *
  * Gmail and Outlook both refuse to render SVG in email bodies, so the mark
  * has to ship as a bitmap. Rendered at 3x and displayed at a third of that,
  * so it stays crisp on retina without shipping a large file.
  *
- * One-shot: run it again only if public/whirl.svg changes.
+ * One-shot: run it again only if public/pocketbot.svg changes.
  *   node apps/v2/scripts/render-email-logo.mjs
  *
  * node, not bun: Playwright drives the browser over a pipe transport that
@@ -21,7 +21,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const publicDir = join(here, "..", "public");
 
 const SIZE = 96; // displayed at 32px
-const svg = readFileSync(join(publicDir, "whirl.svg"), "utf8");
+const svg = readFileSync(join(publicDir, "pocketbot.svg"), "utf8");
 
 /* Use a browser that's already on the machine rather than making everyone
    download Playwright's bundled Chromium for one 96px sprite. */
@@ -55,6 +55,6 @@ await page.setContent(
 const png = await page.screenshot({ omitBackground: true });
 await browser.close();
 
-const out = join(publicDir, "whirl-mark.png");
+const out = join(publicDir, "pocketbot-mark.png");
 writeFileSync(out, png);
 console.log(`wrote ${out} (${png.length} bytes, ${SIZE}x${SIZE})`);

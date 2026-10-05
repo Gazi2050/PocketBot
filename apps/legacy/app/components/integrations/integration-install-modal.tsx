@@ -657,7 +657,7 @@ function SuccessStep({
         {integration.name} is in!
       </h2>
       <p className="mt-1.5 max-w-xs text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-        Whirl can now use its tools in any chat. Manage it anytime from the
+        PocketBot can now use its tools in any chat. Manage it anytime from the
         Installed tab.
       </p>
       <button

@@ -86,7 +86,7 @@ export function UnlockModal({
       setError(
         cause instanceof Error
           ? cause.message
-          : "Whirl cannot open the chat. Try again.",
+          : "PocketBot cannot open the chat. Try again.",
       );
     } finally {
       setBusy(false);

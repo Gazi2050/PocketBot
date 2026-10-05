@@ -51,7 +51,7 @@ export type LockEnvelope = {
 function subtle(): SubtleCrypto {
   if (typeof crypto === "undefined" || !crypto.subtle) {
     throw new Error(
-      "Locked chats need a secure connection. Open Whirl over HTTPS, or on localhost.",
+      "Locked chats need a secure connection. Open PocketBot over HTTPS, or on localhost.",
     );
   }
   return crypto.subtle;
@@ -121,7 +121,7 @@ async function keyFromRecoveryBytes(
     {
       name: "HKDF",
       salt: salt as BufferSource,
-      info: new TextEncoder().encode("whirl.locked-thread.recovery.v1"),
+      info: new TextEncoder().encode("pocketbot.locked-thread.recovery.v1"),
       hash: "SHA-256",
     },
     material,

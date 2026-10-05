@@ -69,7 +69,7 @@ export function PreferencesField() {
           Your preferences
         </span>
         <span className="mt-0.5 text-[12px] text-neutral-500 dark:text-neutral-400">
-          Anything Whirl should know about you — tone, interests, how you like
+          Anything PocketBot should know about you — tone, interests, how you like
           answers. Applied to every conversation.
         </span>
       </div>

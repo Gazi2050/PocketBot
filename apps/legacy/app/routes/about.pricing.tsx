@@ -18,9 +18,9 @@ export const Route = createFileRoute("/about/pricing")({
   component: AboutPricing,
   head: () =>
     seo({
-      title: "Pricing · Whirl",
+      title: "Pricing · PocketBot",
       description:
-        "Whirl starts free. Mini, Turbo, and Mega add more usage across the best AI models, thinking mode, live web search, and larger uploads.",
+        "PocketBot starts free. Mini, Turbo, and Mega add more usage across the best AI models, thinking mode, live web search, and larger uploads.",
       url: "/about/pricing",
     }),
 });
@@ -101,7 +101,7 @@ function PlanCell({ plan }: { plan: Plan }) {
         {plan.badge ? (
           <img src={plan.badge} alt="" width={32} height={32} className="h-8 w-8" />
         ) : (
-          <img src="/whirl.svg" alt="" width={32} height={32} className="h-8 w-8 dark:invert" />
+          <img src="/pocketbot.svg" alt="" width={32} height={32} className="h-8 w-8 dark:invert" />
         )}
         <div>
           <h2 className="text-[16px] font-semibold text-neutral-900 dark:text-neutral-50">
@@ -148,7 +148,7 @@ function AboutPricing() {
       <PageTitle>Pricing</PageTitle>
       <Lede className="mt-5">
         Start free, upgrade when you want more room. Every paid plan runs on
-        the same Whirl, just with a bigger engine behind it.
+        the same PocketBot, just with a bigger engine behind it.
       </Lede>
       <div className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-3xl bg-black/[0.07] ring-1 ring-black/[0.07] sm:grid-cols-2 dark:bg-white/[0.08] dark:ring-white/[0.08]">
         {PLANS.map((plan) => (

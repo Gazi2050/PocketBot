@@ -148,7 +148,7 @@ export function ComposerLayout() {
     : null;
 
   // Every attachment sent in the thread, flattened from its messages — the
-  // toolbar's file menu lists these alongside whirl-authored artifacts.
+  // toolbar's file menu lists these alongside pocketbot-authored artifacts.
   const threadAttachments = useMemo(() => {
     const items: Attachment[] = [];
     for (const m of messages) {
@@ -181,10 +181,10 @@ export function ComposerLayout() {
 
   useEffect(() => {
     document.title = incognito.enabled
-      ? "Incognito · Whirl"
+      ? "Incognito · PocketBot"
       : currentThread?.title && currentThread.titleStatus !== "generating"
-        ? `${currentThread.title} - Whirl`
-        : "Whirl";
+        ? `${currentThread.title} - PocketBot`
+        : "PocketBot";
   }, [currentThread?.title, currentThread?.titleStatus, incognito.enabled]);
   const {
     branchFromMessage,

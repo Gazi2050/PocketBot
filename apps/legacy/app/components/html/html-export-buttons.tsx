@@ -16,7 +16,7 @@ import { ANALYTICS_EVENTS, useCapture } from "~/lib/posthog";
 /**
  * The HTML panel's export controls: copy the shareable {site}/visual/{id} link,
  * open the page in a new tab, or download it as a self-contained .html file
- * (both carry the "Made with Whirl" chrome, see lib/html-frame).
+ * (both carry the "Made with PocketBot" chrome, see lib/html-frame).
  */
 export function HtmlExportButtons({
   title,

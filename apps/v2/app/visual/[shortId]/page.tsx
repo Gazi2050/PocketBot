@@ -16,8 +16,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { shortId } = await params;
   return publicPageMetadata({
-    title: "Made with Whirl",
-    description: "An interactive visualization made with Whirl.",
+    title: "Made with PocketBot",
+    description: "An interactive visualization made with PocketBot.",
     path: `/visual/${shortId}`,
   });
 }

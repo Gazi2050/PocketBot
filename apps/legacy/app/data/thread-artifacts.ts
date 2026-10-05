@@ -1,14 +1,14 @@
 import { useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 
-/** A whirl-authored markdown document in the thread (toolbar menu entry). */
+/** A pocketbot-authored markdown document in the thread (toolbar menu entry). */
 export type ThreadDocument = {
   id: string;
   title: string;
   updatedAt: number;
 };
 
-/** A whirl-authored HTML visualization in the thread (toolbar menu entry). */
+/** A pocketbot-authored HTML visualization in the thread (toolbar menu entry). */
 export type ThreadVisualization = {
   id: string;
   title: string;
@@ -29,7 +29,7 @@ const getThreadArtifactsRef = makeFunctionReference<"query">(
 const EMPTY: ThreadArtifacts = { documents: [], visualizations: [] };
 
 /**
- * The documents + visualizations whirl authored in a thread, for the thread
+ * The documents + visualizations pocketbot authored in a thread, for the thread
  * toolbar's artifact menu. Attachments are not included — those ride on the
  * messages already loaded in the chat, so the toolbar reads them from there.
  */

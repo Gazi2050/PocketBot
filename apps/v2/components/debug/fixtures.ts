@@ -38,7 +38,7 @@ const SAMPLE_IMAGE =
     `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a8a8a"/><stop offset="1" stop-color="#2e2e2e"/></linearGradient></defs><rect width="320" height="200" fill="url(#g)"/><circle cx="240" cy="60" r="28" fill="#f0f0f0" opacity="0.85"/><path d="M0 160 L80 100 L150 150 L230 90 L320 150 L320 200 L0 200 Z" fill="#1c1c1c" opacity="0.6"/></svg>`,
   );
 
-const MARKDOWN_REPLY = `## Prognosis: extremely whirlable
+const MARKDOWN_REPLY = `## Prognosis: extremely pocketbotable
 
 Here's the honest breakdown of your idea, with the usual caveats.
 
@@ -46,7 +46,7 @@ Here's the honest breakdown of your idea, with the usual caveats.
 
 - **Momentum** — the core loop is genuinely fun
 - **Scope** — small enough to ship before the heat death of the universe
-- *Naming* — \`whirl\` was, frankly, inspired
+- *Naming* — \`pocketbot\` was, frankly, inspired
 
 ### The numbers
 
@@ -59,7 +59,7 @@ Here's the honest breakdown of your idea, with the usual caveats.
 ### A snippet, because of course
 
 \`\`\`ts
-export function whirl(input: string): string {
+export function pocketbot(input: string): string {
   const spun = [...input].reverse().join("");
   return spun === input ? "palindrome!" : spun;
 }
@@ -97,9 +97,9 @@ const WEATHER_DAILY: WeatherDay[] = [
 
 /* ---- Artifact fixtures ----------------------------------------------- */
 
-const DOC_BODY = `# The Whirl Manifesto
+const DOC_BODY = `# The PocketBot Manifesto
 
-Chat apps got heavy. Whirl stays light — one composer, no ceremony, and the
+Chat apps got heavy. PocketBot stays light — one composer, no ceremony, and the
 model does the showing off.
 
 ## The rules
@@ -119,9 +119,9 @@ const VIZ_HTML = `<style>
   .wrap { padding-bottom: 26px; }
   .chart { display: flex; align-items: flex-end; gap: 10px; height: 150px; }
   .bar { flex: 1; position: relative; border-radius: 8px 8px 3px 3px;
-         background: var(--whirl-accent-soft); border: 1px solid var(--whirl-accent); }
+         background: var(--pocketbot-accent-soft); border: 1px solid var(--pocketbot-accent); }
   .bar span { position: absolute; bottom: -22px; left: 0; right: 0;
-              text-align: center; font-size: 11px; color: var(--whirl-muted); }
+              text-align: center; font-size: 11px; color: var(--pocketbot-muted); }
 </style>
 <div class="wrap">
   <div class="chart">
@@ -139,10 +139,10 @@ const VIZ_HTML = `<style>
    multiple-card flow without a backend. */
 const OVERSIZED_VIZ_HTML = `<style>
   .board { width: 960px; min-height: 900px; padding: 18px; border-radius: 14px;
-           background: var(--whirl-surface); border: 1px solid var(--whirl-border); }
+           background: var(--pocketbot-surface); border: 1px solid var(--pocketbot-border); }
   .rail { display: grid; grid-template-columns: repeat(6, 140px); gap: 12px; }
   .tile { height: 120px; padding: 12px; border-radius: 10px;
-          background: var(--whirl-surface-2); }
+          background: var(--pocketbot-surface-2); }
 </style>
 <div class="board">
   <strong>Oversized visualization workbench</strong>
@@ -155,18 +155,18 @@ const OVERSIZED_VIZ_HTML = `<style>
 const PAGE_HTML = `<style>
   .hero { padding: 56px 24px 40px; text-align: center; }
   .hero h1 { margin: 0 0 10px; font-size: 34px; letter-spacing: -0.02em; }
-  .hero p { margin: 0 auto; max-width: 40ch; color: var(--whirl-muted); }
+  .hero p { margin: 0 auto; max-width: 40ch; color: var(--pocketbot-muted); }
   .cta { display: inline-block; margin-top: 20px; padding: 10px 18px;
-         border-radius: 999px; background: var(--whirl-accent);
-         color: var(--whirl-accent-fg); text-decoration: none; font-weight: 600; }
+         border-radius: 999px; background: var(--pocketbot-accent);
+         color: var(--pocketbot-accent-fg); text-decoration: none; font-weight: 600; }
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 24px 48px; }
-  .card { background: var(--whirl-surface); border: 1px solid var(--whirl-border);
-          border-radius: var(--whirl-radius); padding: 16px; }
+  .card { background: var(--pocketbot-surface); border: 1px solid var(--pocketbot-border);
+          border-radius: var(--pocketbot-radius); padding: 16px; }
   .card b { display: block; margin-bottom: 4px; }
-  .card span { font-size: 13px; color: var(--whirl-muted); }
+  .card span { font-size: 13px; color: var(--pocketbot-muted); }
 </style>
 <div class="hero">
-  <h1>Whirl</h1>
+  <h1>PocketBot</h1>
   <p>The chat app that spins up faster than your coffee order.</p>
   <a class="cta" href="#">Take it for a spin</a>
 </div>
@@ -182,7 +182,7 @@ const PAGE_HTML = `<style>
 export const FIXTURE_ARTIFACTS: FixtureArtifacts = {
   documents: {
     "fixture-doc-1": {
-      title: "The Whirl Manifesto",
+      title: "The PocketBot Manifesto",
       status: "complete",
       content: DOC_BODY,
     },
@@ -208,7 +208,7 @@ export const FIXTURE_ARTIFACTS: FixtureArtifacts = {
     },
     "fixture-page-1": {
       kind: "full",
-      title: "Whirl launch page",
+      title: "PocketBot launch page",
       status: "complete",
       content: PAGE_HTML,
       shortId: "debug",
@@ -661,7 +661,7 @@ export function buildScenarios(): DebugScenario[] {
                 kind: "document",
                 op: "create",
                 documentId: "fixture-doc-1",
-                title: "The Whirl Manifesto",
+                title: "The PocketBot Manifesto",
                 ok: true,
               },
               {
@@ -685,7 +685,7 @@ export function buildScenarios(): DebugScenario[] {
                 mode: "full",
                 op: "create",
                 htmlId: "fixture-page-1",
-                title: "Whirl launch page",
+                title: "PocketBot launch page",
                 ok: true,
               },
             ],
@@ -750,13 +750,13 @@ export function buildScenarios(): DebugScenario[] {
       key: "images",
       label: "Images",
       messages: [
-        user("Paint me a whirlpool logo."),
+        user("Paint me a pocketbotpool logo."),
         assistant("", {
           model: "Image",
           attachments: [
             {
               id: "gen-1",
-              name: "whirlpool-logo.png",
+              name: "pocketbotpool-logo.png",
               size: 1_204_000,
               type: "image/png",
               url: SAMPLE_IMAGE,
@@ -768,7 +768,7 @@ export function buildScenarios(): DebugScenario[] {
           phases: [
             {
               kind: "image",
-              prompt: "a cozy whirlpool at dusk",
+              prompt: "a cozy pocketbotpool at dusk",
               images: [SAMPLE_IMAGE],
             },
           ],

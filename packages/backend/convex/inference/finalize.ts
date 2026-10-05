@@ -298,14 +298,14 @@ export async function finalizeAssistantTurn(
       "Supermemory conversation write",
       addSupermemoryDocument({
         containerTag: args.memoryContainerTag,
-        customId: `whirl-message-${args.assistantId}`,
+        customId: `pocketbot-message-${args.assistantId}`,
         content: buildSupermemoryConversationDocument({
           user: args.latestUserText,
           assistant: args.text,
         }),
         metadata: {
           type: "conversation",
-          source: "whirl",
+          source: "pocketbot",
           threadId: args.threadId,
           assistantId: args.assistantId,
           model: modelKey,

@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import { api } from "@pocketbot/backend/convex/_generated/api";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 
 import { isTerminal, type ChatMessage } from "../messages";
 import { ANALYTICS_EVENTS, captureEvent } from "../posthog";
@@ -36,7 +36,7 @@ import { titleFromPrompt } from "./thread-lock";
        stream buffer (lib/locked/stream.ts), and gets merged onto its
        message row on the way past. */
 
-const UNREADABLE = "_Whirl cannot decrypt this message._";
+const UNREADABLE = "_PocketBot cannot decrypt this message._";
 
 /**
  * The thread's messages, opened. `undefined` until the first pass finishes,
@@ -256,7 +256,7 @@ export function useLockedMessageActions() {
         failure =
           cause instanceof Error
             ? cause.message
-            : "Whirl cannot generate this reply. Try again.";
+            : "PocketBot cannot generate this reply. Try again.";
       }
 
       const hasText = text.trim().length > 0;

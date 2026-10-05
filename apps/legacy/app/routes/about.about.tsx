@@ -7,9 +7,9 @@ export const Route = createFileRoute("/about/about")({
   component: AboutAbout,
   head: () =>
     seo({
-      title: "About · Whirl",
+      title: "About · PocketBot",
       description:
-        "Whirl is built by salt, an indie developer, under Anterra. One goal: the best possible AI chat experience.",
+        "PocketBot is built by salt, an indie developer, under Anterra. One goal: the best possible AI chat experience.",
       url: "/about/about",
     }),
 });
@@ -22,7 +22,7 @@ function AboutAbout() {
     <article className="max-w-xl">
       <PageTitle>About</PageTitle>
       <Lede className="mt-5">
-        Whirl is a small product with one big ambition: the best possible AI
+        PocketBot is a small product with one big ambition: the best possible AI
         chat experience.
       </Lede>
       <div className="mt-8 flex flex-col gap-5">
@@ -32,7 +32,7 @@ function AboutAbout() {
           should feel and sweats the details accordingly.
         </p>
         <p className={PROSE_CLASS}>
-          Whirl is made by{" "}
+          PocketBot is made by{" "}
           <a
             href="https://anterra.sh"
             target="_blank"
@@ -51,7 +51,7 @@ function AboutAbout() {
       </div>
       <div className="mt-10">
         <CtaLink to="/" primary cta="about_start_chatting">
-          Try Whirl
+          Try PocketBot
         </CtaLink>
       </div>
     </article>

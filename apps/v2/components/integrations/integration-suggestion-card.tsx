@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { IconCircleCheckFilled, IconDownload } from "@tabler/icons-react";
 import { motion } from "motion/react";
 
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 import { AuthModal } from "@/components/auth/auth-modal";
 import { IntegrationLogo } from "@/components/integration-logo";
 import { Button } from "@/components/ui/button";
@@ -156,7 +156,7 @@ function SuggestionTile({
           </span>
           {ready ? (
             <span className="line-clamp-2 text-[11.5px]/4 text-muted-foreground">
-              {entry.description ?? "A new set of tools for Whirl."}
+              {entry.description ?? "A new set of tools for PocketBot."}
             </span>
           ) : (
             <span

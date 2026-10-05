@@ -184,7 +184,7 @@ export function SignInPanel({
         <motion.div key="start" {...stepMotion}>
           <StepTitle
             title="Welcome back"
-            subtitle="Sign in to your Whirl account."
+            subtitle="Sign in to your PocketBot account."
           />
           <GoogleButton
             onClick={handleGoogle}

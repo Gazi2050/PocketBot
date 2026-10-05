@@ -345,11 +345,11 @@ export const processRun = internalAction({
           if (transcript.length > 0) {
             await addSupermemoryDocument({
               containerTag,
-              customId: `whirl-thread-${threadId}`,
-              content: `Whirl chat transcript\n\n${buildTranscript(transcript)}`,
+              customId: `pocketbot-thread-${threadId}`,
+              content: `PocketBot chat transcript\n\n${buildTranscript(transcript)}`,
               metadata: {
                 type: "thread_transcript",
-                source: "whirl",
+                source: "pocketbot",
                 threadId,
                 syncedAt: Date.now(),
               },

@@ -48,7 +48,7 @@ function McpLocked() {
           MCP servers are a paid perk
         </h3>
         <p className="mx-auto max-w-sm text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-          Plug in your own tools, Whirl can call them mid-chat: search your
+          Plug in your own tools, PocketBot can call them mid-chat: search your
           notes, file a ticket, hit your API. Upgrade and bring your own
           superpowers.
         </p>
@@ -162,7 +162,7 @@ function McpManager() {
             MCP servers
           </span>
           <span className="mt-0.5 text-[12px] text-neutral-500 dark:text-neutral-400">
-            Connect remote (HTTP) MCP servers to give Whirl your own tools. Each
+            Connect remote (HTTP) MCP servers to give PocketBot your own tools. Each
             server's tools become available to the model in every chat.
           </span>
         </div>
@@ -253,7 +253,7 @@ function McpList({
   if (servers.length === 0) {
     return (
       <div className="flex h-24 items-center justify-center rounded-xl border border-dashed border-black/[0.1] px-6 text-center text-[12.5px] text-neutral-500 dark:border-white/[0.1] dark:text-neutral-400">
-        No servers yet. Add one to give Whirl your own tools.
+        No servers yet. Add one to give PocketBot your own tools.
       </div>
     );
   }

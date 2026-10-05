@@ -1,8 +1,8 @@
 "use client";
 
-import { useTwirl, WhirlHoverMark } from "./whirl-rings";
+import { useTwirl, PocketBotHoverMark } from "./pocketbot-rings";
 
-export function WhirlLogo({
+export function PocketBotLogo({
   size = 20,
   className = "",
 }: {
@@ -18,7 +18,7 @@ export function WhirlLogo({
       style={{ width: dim, height: dim }}
       className={`relative inline-block shrink-0 ${className}`}
     >
-      <WhirlHoverMark
+      <PocketBotHoverMark
         twirling={twirling}
         layers={[{ className: "bg-foreground-soft" }]}
       />

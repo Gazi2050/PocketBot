@@ -1,6 +1,6 @@
 # Code of conduct
 
-Whirl adopts the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/)
+PocketBot adopts the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/)
 as its code of conduct. The short version:
 
 - Be kind, patient, and welcoming. People of every background and experience

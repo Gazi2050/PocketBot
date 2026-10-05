@@ -42,7 +42,7 @@ import {
 import {
   PhaseIcon,
   PhaseLabel,
-  WhirlActivityIcon,
+  PocketBotActivityIcon,
 } from "./phase-motion";
 import {
   PhaseDetailContent,
@@ -175,7 +175,7 @@ export const PhaseActivity = memo(function PhaseActivity({
     current?.kind ??
     (narratedStatus === "searching" ? "search" : undefined);
   const glyphSize = final ? 15 : 17;
-  const whirl =
+  const pocketbot =
     !final && !brandedIcon && !GLYPH_KINDS.has(activityKind ?? "");
   const visible = narration.mode !== "hidden";
 
@@ -183,8 +183,8 @@ export const PhaseActivity = memo(function PhaseActivity({
     ? "complete"
     : brandedIcon
       ? `integration-${mcp?.server ?? ""}`
-      : whirl
-        ? "whirl"
+      : pocketbot
+        ? "pocketbot"
         : `phase-${current?.kind ?? narratedStatus ?? "waiting"}`;
 
   return (
@@ -236,12 +236,12 @@ export const PhaseActivity = memo(function PhaseActivity({
             <PhaseIcon iconKey={iconKey}>
               {brandedIcon ? (
                 <IntegrationIcon iconSvg={brandedIcon} size={glyphSize} />
-              ) : whirl ? (
-                <WhirlActivityIcon />
+              ) : pocketbot ? (
+                <PocketBotActivityIcon />
               ) : grouped ? (
                 <IconStack2 size={glyphSize} stroke={2} />
               ) : null}
-              {!brandedIcon && !whirl && !grouped && (
+              {!brandedIcon && !pocketbot && !grouped && (
                 <ActivityGlyph kind={activityKind} size={glyphSize} />
               )}
             </PhaseIcon>

@@ -46,7 +46,7 @@ export function SkillsPage() {
             My Skills
           </h1>
           <p className="mt-1 text-[13px] text-neutral-500 dark:text-neutral-400">
-            Instruction packs you've written for the Whirl store — Whirl learns
+            Instruction packs you've written for the PocketBot store — PocketBot learns
             them mid-chat, right when the task calls for them.
           </p>
         </div>

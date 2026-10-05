@@ -9,7 +9,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import {
@@ -153,7 +153,7 @@ export function ConnectedIntegrationsCard() {
           if (!open) setConfirming(null);
         }}
         title={`Uninstall ${confirming?.name ?? "this integration"}?`}
-        message="Whirl loses its tools, and any sign-in or keys go with it. You can always reinstall it from the store."
+        message="PocketBot loses its tools, and any sign-in or keys go with it. You can always reinstall it from the store."
         confirmLabel="Uninstall"
         destructive
         onConfirm={() => {

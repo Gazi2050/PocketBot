@@ -1,7 +1,7 @@
 import { generateText } from "ai";
 
-import { createOpenRouterChatModel } from "@whirl/backend/convex/inference/billing";
-import { messageContentForModel } from "@whirl/backend/convex/inference/attachments";
+import { createOpenRouterChatModel } from "@pocketbot/backend/convex/inference/billing";
+import { messageContentForModel } from "@pocketbot/backend/convex/inference/attachments";
 
 const apiKey = process.env.OPENROUTER_API_KEY;
 if (!apiKey) {

@@ -9,9 +9,9 @@ export const Route = createFileRoute("/about/")({
   component: AboutHome,
   head: () =>
     seo({
-      title: "Whirl · Meet the AI chat app that actually cares",
+      title: "PocketBot · Meet the AI chat app that actually cares",
       description:
-        "Whirl is an AI chat app with real memory. Chat across the best models, create living documents and visualizations, and pick up right where you left off.",
+        "PocketBot is an AI chat app with real memory. Chat across the best models, create living documents and visualizations, and pick up right where you left off.",
       url: "/about",
     }),
 });
@@ -23,8 +23,8 @@ function AboutHome() {
       <div className="relative mt-8 aspect-[5/2] overflow-hidden rounded-3xl bg-neutral-950 ring-1 ring-black/[0.07] sm:aspect-[4/1] dark:ring-white/[0.08]">
         <PlasmaWave />
         <img
-          src="/whirl.svg"
-          alt="Whirl"
+          src="/pocketbot.svg"
+          alt="PocketBot"
           width={96}
           height={96}
           style={{ filter: "invert(1)", mixBlendMode: "difference" }}

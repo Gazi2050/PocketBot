@@ -14,16 +14,16 @@
  */
 
 export const SITE_URL = "https://whirl.chat";
-export const SITE_NAME = "Whirl";
+export const SITE_NAME = "PocketBot";
 
 export const DEFAULT_TITLE =
-  "Whirl — The AI chat app that actually cares about you";
+  "PocketBot — The AI chat app that actually cares about you";
 
 export const DEFAULT_DESCRIPTION =
   "An AI chat app with memory that actually cares about you. Chat across the best models, create living documents and visualizations, and pick up right where you left off.";
 
 /** Absolute URL to the 1200×630 social card in `public/`. */
-export const OG_IMAGE = `${SITE_URL}/whirl-og.png`;
+export const OG_IMAGE = `${SITE_URL}/pocketbot-og.png`;
 
 type SeoOptions = {
   /** Page title. Falls back to the brand title. */

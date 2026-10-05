@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarRow } from "../sidebar-row";
 import { SquishButton } from "../squish-button";
 import { ThreadRow } from "../thread-row";
-import { WhirlLogo } from "../whirl-logo";
+import { PocketBotLogo } from "../pocketbot-logo";
 
 /* The sidebar's chat list on the workbench: real ThreadRow instances fed
    canned summaries, so every glyph a row can wear — the spinner, the
@@ -60,7 +60,7 @@ export function DebugSidebarRail() {
   return (
     <aside className="flex w-64 shrink-0 flex-col gap-2 px-3 pt-1 pb-2">
       <div className="flex h-7 items-center px-1.5">
-        <WhirlLogo size={20} />
+        <PocketBotLogo size={20} />
       </div>
       <SquishButton className="relative h-8 w-full py-0">
         <span className="flex min-w-0 items-center gap-2 whitespace-nowrap">

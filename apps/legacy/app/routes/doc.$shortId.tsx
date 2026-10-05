@@ -14,7 +14,7 @@ import {
 } from "~/components/share/share-page";
 import { seo } from "~/lib/seo";
 
-/* The public share page for a whirl-authored document — same family as
+/* The public share page for a pocketbot-authored document — same family as
    /visual/{shortId}: the short token is the only gate, and the backend
    only ever serves completed documents. Rendered read-only through the
    same TipTap editor the in-app panel uses, so it looks identical. */
@@ -30,8 +30,8 @@ export const Route = createFileRoute("/doc/$shortId")({
   component: DocPage,
   head: () =>
     seo({
-      title: "Made with Whirl",
-      description: "A document written with Whirl.",
+      title: "Made with PocketBot",
+      description: "A document written with PocketBot.",
     }),
 });
 
@@ -43,7 +43,7 @@ function DocPage() {
     | undefined;
 
   useEffect(() => {
-    if (doc?.title) document.title = `${doc.title} · Whirl`;
+    if (doc?.title) document.title = `${doc.title} · PocketBot`;
   }, [doc?.title]);
 
   return (

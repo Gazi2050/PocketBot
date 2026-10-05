@@ -1,5 +1,5 @@
 {
-  "name": "whirl-remotion",
+  "name": "pocketbot-remotion",
   "private": true,
   "scripts": {
     "dev": "remotion studio",

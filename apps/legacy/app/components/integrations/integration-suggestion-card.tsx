@@ -24,7 +24,7 @@ import { ANALYTICS_EVENTS, useCapture } from "~/lib/posthog";
 type SuggestionPhase = Extract<Phase, { kind: "integrationSuggestion" }>;
 
 /**
- * Whirl found something in the integration store mid-reply: an inline card of
+ * PocketBot found something in the integration store mid-reply: an inline card of
  * install buttons, rendered exactly where the suggestion happened. The phase
  * only carries listing ids + name snapshots; everything else (branding, auth
  * recipe, install state) hydrates live from the store — so installing one

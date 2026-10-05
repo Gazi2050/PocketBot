@@ -166,7 +166,7 @@ export function AboutSidebarNav() {
       className="sticky top-10 hidden h-[calc(100dvh-5rem)] w-40 shrink-0 flex-col self-start md:flex"
     >
       <HoverPillOverlay pill={pill} />
-      <Link to="/about" aria-label="Whirl — about home" className="w-fit">
+      <Link to="/about" aria-label="PocketBot — about home" className="w-fit">
         <AboutLogo size={36} />
       </Link>
       {/* -ml-2.5 cancels the rows' pill padding so labels align with the logo. */}
@@ -193,7 +193,7 @@ export function AboutMobileNav() {
     >
       <HoverPillOverlay pill={pill} />
       <div className="flex items-center justify-between">
-        <Link to="/about" aria-label="Whirl — about home" className="w-fit">
+        <Link to="/about" aria-label="PocketBot — about home" className="w-fit">
           <AboutLogo size={32} />
         </Link>
         <ChatPill />

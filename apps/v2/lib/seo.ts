@@ -4,10 +4,10 @@ import { SITE_NAME } from "@/lib/site";
 
 export { SITE_NAME, SITE_URL } from "@/lib/site";
 export const DEFAULT_TITLE =
-  "Whirl — The AI chat app that actually cares about you";
+  "PocketBot — The AI chat app that actually cares about you";
 export const DEFAULT_DESCRIPTION =
   "An AI chat app with memory that actually cares about you. Chat across the best models, create living documents and visualizations, and pick up right where you left off.";
-export const OG_IMAGE_PATH = "/whirl-og.png";
+export const OG_IMAGE_PATH = "/pocketbot-og.png";
 
 export type SocialImage = {
   url: string;

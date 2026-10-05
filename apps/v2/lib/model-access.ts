@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { useCustomer } from "autumn-js/react";
 import { useConvexAuth, useQuery } from "convex/react";
 
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import { useDeploymentFeatures } from "@/lib/deployment-features";
 import { isCustomModelKey } from "@/lib/models";
 import { useCachedPlan } from "@/lib/plan-cache";

@@ -23,19 +23,19 @@ type DocumentSidebarContextValue = {
   doc: OpenDocument | null;
   /**
    * The id of a first-class `documents` row shown in the panel, or null.
-   * Distinct from {@link doc}: these are durable artifacts whirl authored, read
+   * Distinct from {@link doc}: these are durable artifacts pocketbot authored, read
    * live from Convex and saved straight back, rather than edits riding along on
    * a message. Only one of `doc` / `liveDocId` is ever set at a time.
    */
   liveDocId: string | null;
   /**
-   * The id of a whirl-authored HTML artifact (a full page) shown in the panel,
+   * The id of a pocketbot-authored HTML artifact (a full page) shown in the panel,
    * or null. Mutually exclusive with `doc`/`liveDocId`: only one panel shows at
    * a time, so opening any artifact clears the others.
    */
   liveHtmlId: string | null;
   openDocument: (attachment: Attachment, onEdit?: OpenDocument["onEdit"]) => void;
-  /** Open a whirl-authored document (live `documents` row) by its id. */
+  /** Open a pocketbot-authored document (live `documents` row) by its id. */
   openDocumentById: (documentId: string) => void;
   /**
    * Open a document that just started streaming, but only the FIRST time it's
@@ -44,7 +44,7 @@ type DocumentSidebarContextValue = {
    * doesn't keep yanking the panel back open.
    */
   autoOpenStreamingDocument: (documentId: string) => void;
-  /** Open a whirl-authored full HTML page (live `htmlArtifacts` row) by id. */
+  /** Open a pocketbot-authored full HTML page (live `htmlArtifacts` row) by id. */
   openHtmlById: (htmlId: string) => void;
   /** Auto-open a full HTML artifact the first time it's seen, like documents. */
   autoOpenStreamingHtml: (htmlId: string) => void;
@@ -71,7 +71,7 @@ const DocumentSidebarContext =
 
 /**
  * Holds which document (if any) is open in the right-hand document panel. Lives
- * high in the tree so any attachment or whirl-authored doc, anywhere, can pop
+ * high in the tree so any attachment or pocketbot-authored doc, anywhere, can pop
  * itself open without prop-drilling.
  */
 export function DocumentSidebarProvider({ children }: { children: ReactNode }) {

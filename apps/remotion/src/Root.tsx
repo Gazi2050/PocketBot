@@ -1,6 +1,6 @@
 import { Composition } from "remotion";
 
-import { HelloWhirl } from "./HelloWhirl";
+import { HelloPocketBot } from "./HelloPocketBot";
 import {
   TWO_X_LIMITS_DURATION,
   TWO_X_LIMITS_FPS,
@@ -11,8 +11,8 @@ export function RemotionRoot() {
   return (
     <>
       <Composition
-        id="HelloWhirl"
-        component={HelloWhirl}
+        id="HelloPocketBot"
+        component={HelloPocketBot}
         durationInFrames={90}
         fps={30}
         width={1920}

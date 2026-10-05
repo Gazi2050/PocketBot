@@ -2,7 +2,7 @@
 
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import {
   IconDeviceDesktopFilled,
   IconMoonFilled,
@@ -53,7 +53,7 @@ export function GeneralSection() {
 
   return (
     <>
-      <SettingsHeader title="General" description="Make whirl feel like home." />
+      <SettingsHeader title="General" description="Make pocketbot feel like home." />
       <div className="flex flex-col gap-4">
         <SettingsCard>
           <SettingsRow
@@ -117,7 +117,7 @@ export function GeneralSection() {
         </SettingsCard>
 
         {/* Memory itself now has its own tab; this is the hand-written half
-            of "what Whirl knows about me", so it stays here. */}
+            of "what PocketBot knows about me", so it stays here. */}
         <SettingsCard>
           <PreferencesField />
         </SettingsCard>

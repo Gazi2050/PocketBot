@@ -16,8 +16,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { shareId } = await params;
   return publicPageMetadata({
-    title: "Shared on Whirl",
-    description: "A conversation shared from Whirl.",
+    title: "Shared on PocketBot",
+    description: "A conversation shared from PocketBot.",
     path: `/share/${shareId}`,
   });
 }

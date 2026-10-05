@@ -16,7 +16,7 @@ import {
   IconRefresh,
 } from "@tabler/icons-react";
 import { useQuery } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 
 import { PaywallView } from "@/components/analytics/paywall-view";
 import {
@@ -371,7 +371,7 @@ function ErrorBanner({
   const headline = gate
     ? (GATE_COPY[error.feature] ?? "That needs a paid plan.")
     : error.kind === "overload"
-      ? "Whirl is a little overloaded right now."
+      ? "PocketBot is a little overloaded right now."
       : "Something went wrong.";
   const subline = gate
     ? "Upgrade to keep going, or switch things up."

@@ -2,12 +2,12 @@
 
 import { useMemo } from "react";
 import { useQuery } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import {
   isClearedForLockedThread,
   NO_LOCKED_MODELS,
   type LockedModelPolicy,
-} from "@whirl/backend/convex/lockedPolicy";
+} from "@pocketbot/backend/convex/lockedPolicy";
 
 import type { ComposerModel } from "../models";
 
@@ -49,7 +49,7 @@ export function lockedSendRejection(
   if (isClearedForLockedThread(model, policy)) return null;
   return policy.known
     ? "This model keeps a copy of what you send it, so a locked chat cannot use it. Pick another model."
-    : "Whirl is still checking which models keep no data. One moment.";
+    : "PocketBot is still checking which models keep no data. One moment.";
 }
 
 /** Convenience for callers that only hold the thread's locked flag. */

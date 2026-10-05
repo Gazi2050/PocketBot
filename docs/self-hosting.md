@@ -1,9 +1,9 @@
-# Self-hosting Whirl
+# Self-hosting PocketBot
 
-This guide takes you from a fresh clone to a running Whirl, first on your
+This guide takes you from a fresh clone to a running PocketBot, first on your
 machine and then in production. Budget about half an hour the first time.
 
-Whirl needs three services to run:
+PocketBot needs three services to run:
 
 | Service                                | What it does                        | Free tier |
 | -------------------------------------- | ----------------------------------- | --------- |
@@ -16,14 +16,14 @@ each extra service unlocks.
 
 ## 1. Prerequisites
 
-- [Bun](https://bun.sh) 1.2 or newer. Whirl is a Bun workspace; npm, yarn,
+- [Bun](https://bun.sh) 1.2 or newer. PocketBot is a Bun workspace; npm, yarn,
   and pnpm won't install it correctly.
 - [Git](https://git-scm.com)
 - Accounts on the three services above
 
 ```sh
 git clone https://github.com/whirlchat/whirl.git
-cd whirl
+cd pocketbot
 bun install
 ```
 
@@ -214,7 +214,7 @@ set to `apps/console`. Set `VITE_APP_URL` to the web app's address.
 
 ## Make it yours
 
-Whirl's name, links, and legal pages live in one file:
+PocketBot's name, links, and legal pages live in one file:
 [`apps/v2/lib/site.ts`](../apps/v2/lib/site.ts). Point the links at your own
 status page, community, and policies, or set the optional ones to `null` to
 hide them. On the backend, `APP_NAME` in

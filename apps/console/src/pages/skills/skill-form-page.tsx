@@ -83,14 +83,14 @@ function SkillFormPage({ initial }: { initial?: Skill }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const claimsWhirl = author.trim().toLowerCase() === "whirl";
+  const claimsPocketBot = author.trim().toLowerCase() === "pocketbot";
 
   const validate = (): string | null => {
     if (!name.trim()) return "Give the skill a name.";
     if (!author.trim()) return "Who made this skill?";
     if (!logo) return "Upload a logo for the store listing.";
     if (!description.trim()) {
-      return "Write a description — it's how Whirl decides when to load the skill.";
+      return "Write a description — it's how PocketBot decides when to load the skill.";
     }
     if (!instructions.trim()) return "Paste the skill's instructions.";
     if (instructions.length > MAX_INSTRUCTIONS) {
@@ -165,7 +165,7 @@ function SkillFormPage({ initial }: { initial?: Skill }) {
         <p className="mt-1 text-[13px] text-neutral-500 dark:text-neutral-400">
           {editing
             ? "Change anything you like — saving sends it back through review."
-            : "Write instructions Whirl learns mid-chat. It goes live in the store once an admin approves it."}
+            : "Write instructions PocketBot learns mid-chat. It goes live in the store once an admin approves it."}
         </p>
       </div>
 
@@ -180,7 +180,7 @@ function SkillFormPage({ initial }: { initial?: Skill }) {
       <div className="mt-6 flex flex-col gap-4">
         <FormSection
           title="Details"
-          subtitle="What users see in the store listing. The description doubles as Whirl's cue for when to reach for this skill — make it say what the skill is for."
+          subtitle="What users see in the store listing. The description doubles as PocketBot's cue for when to reach for this skill — make it say what the skill is for."
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1.5">
@@ -203,7 +203,7 @@ function SkillFormPage({ initial }: { initial?: Skill }) {
                 maxLength={60}
                 className={inputClass}
               />
-              {claimsWhirl &&
+              {claimsPocketBot &&
                 (isAdmin ? (
                   <span className="flex items-center gap-1 text-[11.5px] text-[#0c82f2]">
                     <VerifiedBadge size={13} />
@@ -211,7 +211,7 @@ function SkillFormPage({ initial }: { initial?: Skill }) {
                   </span>
                 ) : (
                   <span className="text-[11.5px] text-neutral-400 dark:text-neutral-500">
-                    Heads up: only Whirl team accounts get the verified badge.
+                    Heads up: only PocketBot team accounts get the verified badge.
                   </span>
                 ))}
             </label>
@@ -255,7 +255,7 @@ function SkillFormPage({ initial }: { initial?: Skill }) {
 
         <FormSection
           title="The skill"
-          subtitle="The instructions Whirl follows once it loads the skill. Paste the whole thing — structure, examples, edge cases and all."
+          subtitle="The instructions PocketBot follows once it loads the skill. Paste the whole thing — structure, examples, edge cases and all."
         >
           <label className="flex flex-col gap-1.5">
             <FieldLabel label="Instructions" />

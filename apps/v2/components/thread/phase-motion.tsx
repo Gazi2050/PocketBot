@@ -177,11 +177,11 @@ export function PhaseIcon({
 
 /** The supplied animated mark is the spinner itself; its opacity stays steady
  * while the neighboring label carries the traveling shimmer. */
-export function WhirlActivityIcon() {
+export function PocketBotActivityIcon() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/whirl-animate.svg"
+      src="/pocketbot-animate.svg"
       alt=""
       draggable={false}
       className="size-[26px] max-w-none dark:invert"

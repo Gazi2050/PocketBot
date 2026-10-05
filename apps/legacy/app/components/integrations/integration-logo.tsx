@@ -108,11 +108,11 @@ export function IntegrationIcon({
   );
 }
 
-/** The blue "made by Whirl" checkmark, sized to sit next to a name. */
+/** The blue "made by PocketBot" checkmark, sized to sit next to a name. */
 export function VerifiedBadge({ size = 14 }: { size?: number }) {
   return (
     <span
-      title="Verified — made by Whirl"
+      title="Verified — made by PocketBot"
       className="inline-flex shrink-0 text-[#0c82f2]"
     >
       <IconRosetteDiscountCheckFilled size={size} aria-label="Verified" />

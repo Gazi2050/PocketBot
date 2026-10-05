@@ -77,7 +77,7 @@ export function IntegrationStoreList({
                   {integration.verified && <VerifiedBadge size={14} />}
                 </span>
                 <span className="truncate text-[12.5px] text-neutral-500 dark:text-neutral-400">
-                  {integration.description ?? "An MCP integration for Whirl"}
+                  {integration.description ?? "An MCP integration for PocketBot"}
                 </span>
               </span>
               <AnimatePresence mode="wait" initial={false}>

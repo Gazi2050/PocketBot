@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { OptimisticLocalStore } from "convex/browser";
 import { useConvexAuth, useMutation, useQuery } from "convex/react";
 
-import { api, WHIRL_ORIGIN, type ThreadId } from "@/lib/convex";
+import { api, POCKETBOT_ORIGIN, type ThreadId } from "@/lib/convex";
 
 /**
  * One thread as the sidebar query hands it over.
@@ -92,7 +92,7 @@ export function useThreads(): ThreadSummary[] | undefined {
 
 /** The public URL for a shared conversation. */
 export function threadShareUrl(shareId: string): string {
-  return `${WHIRL_ORIGIN}/share/${shareId}`;
+  return `${POCKETBOT_ORIGIN}/share/${shareId}`;
 }
 
 function patchThread(

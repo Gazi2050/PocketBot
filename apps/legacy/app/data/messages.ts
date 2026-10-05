@@ -176,7 +176,7 @@ export type Phase =
       contentOffset?: number;
       pending?: boolean;
     }
-  // Store listings whirl surfaced via suggestIntegrations: a chip while the
+  // Store listings pocketbot surfaced via suggestIntegrations: a chip while the
   // store is being searched, then an inline card of install buttons. Only ids
   // + name snapshots live here — the card hydrates live branding and install
   // state from the store, so installing flips it without touching the message.
@@ -210,7 +210,7 @@ export type Phase =
       contentOffset?: number;
       pending?: boolean;
     }
-  // An image whirl painted mid-reply via the generateImage tool. Painted in
+  // An image pocketbot painted mid-reply via the generateImage tool. Painted in
   // the background: the phase shows as an inline shimmer card while pending,
   // then the worker lands the stored pictures' URLs in `images` and the card
   // morphs into the real thing. Legacy rows have no `images` — those pictures

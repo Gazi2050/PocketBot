@@ -134,7 +134,7 @@ export function SignUpPanel({
         <motion.div key="start" {...stepMotion}>
           <StepTitle
             title="Create your account"
-            subtitle="Spin up a Whirl account in seconds."
+            subtitle="Spin up a PocketBot account in seconds."
           />
           <GoogleButton
             onClick={handleGoogle}

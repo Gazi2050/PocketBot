@@ -90,7 +90,7 @@ function AuthModalInner({ onClose }: { onClose?: () => void }) {
       } : undefined}
       role="dialog"
       aria-modal="true"
-      aria-label={mode === "sign-in" ? "Sign in to Whirl" : "Sign up for Whirl"}
+      aria-label={mode === "sign-in" ? "Sign in to PocketBot" : "Sign up for PocketBot"}
     >
       <motion.div
         key="auth-modal"
@@ -137,7 +137,7 @@ function Header({ onClose }: { onClose?: () => void }) {
         </button>
       )}
       <div className="relative h-10 w-10">
-        <img src="/whirl.svg" alt="Whirl" className="h-10 w-10 dark:invert" />
+        <img src="/pocketbot.svg" alt="PocketBot" className="h-10 w-10 dark:invert" />
       </div>
     </div>
   );
@@ -332,7 +332,7 @@ function SignInPanel({ onSwitch }: { onSwitch: () => void }) {
         <>
           <Title
             title="Welcome back"
-            subtitle="Sign in to your Whirl account."
+            subtitle="Sign in to your PocketBot account."
           />
           <GoogleButton onClick={handleGoogle} disabled={submitting} loading={googleRedirecting} />
           <Divider />
@@ -572,7 +572,7 @@ function SignUpPanel({ onSwitch }: { onSwitch: () => void }) {
         <>
           <Title
             title="Create your account"
-            subtitle="Spin up a Whirl account in seconds."
+            subtitle="Spin up a PocketBot account in seconds."
           />
           <GoogleButton onClick={handleGoogle} disabled={submitting} loading={googleRedirecting} signUp />
           <Divider />

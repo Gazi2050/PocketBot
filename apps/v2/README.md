@@ -1,4 +1,4 @@
-# Whirl web app
+# PocketBot web app
 
 The Next.js app behind [whirl.chat](https://whirl.chat). It talks to the
 Convex backend in [`packages/backend`](../../packages/backend) for nearly

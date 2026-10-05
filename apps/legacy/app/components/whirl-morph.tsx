@@ -1,25 +1,25 @@
-import { RAINBOW_LAYER, useTwirl, WhirlRings } from "~/components/whirl-rings";
+import { RAINBOW_LAYER, useTwirl, PocketBotRings } from "~/components/pocketbot-rings";
 
 /**
  * Assistant avatar. While text is generating the rings breathe in rainbow —
  * inhaling smaller through each turn, swelling back to full size for the
  * rest between turns — then wind down to the rest pose and fade back to the
- * static mark. Hovering the idle avatar plays one twirl, like WhirlLogo.
+ * static mark. Hovering the idle avatar plays one twirl, like PocketBotLogo.
  *
- * One WhirlRings instance carries both fills as crossfading layers, so the
+ * One PocketBotRings instance carries both fills as crossfading layers, so the
  * static and spinning states share the exact same geometry — there is no
  * second copy at a different size to mismatch against. `breathe` stays on
  * permanently (it's static config): scale follows rotation, so at rest it
  * is exactly 1 and toggling it would only ever snap the size mid-turn.
  */
-export function WhirlMorph({
+export function PocketBotMorph({
   busy,
   size = 20,
   continuityId,
 }: {
   busy: boolean;
   size?: number;
-  /** Resume ring pose across a remount (see WhirlRings). */
+  /** Resume ring pose across a remount (see PocketBotRings). */
   continuityId?: string;
 }) {
   const { twirling, twirl } = useTwirl();
@@ -33,7 +33,7 @@ export function WhirlMorph({
       className="relative inline-block shrink-0"
       style={{ width: size, height: size }}
     >
-      <WhirlRings
+      <PocketBotRings
         spin={lively}
         breathe
         continuityId={continuityId}

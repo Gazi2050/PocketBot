@@ -4,7 +4,7 @@ import { describe, expect, test } from "bun:test";
 import {
   decideToolStep,
   RUNAWAY_TOOL_CALL_LIMIT,
-} from "@whirl/backend/convex/inference/toolPolicy";
+} from "@pocketbot/backend/convex/inference/toolPolicy";
 
 const MAX_STEPS = 16;
 

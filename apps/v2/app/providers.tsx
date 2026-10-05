@@ -2,7 +2,7 @@
 
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import { AutumnProvider } from "autumn-js/react";
 import { ConvexReactClient, useConvex, useConvexAuth, useQueries } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";

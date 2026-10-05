@@ -24,7 +24,7 @@ export function isImageCardPhase(phase: Phase): phase is ImagePhase {
 }
 
 /**
- * The inline card for a background-painted image, right where whirl called
+ * The inline card for a background-painted image, right where pocketbot called
  * the tool: a shimmer square holds the spot while the worker paints (which
  * can outlive the reply stream — the phase updates reactively), then each
  * landed URL blooms in via the same morphing frame the Image tier uses, so
@@ -80,8 +80,8 @@ export function ImagePhaseCard({
               id: url,
               name:
                 images.length > 1
-                  ? `whirl-painting-${index + 1}.png`
-                  : "whirl-painting.png",
+                  ? `pocketbot-painting-${index + 1}.png`
+                  : "pocketbot-painting.png",
               size: 0,
               type: "image/png",
               url,

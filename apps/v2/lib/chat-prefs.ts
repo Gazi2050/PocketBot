@@ -10,7 +10,7 @@ import { useSyncExternalStore } from "react";
    storage listener carries it across tabs. */
 
 function makeBoolPref(key: string, fallback: boolean) {
-  const changeEvent = `whirl:${key}`;
+  const changeEvent = `pocketbot:${key}`;
   let cached: boolean | null = null;
 
   const read = () => {

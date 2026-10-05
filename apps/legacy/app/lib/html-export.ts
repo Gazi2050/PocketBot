@@ -9,7 +9,7 @@ function slugify(title: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
-  return stem || "whirl-artifact";
+  return stem || "pocketbot-artifact";
 }
 
 function isDark(): boolean {
@@ -27,7 +27,7 @@ function standaloneDoc(title: string, html: string, shortId?: string): string {
   });
 }
 
-/** Download an artifact as a standalone .html file (with the Whirl header). */
+/** Download an artifact as a standalone .html file (with the PocketBot header). */
 export function downloadHtmlArtifact(
   title: string,
   html: string,

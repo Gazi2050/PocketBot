@@ -68,14 +68,14 @@ export const ANALYTICS_EVENTS = {
   documentEditsAttached: "document_edits_attached",
   documentEditsDiscarded: "document_edits_discarded",
   documentDownloaded: "document_downloaded",
-  // whirl-authored documents
+  // pocketbot-authored documents
   documentCardOpened: "document_card_opened",
   documentManuallyEdited: "document_manually_edited",
   documentSelectionAddedToChat: "document_selection_added_to_chat",
   documentFullscreenToggled: "document_fullscreen_toggled",
   documentTableInserted: "document_table_inserted",
   documentFormulaInserted: "document_formula_inserted",
-  // whirl-authored HTML artifacts (inline visualizations + full pages)
+  // pocketbot-authored HTML artifacts (inline visualizations + full pages)
   htmlCardOpened: "html_card_opened",
   htmlFullscreenToggled: "html_fullscreen_toggled",
   htmlDownloaded: "html_downloaded",
@@ -174,7 +174,7 @@ export const ANALYTICS_EVENTS = {
   integrationsShowMore: "integrations_show_more",
   integrationsConsoleLinkClicked: "integrations_console_link_clicked",
   integrationMentioned: "integration_mentioned",
-  // Whirl-suggested install cards in chat ("integrations_suggested" itself
+  // PocketBot-suggested install cards in chat ("integrations_suggested" itself
   // fires server-side when the model searches the store)
   integrationSuggestionShown: "integration_suggestion_shown",
   integrationSuggestionClicked: "integration_suggestion_clicked",

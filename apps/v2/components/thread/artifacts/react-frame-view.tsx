@@ -3,11 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { useConvex } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import { api } from "@pocketbot/backend/convex/_generated/api";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 
 import { compileArtifactModule, warmJsxCompiler } from "@/lib/jsx-compile";
-import { whirlThemeTokens } from "@/lib/html-frame";
+import { pocketbotThemeTokens } from "@/lib/html-frame";
 import { useIsDark } from "@/lib/theme";
 
 const INLINE_MIN_HEIGHT = 80;
@@ -138,7 +138,7 @@ export function ReactFrameView({
       } catch {
         return {
           ok: false as const,
-          error: "Couldn't reach Whirl to load this data.",
+          error: "Couldn't reach PocketBot to load this data.",
         };
       }
     },
@@ -160,24 +160,24 @@ export function ReactFrameView({
       } | null;
 
       switch (data?.type) {
-        case "whirl-artifact-ready":
+        case "pocketbot-artifact-ready":
           setFrameReady(true);
           break;
-        case "whirl-artifact-height": {
+        case "pocketbot-artifact-height": {
           if (fill) break;
           const reported = Number(data.height);
           if (!Number.isFinite(reported)) break;
           setContentHeight(Math.max(Math.ceil(reported), INLINE_MIN_HEIGHT));
           break;
         }
-        case "whirl-artifact-error":
+        case "pocketbot-artifact-error":
           /* Only a settled artifact reports failures upward; mid-stream, a
              crash usually just means the module isn't finished. */
           if (!streaming && typeof data.message === "string") {
             setError(data.message);
           }
           break;
-        case "whirl-artifact-data-request": {
+        case "pocketbot-artifact-data-request": {
           const requestId = data.requestId;
           const bindingId = data.bindingId;
           if (typeof requestId !== "number" || typeof bindingId !== "string") {
@@ -189,7 +189,7 @@ export function ReactFrameView({
             data.force === true,
           ).then((result) => {
             post({
-              type: "whirl-artifact-data-result",
+              type: "pocketbot-artifact-data-result",
               requestId,
               result,
             });
@@ -207,17 +207,17 @@ export function ReactFrameView({
      frame at the wrong size or in the wrong palette. */
   useEffect(() => {
     if (!frameReady) return;
-    post({ type: "whirl-artifact-theme", dark, tokens: whirlThemeTokens(dark) });
+    post({ type: "pocketbot-artifact-theme", dark, tokens: pocketbotThemeTokens(dark) });
   }, [frameReady, dark, post]);
 
   useEffect(() => {
     if (!frameReady) return;
-    post({ type: "whirl-artifact-mode", fill });
+    post({ type: "pocketbot-artifact-mode", fill });
   }, [frameReady, fill, post]);
 
   useEffect(() => {
     if (!frameReady || compiled === null) return;
-    post({ type: "whirl-artifact-code", code: compiled });
+    post({ type: "pocketbot-artifact-code", code: compiled });
   }, [frameReady, compiled, post]);
 
   useEffect(() => {
@@ -254,7 +254,7 @@ export function ReactFrameView({
   const frame = mounted ? (
     <iframe
       ref={frameRef}
-      title={title || "Whirl artifact"}
+      title={title || "PocketBot artifact"}
       sandbox="allow-scripts allow-pointer-lock"
       src="/artifact-frame"
       onPointerEnter={grabFocus}

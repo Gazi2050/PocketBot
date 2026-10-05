@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { publicPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = publicPageMetadata({
-  title: "Whirl — The AI chat app that actually cares about you",
+  title: "PocketBot — The AI chat app that actually cares about you",
   path: "/",
 });
 

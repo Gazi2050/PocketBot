@@ -4,8 +4,8 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { useThreadsLoading } from "~/data/threads";
-import { WhirlLogo } from "~/components/whirl-logo";
-import { RAINBOW_LAYER, WhirlRings } from "~/components/whirl-rings";
+import { PocketBotLogo } from "~/components/pocketbot-logo";
+import { RAINBOW_LAYER, PocketBotRings } from "~/components/pocketbot-rings";
 import { IncognitoLogo } from "~/components/incognito-logo";
 import { useIncognito } from "~/lib/incognito";
 import { pinRasterPath } from "~/lib/motion";
@@ -14,7 +14,7 @@ import { seo } from "~/lib/seo";
 export const Route = createFileRoute("/")({
   component: Home,
   // The public landing/home: full brand title + description + canonical so
-  // search and social show Whirl, not the retired waitlist page.
+  // search and social show PocketBot, not the retired waitlist page.
   head: () => seo({ url: "/" }),
 });
 
@@ -170,7 +170,7 @@ function Home() {
               made the swap read as a laggy flash of the previous icon. */}
           <AnimatePresence initial={false}>
             <motion.span
-              key={incognito.enabled ? "incognito" : "whirl"}
+              key={incognito.enabled ? "incognito" : "pocketbot"}
               initial={{ opacity: 0, scale: 0.6, rotate: -12 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               exit={{ opacity: 0, scale: 0.6, rotate: 12 }}
@@ -181,7 +181,7 @@ function Home() {
               {incognito.enabled ? (
                 <IncognitoLogo size={40} />
               ) : (
-                <WhirlLogo size={40} />
+                <PocketBotLogo size={40} />
               )}
             </motion.span>
           </AnimatePresence>
@@ -190,7 +190,7 @@ function Home() {
           aria-hidden
           className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${loading ? "opacity-100" : "opacity-0"}`}
         >
-          <WhirlRings spin={loading} layers={[RAINBOW_LAYER]} />
+          <PocketBotRings spin={loading} layers={[RAINBOW_LAYER]} />
         </span>
       </motion.div>
       {isLoaded && (

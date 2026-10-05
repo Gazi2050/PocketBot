@@ -71,7 +71,7 @@ export function InstalledIntegrationsList({
       <ConfirmDialog
         open={confirming !== null}
         title={`Uninstall ${confirming?.name ?? "this integration"}?`}
-        message="Whirl loses its tools, and any sign-in or keys go with it. You can always reinstall it from the store."
+        message="PocketBot loses its tools, and any sign-in or keys go with it. You can always reinstall it from the store."
         confirmLabel="Uninstall"
         tone="danger"
         onConfirm={() => {

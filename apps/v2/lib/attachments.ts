@@ -1,6 +1,6 @@
 import type { FunctionReturnType } from "convex/server";
 
-import type { api } from "@whirl/backend/convex/_generated/api";
+import type { api } from "@pocketbot/backend/convex/_generated/api";
 import {
   DOCUMENT_MIME_TYPES_BY_EXTENSION,
   isExtractableDocument,
@@ -368,7 +368,7 @@ function readAsDataUrl(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
     reader.onerror = () =>
-      reject(new Error(`Whirl cannot read ${file.name}. Attach it again.`));
+      reject(new Error(`PocketBot cannot read ${file.name}. Attach it again.`));
     reader.readAsDataURL(file);
   });
 }
@@ -413,7 +413,7 @@ export async function prepareAttachment({
             console.error("Document conversion failed.", error);
             return {
               kind: "skipped",
-              reason: "whirl couldn't read this document just now.",
+              reason: "pocketbot couldn't read this document just now.",
             };
           },
         )

@@ -158,7 +158,7 @@ export function IntegrationsView() {
   const toListing = (row: StoreIntegration): StoreListing => ({
     id: row.id,
     name: row.name,
-    description: row.description ?? "An MCP integration for Whirl",
+    description: row.description ?? "An MCP integration for PocketBot",
     logoUrl: row.logoUrl,
     iconSvg: row.iconSvg,
     verified: row.verified,
@@ -172,7 +172,7 @@ export function IntegrationsView() {
   const toSkillListing = (row: StoreSkill): StoreListing => ({
     id: row.id,
     name: row.name,
-    description: row.description ?? "A skill for Whirl",
+    description: row.description ?? "A skill for PocketBot",
     logoUrl: row.logoUrl,
     iconSvg: row.iconSvg,
     verified: row.verified,
@@ -207,7 +207,7 @@ export function IntegrationsView() {
               Integrations
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Teach Whirl new tricks — plug in the tools you already use.
+              Teach PocketBot new tricks — plug in the tools you already use.
             </p>
           </div>
           <label className="flex h-9 w-full max-w-[260px] items-center gap-2 rounded-full bg-well px-3.5 shadow-[inset_0_0_0_1px_var(--well-outline),inset_0_1px_0_0_var(--well-highlight)] transition-shadow focus-within:shadow-[inset_0_0_0_1px_var(--ring)] max-md:max-w-full">
@@ -305,7 +305,7 @@ export function IntegrationsView() {
                 ) : (
                   <EmptyState
                     title="No skills on the shelves yet"
-                    body="Skills are instruction packs Whirl picks up mid-chat. Approved ones will show up here as developers publish them."
+                    body="Skills are instruction packs PocketBot picks up mid-chat. Approved ones will show up here as developers publish them."
                   />
                 )
               ) : skillShelves ? (
@@ -327,7 +327,7 @@ export function IntegrationsView() {
           </AnimatePresence>
         </div>
 
-        {/* The developer pitch: publish your own via the Whirl Console. */}
+        {/* The developer pitch: publish your own via the PocketBot Console. */}
         <p className="mt-10 text-center text-[12.5px] text-muted-foreground">
           Built something cool? Publish your own integration from the{" "}
           <a
@@ -336,7 +336,7 @@ export function IntegrationsView() {
             rel="noreferrer"
             className="inline-flex items-center gap-0.5 font-medium text-foreground hover:underline"
           >
-            Whirl Console
+            PocketBot Console
             <IconArrowUpRight size={13} stroke={2.25} />
           </a>
           .

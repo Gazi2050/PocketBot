@@ -51,9 +51,9 @@ export const Route = createFileRoute("/integrations")({
   component: IntegrationsPage,
   head: () =>
     seo({
-      title: "Integrations · Whirl",
+      title: "Integrations · PocketBot",
       description:
-        "Browse and install integrations that give Whirl new tools — connect your favorite apps in a couple of clicks.",
+        "Browse and install integrations that give PocketBot new tools — connect your favorite apps in a couple of clicks.",
       url: "/integrations",
     }),
 });
@@ -307,7 +307,7 @@ function IntegrationsPage() {
         {
           id: entry.id,
           name: entry.name,
-          description: entry.description ?? "An MCP integration for Whirl",
+          description: entry.description ?? "An MCP integration for PocketBot",
           logoUrl: entry.logoUrl,
           bannerUrl: entry.bannerUrl,
           iconSvg: entry.iconSvg,
@@ -333,7 +333,7 @@ function IntegrationsPage() {
         {
           id: entry.id,
           name: entry.name,
-          description: entry.description ?? "A skill for Whirl",
+          description: entry.description ?? "A skill for PocketBot",
           logoUrl: entry.logoUrl,
           bannerUrl: entry.bannerUrl,
           iconSvg: entry.iconSvg,
@@ -352,7 +352,7 @@ function IntegrationsPage() {
             Integrations
           </h1>
           <p className="mt-1 text-[13.5px] leading-snug text-neutral-500 dark:text-neutral-400">
-            Teach Whirl new tricks — plug in the tools you already use.
+            Teach PocketBot new tricks — plug in the tools you already use.
           </p>
         </div>
         <label className="flex h-10 w-full max-w-[260px] items-center gap-2 rounded-full border border-black/[0.08] bg-white px-3.5 transition focus-within:border-[#178dfb] focus-within:ring-2 focus-within:ring-[#178dfb]/25 dark:border-white/[0.1] dark:bg-[#222] max-md:max-w-full">
@@ -497,7 +497,7 @@ function IntegrationsPage() {
                 ) : (
                   <EmptyState
                     title="No skills on the shelves yet"
-                    body="Skills are instruction packs Whirl picks up mid-chat. Approved ones will show up here as developers publish them."
+                    body="Skills are instruction packs PocketBot picks up mid-chat. Approved ones will show up here as developers publish them."
                   />
                 )
               ) : (
@@ -532,7 +532,7 @@ function IntegrationsPage() {
               ) : (
                 <EmptyState
                   title="Nothing installed yet"
-                  body="Browse the store and install an integration or a skill — its powers become Whirl's powers."
+                  body="Browse the store and install an integration or a skill — its powers become PocketBot's powers."
                   action={
                     <button
                       type="button"
@@ -598,7 +598,7 @@ function IntegrationsPage() {
   );
 }
 
-/** The developer pitch at the bottom: publish your own via the Whirl Console. */
+/** The developer pitch at the bottom: publish your own via the PocketBot Console. */
 function ConsoleCallout() {
   const capture = useCapture();
   return (
@@ -611,7 +611,7 @@ function ConsoleCallout() {
         onClick={() => capture(ANALYTICS_EVENTS.integrationsConsoleLinkClicked)}
         className="inline-flex items-center gap-0.5 font-medium text-[#0c82f2] transition hover:text-[#0a74d8] hover:underline"
       >
-        Whirl Console
+        PocketBot Console
         <IconArrowUpRight size={13} stroke={2.25} />
       </a>
       .

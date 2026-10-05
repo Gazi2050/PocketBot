@@ -2,10 +2,10 @@
 
 import { useQuery } from "convex/react";
 import { IconPlugConnected } from "@tabler/icons-react";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
-import { WhirlLogo } from "@/components/whirl-logo";
+import { PocketBotLogo } from "@/components/pocketbot-logo";
 import { HtmlFrameView } from "@/components/thread/artifacts/html-frame-view";
 import { ReactFrameView } from "@/components/thread/artifacts/react-frame-view";
 import { SharedArtifactPage } from "./shared-artifact-page";
@@ -85,9 +85,9 @@ function DataLocked() {
           </div>
         </div>
         <div className="mt-1 flex items-center gap-2">
-          <WhirlLogo size={16} />
+          <PocketBotLogo size={16} />
           <Button nativeButton={false} render={<a href="/" />}>
-            Make your own with Whirl
+            Make your own with PocketBot
           </Button>
         </div>
       </main>

@@ -212,8 +212,8 @@ export function McpServerForm({
       {isOAuth ? (
         <p className="rounded-lg border border-black/[0.06] bg-black/[0.015] px-3 py-2 text-[12px] leading-relaxed text-neutral-500 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-neutral-400">
           {isEdit
-            ? "Whirl registers itself with the server and you approve access in a popup. No tokens to copy."
-            : "Save the server, then click Connect to sign in through your browser. Whirl registers itself automatically, no tokens to copy."}
+            ? "PocketBot registers itself with the server and you approve access in a popup. No tokens to copy."
+            : "Save the server, then click Connect to sign in through your browser. PocketBot registers itself automatically, no tokens to copy."}
         </p>
       ) : (
         <div className="flex flex-col gap-1.5">

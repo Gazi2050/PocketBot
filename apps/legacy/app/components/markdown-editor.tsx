@@ -68,19 +68,19 @@ export function MarkdownEditor({
    */
   resetSignal?: number;
   /**
-   * Keep the view pinned to the end as `value` grows — used while whirl streams
+   * Keep the view pinned to the end as `value` grows — used while pocketbot streams
    * a document in, so the panel follows the text being written.
    */
   stickToBottom?: boolean;
   /**
-   * When true, an externally-driven `value` change (whirl revising a document)
+   * When true, an externally-driven `value` change (pocketbot revising a document)
    * flashes a highlight over exactly the region that changed, so the edit is
    * seen as it lands rather than appearing out of nowhere.
    */
   highlightEdits?: boolean;
   /**
    * When provided, selecting text reveals a floating "add to chat" button that
-   * hands the selected markdown back so the user can ask whirl to revise it.
+   * hands the selected markdown back so the user can ask pocketbot to revise it.
    */
   onAddSelectionToChat?: (selectedText: string) => void;
 }) {
@@ -152,7 +152,7 @@ export function MarkdownEditor({
   });
 
   // Swap in fresh content when the source changes underneath us (opening a
-  // different file, whirl streaming a doc in, or whirl revising it). emitUpdate
+  // different file, pocketbot streaming a doc in, or pocketbot revising it). emitUpdate
   // stays off so this never loops back as an edit.
   const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [sweepNonce, setSweepNonce] = useState(0);

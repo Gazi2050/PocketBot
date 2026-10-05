@@ -12,7 +12,7 @@ import { IconLogin2, IconReload } from "@tabler/icons-react";
 import { AuthModal } from "~/components/auth-modal";
 import { DepthButton } from "~/components/depth-button";
 import { Spinner } from "~/components/spinner";
-import { WhirlLogo } from "~/components/whirl-logo";
+import { PocketBotLogo } from "~/components/pocketbot-logo";
 import { isAuthError } from "~/lib/auth-errors";
 import { ANALYTICS_EVENTS, useCapture } from "~/lib/posthog";
 
@@ -126,7 +126,7 @@ function SessionExpiredScreen({ onRetry }: { onRetry: () => void }) {
 
   return (
     <div className="flex min-h-dvh flex-col items-center justify-center gap-5 bg-[#f8f8fa] px-6 text-center dark:bg-[#171718]">
-      <WhirlLogo size={40} />
+      <PocketBotLogo size={40} />
       <div className="flex flex-col gap-1">
         <h1 className="text-[20px] font-medium tracking-tight text-neutral-900 dark:text-neutral-50">
           Your session expired

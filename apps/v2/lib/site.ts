@@ -1,11 +1,11 @@
-/* Everything that ties this build to one particular Whirl: its address and
+/* Everything that ties this build to one particular PocketBot: its address and
    the places it sends people. A fork edits this file and sets
    NEXT_PUBLIC_SITE_URL; nothing else in the app hardcodes a domain.
 
    The optional links can be set to null, and every surface that shows one
    leaves it out. */
 
-export const SITE_NAME = "Whirl";
+export const SITE_NAME = "PocketBot";
 
 /** The public origin, without a trailing slash. When it's unset,
  *  next.config.ts fills it in from Vercel's production domain, or falls

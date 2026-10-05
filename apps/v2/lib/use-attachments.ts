@@ -3,8 +3,8 @@
 import { useCallback, useRef, useState } from "react";
 import { useAction, useMutation } from "convex/react";
 
-import { api } from "@whirl/backend/convex/_generated/api";
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import { api } from "@pocketbot/backend/convex/_generated/api";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 import {
   getAttachmentType,
   makeAttachmentId,

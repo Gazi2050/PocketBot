@@ -21,8 +21,8 @@ export const Route = createFileRoute("/visual/$shortId")({
   component: VisualPage,
   head: () =>
     seo({
-      title: "Made with Whirl",
-      description: "An interactive visualization made with Whirl.",
+      title: "Made with PocketBot",
+      description: "An interactive visualization made with PocketBot.",
     }),
 });
 
@@ -37,7 +37,7 @@ function VisualPage() {
     | undefined;
 
   useEffect(() => {
-    if (artifact?.title) document.title = `${artifact.title} · Whirl`;
+    if (artifact?.title) document.title = `${artifact.title} · PocketBot`;
   }, [artifact?.title]);
 
   return (

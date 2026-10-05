@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   creator: "Anterra",
   publisher: "Anterra",
   category: "technology",
-  /* Installed on an iPhone, Whirl opens without Safari's chrome and titles
+  /* Installed on an iPhone, PocketBot opens without Safari's chrome and titles
      its own home screen icon. The status bar is left on `default` so it
      takes its colour from the theme-color tag, which tracks the app's
      actual theme (components/pwa/theme-color.tsx) — `black-translucent`

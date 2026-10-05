@@ -7,7 +7,7 @@ import { RainbowLoader } from "~/components/rainbow-loader";
 import { ForkComposer } from "~/components/share/fork-composer";
 import { ShareTopBar } from "~/components/share/share-top-bar";
 import { ThreadWidgetAnimationProvider } from "~/components/thread-widget-animation";
-import { WhirlLogo } from "~/components/whirl-logo";
+import { PocketBotLogo } from "~/components/pocketbot-logo";
 import type { Message, Phase } from "~/data/messages";
 import {
   useSharedThread,
@@ -25,8 +25,8 @@ export const Route = createFileRoute("/share/$shareId")({
   component: SharePage,
   head: () =>
     seo({
-      title: "Shared on Whirl",
-      description: "A conversation shared from Whirl.",
+      title: "Shared on PocketBot",
+      description: "A conversation shared from PocketBot.",
     }),
 });
 
@@ -94,7 +94,7 @@ function SharePage() {
   const thread = useSharedThread(shareId);
 
   useEffect(() => {
-    if (thread?.title) document.title = `${thread.title} · Whirl`;
+    if (thread?.title) document.title = `${thread.title} · PocketBot`;
   }, [thread?.title]);
 
   if (thread === undefined) return <LoadingState />;
@@ -174,7 +174,7 @@ function LoadingState() {
 function NotFoundState() {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-5 px-6 text-center">
-      <WhirlLogo size={40} />
+      <PocketBotLogo size={40} />
       <div className="flex flex-col gap-1.5">
         <h1 className="text-[17px] font-semibold text-neutral-900 dark:text-neutral-100">
           This conversation isn't available

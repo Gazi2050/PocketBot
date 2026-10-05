@@ -1,8 +1,8 @@
-import { useTwirl, WhirlRings } from "~/components/whirl-rings";
+import { useTwirl, PocketBotRings } from "~/components/pocketbot-rings";
 
 /**
- * The mini-site's mark: the whirl tinted brand blue, twirling into a rainbow
- * spin on hover. Same choreography as ~/components/whirl-logo, but tinted so
+ * The mini-site's mark: the pocketbot tinted brand blue, twirling into a rainbow
+ * spin on hover. Same choreography as ~/components/pocketbot-logo, but tinted so
  * it stays blue in both themes instead of the black/inverted app mark.
  */
 const RAINBOW_GRADIENT =
@@ -26,7 +26,7 @@ export function AboutLogo({
       style={{ width: dim, height: dim }}
       className={`relative inline-block shrink-0 ${className}`}
     >
-      <WhirlRings
+      <PocketBotRings
         spin={twirling}
         layers={[
           { style: { backgroundColor: BRAND_BLUE } },

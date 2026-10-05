@@ -3,14 +3,14 @@
 import { useMemo } from "react";
 import { useQueries } from "convex/react";
 
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import {
   SETTINGS_SECTIONS,
   type SettingsSection,
 } from "@/lib/settings-sections";
 
 /* The optional services this deployment has switched on (convex/features.ts).
-   A self-hosted Whirl can run without billing, web search or long-term
+   A self-hosted PocketBot can run without billing, web search or long-term
    memory, and the controls for each hide instead of failing.
 
    Until the live answer lands, assume everything is on: the hosted app then

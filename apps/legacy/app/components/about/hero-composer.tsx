@@ -80,7 +80,7 @@ export function HeroComposer() {
               type="text"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              aria-label="Ask Whirl anything"
+              aria-label="Ask PocketBot anything"
               className="h-11 w-full bg-transparent px-2.5 text-[17px] leading-6 text-neutral-900 outline-none dark:text-neutral-100"
             />
             {!hasText && (

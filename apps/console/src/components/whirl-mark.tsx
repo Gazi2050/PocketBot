@@ -1,5 +1,5 @@
-/** The Whirl logomark, inverted for dark mode like the main app. */
-export function WhirlMark({
+/** The PocketBot logomark, inverted for dark mode like the main app. */
+export function PocketBotMark({
   size = 20,
   className = "",
 }: {
@@ -13,7 +13,7 @@ export function WhirlMark({
       style={{ width: dim, height: dim }}
     >
       <img
-        src="/whirl.svg"
+        src="/pocketbot.svg"
         alt=""
         aria-hidden
         style={{ width: dim, height: dim }}

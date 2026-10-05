@@ -105,7 +105,7 @@ export const COMPOSER_GLASS_SURFACE =
 export const COMPOSER_GLASS_CONTROL =
   `${COMPOSER_GLASS_SURFACE} transition-colors hover:bg-white/48 dark:hover:bg-[#1E1E1E]/52`;
 
-const SETTINGS_STORAGE_KEY = "whirl:composer-settings";
+const SETTINGS_STORAGE_KEY = "pocketbot:composer-settings";
 const VALID_MODELS: readonly ModelKey[] = [
   "Auto",
   "Fast",

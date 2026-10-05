@@ -17,7 +17,7 @@ import {
 import { ConvexReactClient, useConvex } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { AutumnProvider, useCustomer } from "autumn-js/react";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import {
   createRootRoute,
   HeadContent,
@@ -76,8 +76,8 @@ import { SettingsModal } from "~/components/settings-modal";
 import { Skeleton } from "~/components/skeleton";
 import { UpgradeProvider } from "~/components/upgrade-modal";
 import { RainbowLoader } from "~/components/rainbow-loader";
-import { WhirlLogo } from "~/components/whirl-logo";
-import { RAINBOW_LAYER, WhirlRings } from "~/components/whirl-rings";
+import { PocketBotLogo } from "~/components/pocketbot-logo";
+import { RAINBOW_LAYER, PocketBotRings } from "~/components/pocketbot-rings";
 import { Spinner } from "~/components/spinner";
 import { MobileNav } from "~/components/mobile-nav";
 import { MobileTopBar } from "~/components/mobile-top-bar";
@@ -154,7 +154,7 @@ export const Route = createRootRoute({
       links: [
         { rel: "stylesheet", href: appCss },
         { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
-        { rel: "apple-touch-icon", href: "/whirltransp.png" },
+        { rel: "apple-touch-icon", href: "/pocketbottransp.png" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         {
           rel: "preconnect",
@@ -670,13 +670,13 @@ function Sidebar({
             <div
               className={`transition-opacity duration-300 ${threadsLoading ? "opacity-0" : "opacity-100"}`}
             >
-              <WhirlLogo size={20} />
+              <PocketBotLogo size={20} />
             </div>
             <span
               aria-hidden
               className={`pointer-events-none absolute inset-0 transition-opacity duration-500 ${threadsLoading ? "opacity-100" : "opacity-0"}`}
             >
-              <WhirlRings spin={threadsLoading} layers={[RAINBOW_LAYER]} />
+              <PocketBotRings spin={threadsLoading} layers={[RAINBOW_LAYER]} />
             </span>
           </div>
         </div>

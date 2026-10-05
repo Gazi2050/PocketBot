@@ -24,7 +24,7 @@ const KINDS: {
     value: "feature",
     label: "Feature request",
     icon: IconBulbFilled,
-    placeholder: "What would make Whirl better?",
+    placeholder: "What would make PocketBot better?",
   },
   {
     value: "bug",

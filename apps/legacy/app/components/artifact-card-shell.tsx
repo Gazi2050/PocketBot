@@ -8,7 +8,7 @@ import {
 import { Squircle } from "~/components/squircle";
 
 /**
- * Shared chrome for the inline chat cards that whirl's artifacts render as
+ * Shared chrome for the inline chat cards that pocketbot's artifacts render as
  * (documents and HTML). Kept here so the document card and the HTML cards stay
  * visually identical without duplicating the shell, icon badge, or the
  * indeterminate "working" progress bar.

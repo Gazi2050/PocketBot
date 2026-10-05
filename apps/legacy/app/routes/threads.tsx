@@ -15,7 +15,7 @@ import {
 export const Route = createFileRoute("/threads")({
   component: ThreadsPage,
   head: () => ({
-    meta: [{ title: "Threads · Whirl" }],
+    meta: [{ title: "Threads · PocketBot" }],
   }),
 });
 

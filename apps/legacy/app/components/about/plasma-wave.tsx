@@ -3,7 +3,7 @@ import { Camera, Geometry, Mesh, Program, Renderer, Transform } from "ogl";
 
 /**
  * WebGL plasma-wave shader (adapted from React Bits), raymarching two glowing
- * bands on a transparent canvas. Colors default to Whirl blues rather than the
+ * bands on a transparent canvas. Colors default to PocketBot blues rather than the
  * upstream purple/cyan. Renders nothing until mounted — safe under SSR.
  */
 
@@ -23,7 +23,7 @@ type PlasmaWaveProps = {
   className?: string;
 };
 
-const WHIRL_BLUES: [string, string] = ["#0C82F2", "#38BDF8"];
+const POCKETBOT_BLUES: [string, string] = ["#0C82F2", "#38BDF8"];
 
 function hexToRgb(hex: string): [number, number, number] {
   return [
@@ -138,7 +138,7 @@ export function PlasmaWave(props: PlasmaWaveProps) {
     dir2 = 1.0,
     bend1 = 1,
     bend2 = 0.5,
-    colors = WHIRL_BLUES,
+    colors = POCKETBOT_BLUES,
     className = "",
   } = props;
 
@@ -224,7 +224,7 @@ export function PlasmaWave(props: PlasmaWaveProps) {
         dir2: d2 = 1.0,
         bend1: b1 = 1,
         bend2: b2 = 0.5,
-        colors: cols = WHIRL_BLUES,
+        colors: cols = POCKETBOT_BLUES,
       } = propsRef.current;
 
       uniformOffset[0] = xOff;

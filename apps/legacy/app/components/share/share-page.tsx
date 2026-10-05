@@ -7,11 +7,11 @@ import {
 } from "@tabler/icons-react";
 
 import { RainbowLoader } from "~/components/rainbow-loader";
-import { WhirlLogo } from "~/components/whirl-logo";
+import { PocketBotLogo } from "~/components/pocketbot-logo";
 
 /* The shared chrome for public artifact share pages (/visual/{shortId},
-   /doc/{shortId}): the page shell, the Whirl top bar with a copy-link
-   button, the "made with Whirl" promo footer, and the loading / not-found
+   /doc/{shortId}): the page shell, the PocketBot top bar with a copy-link
+   button, the "made with PocketBot" promo footer, and the loading / not-found
    states. Each route brings its own artifact body. */
 
 /** The neutral page background + centered column every share page sits in. */
@@ -54,10 +54,10 @@ export function ShareTopBar({ title }: { title: string }) {
       <a
         href="/"
         className="flex shrink-0 items-center gap-2"
-        aria-label="Whirl home"
+        aria-label="PocketBot home"
       >
-        <WhirlLogo size={24} />
-        <span className="text-[15px] font-semibold tracking-tight">Whirl</span>
+        <PocketBotLogo size={24} />
+        <span className="text-[15px] font-semibold tracking-tight">PocketBot</span>
       </a>
       <span className="min-w-0 flex-1 truncate text-[13px] text-neutral-500 dark:text-neutral-400">
         {title}
@@ -79,7 +79,7 @@ export function ShareTopBar({ title }: { title: string }) {
         href="/"
         className="flex h-8 shrink-0 items-center gap-1.5 rounded-lg bg-[#0c82f2] pl-3 pr-2.5 text-[12.5px] font-semibold text-white transition-colors hover:bg-[#0a74d8]"
       >
-        Try Whirl free
+        Try PocketBot free
         <IconArrowUpRight size={14} stroke={2.5} />
       </a>
     </div>
@@ -92,7 +92,7 @@ export function SharePromo({ line }: { line: string }) {
       <p className="max-w-md text-[13.5px] leading-relaxed text-neutral-500 dark:text-neutral-400">
         Made with{" "}
         <span className="font-semibold text-neutral-700 dark:text-neutral-200">
-          Whirl
+          PocketBot
         </span>
         . {line}
       </p>
@@ -101,7 +101,7 @@ export function SharePromo({ line }: { line: string }) {
         className="group flex h-10 items-center gap-2 rounded-xl bg-[#0c82f2] px-5 text-[13.5px] font-semibold text-white shadow-[0_2px_10px_rgba(12,130,242,0.35)] transition-colors hover:bg-[#0a74d8]"
       >
         <IconSparkles size={16} stroke={2} />
-        Create your own with Whirl
+        Create your own with PocketBot
         <IconArrowUpRight
           size={15}
           stroke={2.5}
@@ -123,7 +123,7 @@ export function ShareLoadingState() {
 export function ShareNotFoundState({ headline }: { headline: string }) {
   return (
     <div className="flex flex-1 flex-col items-center justify-center gap-5 text-center">
-      <WhirlLogo size={40} />
+      <PocketBotLogo size={40} />
       <div className="flex flex-col gap-1.5">
         <h1 className="text-[17px] font-semibold text-neutral-900 dark:text-neutral-100">
           {headline}
@@ -138,7 +138,7 @@ export function ShareNotFoundState({ headline }: { headline: string }) {
         className="flex h-10 items-center gap-2 rounded-xl bg-[#0c82f2] px-5 text-[13.5px] font-semibold text-white transition-colors hover:bg-[#0a74d8]"
       >
         <IconSparkles size={16} stroke={2} />
-        Try Whirl free
+        Try PocketBot free
       </a>
     </div>
   );

@@ -16,9 +16,9 @@ import { displayHost, SITE_LINKS } from "@/lib/site";
 const CONSOLE_URL = SITE_LINKS.console;
 
 export const metadata: Metadata = publicPageMetadata({
-  title: "Developers · Whirl",
+  title: "Developers · PocketBot",
   description:
-    "Bring your app to Whirl over MCP and make it available in every conversation.",
+    "Bring your app to PocketBot over MCP and make it available in every conversation.",
   path: "/about/developers",
 });
 
@@ -27,23 +27,23 @@ export default function DevelopersPage() {
     <article>
       <PageTitle>Developers</PageTitle>
       <Lede>
-        Whirl is a surface for your software too. If your product speaks MCP, it
-        can sit inside every Whirl conversation.
+        PocketBot is a surface for your software too. If your product speaks MCP, it
+        can sit inside every PocketBot conversation.
       </Lede>
       <div className="mt-8 flex flex-wrap gap-3">
         <CtaLink href={CONSOLE_URL} primary>
           Open the Console
         </CtaLink>
-        <CtaLink href="/about/features">See what Whirl does</CtaLink>
+        <CtaLink href="/about/features">See what PocketBot does</CtaLink>
       </div>
       <SplitSection
         title="Integrate your app over MCP"
-        body="Expose your product as tools on a Model Context Protocol server and Whirl can call them mid-conversation. Once approved, your integration appears in the store."
+        body="Expose your product as tools on a Model Context Protocol server and PocketBot can call them mid-conversation. Once approved, your integration appears in the store."
         visual={<McpVisual />}
       />
       <SplitSection
         reverse
-        title="Ship it from the Whirl Console"
+        title="Ship it from the PocketBot Console"
         body="Register integrations, publish skills, write the tool descriptions users see, and track each submission through review."
         visual={<ConsoleVisual />}
       />

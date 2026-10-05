@@ -77,7 +77,7 @@ const menuPanelMotion = {
 };
 
 /**
- * The thread's top-right toolbar: a menu of everything whirl made in the thread
+ * The thread's top-right toolbar: a menu of everything pocketbot made in the thread
  * (documents, visualizations, attachments) and a button to share the thread as a
  * public read-only link. Floating frosted-glass pills pinned to the top-right
  * corner of the chat surface.

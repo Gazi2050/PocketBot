@@ -150,7 +150,7 @@ function toCatalogToolkit(
 
 // --- Tool status phrases -------------------------------------------------------
 
-// Whirl tool descriptions are the status lines chat shows while a tool runs
+// PocketBot tool descriptions are the status lines chat shows while a tool runs
 // ("Searching your issues") and after it finishes ("Searched your issues").
 // Composio hands us imperative labels ("Search issues"), so we conjugate the
 // leading verb when we recognize it and leave the label alone when we don't —
@@ -354,7 +354,7 @@ export const searchCatalog = action({
 /**
  * Which of our allowed tools an MCP-server-creation error rejected by name.
  * Composio's message reads like `Invalid tools provided for MCP server
- * "whirl gmail": GMAIL_REMOVE_LABEL. These tools do not belong to ...` — we
+ * "pocketbot gmail": GMAIL_REMOVE_LABEL. These tools do not belong to ...` — we
  * pull every SCREAMING_SNAKE token out of it and keep only ones we actually
  * sent, so unrelated words in the message can't eject legitimate tools.
  */
@@ -369,11 +369,11 @@ function rejectedToolSlugs(error: unknown, allowed: string[]): Set<string> {
 
 /** Composio MCP server names allow 4-30 chars: alphanumeric, space, hyphen. */
 function composioServerName(slug: string): string {
-  const cleaned = `whirl ${slug}`
+  const cleaned = `pocketbot ${slug}`
     .replace(/[^a-zA-Z0-9 -]/g, "-")
     .slice(0, 30)
     .trim();
-  return cleaned.length >= 4 ? cleaned : `whirl srv`;
+  return cleaned.length >= 4 ? cleaned : `pocketbot srv`;
 }
 
 /**
@@ -409,7 +409,7 @@ export const addToolkit = action({
     const noAuth = toolkit.no_auth === true;
 
     // The toolkit's tools become the listing's status phrases, and cap what
-    // the MCP server may expose (Whirl's runtime reads at most 40 anyway).
+    // the MCP server may expose (PocketBot's runtime reads at most 40 anyway).
     const toolsJson = await composioFetch(
       `/api/v3/tools?toolkit_slug=${encodeURIComponent(slug)}&limit=${MAX_TOOLS_PER_EXTENSION}`,
     );

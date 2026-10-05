@@ -374,7 +374,7 @@ export function GeneralPane() {
       </Row>
       <Row
         label="Supermemory"
-        description="Let Whirl use profile facts and semantic memory across every chat. Turn it off to pause saving and stop using saved context."
+        description="Let PocketBot use profile facts and semantic memory across every chat. Turn it off to pause saving and stop using saved context."
       >
         <SupermemoryControl />
       </Row>
@@ -664,7 +664,7 @@ export function AccountPane({ onClose }: { onClose: () => void }) {
         </button>
       </Row>
 
-      <Row label="Session" description="Sign out of Whirl on this device.">
+      <Row label="Session" description="Sign out of PocketBot on this device.">
         <button
           type="button"
           onClick={() => {

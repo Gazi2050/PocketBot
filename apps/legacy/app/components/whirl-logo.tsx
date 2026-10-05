@@ -1,9 +1,9 @@
-import { useTwirl, WhirlRings } from "~/components/whirl-rings";
+import { useTwirl, PocketBotRings } from "~/components/pocketbot-rings";
 
 const RAINBOW_GRADIENT =
   "conic-gradient(from 0deg, #ef4444, #f59e0b, #eab308, #22c55e, #06b6d4, #3b82f6, #8b5cf6, #ec4899, #ef4444)";
 
-export function WhirlLogo({
+export function PocketBotLogo({
   size = 20,
   className = "",
 }: {
@@ -19,7 +19,7 @@ export function WhirlLogo({
       style={{ width: dim, height: dim }}
       className={`relative inline-block shrink-0 ${className}`}
     >
-      <WhirlRings
+      <PocketBotRings
         spin={twirling}
         layers={[
           { className: "bg-black dark:bg-white" },

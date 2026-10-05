@@ -4,7 +4,7 @@
 > every free catalog on Oct 4–5, 2026 (scores inline in section 2). If code and this
 > file disagree, fix one of them deliberately — never drift.
 
-PocketBot is a two-plan AI chat platform on the Whirl codebase. One rule
+PocketBot is a two-plan AI chat platform on the PocketBot codebase. One rule
 shapes everything: **users see modes, never models.** They compare limits and
 capabilities — where PocketBot wins — never model names.
 
@@ -183,7 +183,7 @@ budget alert at $50. Expected cost after switch: ~$3/user/mo (section 7).
 | `400` | never retried; readable message |
 | `413` (trial size cap) | trim context / route to a slot without the cap |
 | Empty `content` in a 200 | treat as failure → next model (measured failure mode) |
-| Mid-stream SSE `finish_reason: "error"` | Whirl watchdog settles the turn; retry applies |
+| Mid-stream SSE `finish_reason: "error"` | PocketBot watchdog settles the turn; retry applies |
 
 Free-tier shapes to design against: UnoRouter **1 req/min per model per
 account** (all users share one key) + per-user concurrency cap; Groq
@@ -251,4 +251,4 @@ Break-even: **1 subscriber.** Free users are $0-marginal marketing.
 
 *Follow-ups (separate tasks): add the new env vars to
 `docs/configuration.md` when the build lands; rebrand pass for `README.md`
-and `apps/v2/lib/site.ts` (Whirl → PocketBot).*
+and `apps/v2/lib/site.ts` (PocketBot → PocketBot).*

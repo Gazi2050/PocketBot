@@ -1,4 +1,4 @@
-# @whirl/backend
+# @pocketbot/backend
 
 the convex backend, living as its own workspace package so any app in the
 monorepo can lean on it — not just the web app.
@@ -8,14 +8,14 @@ monorepo can lean on it — not just the web app.
 add it as a workspace dependency:
 
 ```json
-"@whirl/backend": "workspace:*"
+"@pocketbot/backend": "workspace:*"
 ```
 
 then import whatever you need by path:
 
 ```ts
-import { api } from "@whirl/backend/convex/_generated/api";
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import { api } from "@pocketbot/backend/convex/_generated/api";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 ```
 
 there's intentionally no `exports` map — any file in `convex/` is fair game,

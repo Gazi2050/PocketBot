@@ -4,7 +4,7 @@
  * the prompt survives the client-side hop without polluting the address bar.
  */
 
-const KEY = "whirl:composer-prefill";
+const KEY = "pocketbot:composer-prefill";
 
 export function stashComposerPrefill(text: string) {
   try {

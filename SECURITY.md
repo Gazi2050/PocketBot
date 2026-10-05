@@ -1,6 +1,6 @@
 # Security policy
 
-Thanks for helping keep Whirl and the people who use it safe.
+Thanks for helping keep PocketBot and the people who use it safe.
 
 ## Reporting a vulnerability
 
@@ -31,7 +31,7 @@ In scope:
 
 Out of scope:
 
-- vulnerabilities in third-party services Whirl integrates with (report those
+- vulnerabilities in third-party services PocketBot integrates with (report those
   to the vendor)
 - self-hosted deployments that are misconfigured, for example secrets exposed
   through `NEXT_PUBLIC_` variables
@@ -39,5 +39,5 @@ Out of scope:
 
 ## Supported versions
 
-Whirl ships continuously from `main`. Security fixes land there; there are no
+PocketBot ships continuously from `main`. Security fixes land there; there are no
 separately maintained release branches.

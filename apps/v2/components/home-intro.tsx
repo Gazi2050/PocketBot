@@ -12,12 +12,12 @@ import { pickIncognitoTagline, useIncognitoState } from "@/lib/incognito";
 import { EASE_OUT, pinRasterPath, rise, SHED_BLUR } from "@/lib/motion";
 import { useCachedName } from "@/lib/name-cache";
 import { SuggestionCards } from "./suggestion-cards";
-import { WhirlLogo } from "./whirl-logo";
+import { PocketBotLogo } from "./pocketbot-logo";
 
 declare global {
   interface Window {
     /** The boot script's greeting pick, adopted by React on hydration. */
-    __whirlGreeting?: string;
+    __pocketbotGreeting?: string;
   }
 }
 
@@ -34,9 +34,9 @@ declare global {
    already the shape they settle into.
 
    Cached/user text goes through textContent only; the only innerHTML is
-   the static rest-pose Whirl mark below. */
+   the static rest-pose PocketBot mark below. */
 
-/* One masked ring of the logo's rest pose (mirrors WhirlRings' markup,
+/* One masked ring of the logo's rest pose (mirrors PocketBotRings' markup,
    minus the interactivity). Static string — no user data. */
 function bootRing(url: string) {
   const mask =
@@ -53,8 +53,8 @@ function bootRing(url: string) {
 
 const BOOT_LOGO =
   '<span style="position:relative;display:inline-block;width:32px;height:32px;flex-shrink:0">' +
-  bootRing("/whirl-ring-outer.svg") +
-  bootRing("/whirl-ring-inner.svg") +
+  bootRing("/pocketbot-ring-outer.svg") +
+  bootRing("/pocketbot-ring-inner.svg") +
   "</span>";
 
 /* The greeting's type, shared by the React header and by the boot script
@@ -75,7 +75,7 @@ var name=null;try{name=localStorage.getItem("greeting-name")}catch(e){}
 if(!name)return;
 var lines=${JSON.stringify(GREETINGS)};
 var line=lines[Math.floor(Math.random()*lines.length)];
-window.__whirlGreeting=line;
+window.__pocketbotGreeting=line;
 var row=document.createElement("div");
 row.className="flex h-full min-w-0 items-center justify-center gap-3";
 var logo=document.createElement("span");
@@ -107,11 +107,11 @@ export function HomeGreeting() {
     if (typeof window === "undefined") return DEFAULT_GREETING;
     /* Adopt the boot script's pick so the hydration swap keeps the very
        line already on screen; without one, roll fresh. */
-    return window.__whirlGreeting ?? pickGreeting();
+    return window.__pocketbotGreeting ?? pickGreeting();
   });
   /* Consumed — a later home visit (thread → home) rolls a new line. */
   useEffect(() => {
-    delete window.__whirlGreeting;
+    delete window.__pocketbotGreeting;
   }, []);
 
   const liveName = isLoaded
@@ -189,7 +189,7 @@ export function HomeGreeting() {
                     <IconGhost2Filled size={30} />
                   </motion.span>
                 ) : (
-                  <WhirlLogo size={32} />
+                  <PocketBotLogo size={32} />
                 )}
               </motion.span>
             </AnimatePresence>

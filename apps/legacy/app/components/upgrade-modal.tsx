@@ -124,19 +124,19 @@ function copyFor(feature: GateFeature): {
     case "memory":
       return {
         title: "Memory is on paid plans",
-        body: "Any paid plan lets Whirl remember the things you tell it, so future chats pick up where you left off.",
+        body: "Any paid plan lets PocketBot remember the things you tell it, so future chats pick up where you left off.",
         plans: [MINI, TURBO, MEGA],
       };
     case "mcp":
       return {
         title: "MCP servers are on paid plans",
-        body: "Any paid plan lets you connect your own tools so Whirl can act on them mid-chat.",
+        body: "Any paid plan lets you connect your own tools so PocketBot can act on them mid-chat.",
         plans: [MINI, TURBO, MEGA],
       };
     case "skills":
       return {
         title: "Skills are on paid plans",
-        body: "Any paid plan lets you install skills — instruction packs Whirl picks up mid-chat, right when the task calls for them.",
+        body: "Any paid plan lets you install skills — instruction packs PocketBot picks up mid-chat, right when the task calls for them.",
         plans: [MINI, TURBO, MEGA],
       };
     case "compact":

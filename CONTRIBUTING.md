@@ -1,6 +1,6 @@
-# Contributing to Whirl
+# Contributing to PocketBot
 
-First off: thank you. Whirl is a small project that cares a lot about how
+First off: thank you. PocketBot is a small project that cares a lot about how
 things feel, and contributions of every size are welcome, from typo fixes to
 whole features.
 
@@ -26,11 +26,11 @@ cp apps/v2/.env.example apps/v2/.env.local      # fill in Convex + Clerk
 bun run dev                                     # from the repo root
 ```
 
-You only need Convex, Clerk, and OpenRouter to work on Whirl. Billing,
+You only need Convex, Clerk, and OpenRouter to work on PocketBot. Billing,
 search, memory, and the rest are optional, and the app hides what isn't
 configured.
 
-Whirl uses **[Bun](https://bun.sh)** for everything. Please don't use npm,
+PocketBot uses **[Bun](https://bun.sh)** for everything. Please don't use npm,
 yarn, or pnpm. They don't understand the `workspace:*` links and will leave
 `node_modules` in a broken state.
 
@@ -104,7 +104,7 @@ cd packages/backend && bunx convex codegen
 
 ### Long-session hygiene
 
-Whirl tabs stay open for hours, so leaks are correctness bugs, not polish:
+PocketBot tabs stay open for hours, so leaks are correctness bugs, not polish:
 
 - Every listener, observer, timer, and `requestAnimationFrame` needs a
   teardown that actually runs, including when a component unmounts

@@ -17,7 +17,7 @@ import { useLiveDocument } from "~/lib/shared-artifacts";
 import { ANALYTICS_EVENTS, useCapture } from "~/lib/posthog";
 
 /**
- * The inline chat card for a markdown document whirl authored or revised. One
+ * The inline chat card for a markdown document pocketbot authored or revised. One
  * persistent shell whose interior hard-swaps working → complete: while the
  * model streams the body it rotates whimsical labels over an indeterminate
  * bar (and a fresh create auto-pops the side panel so the user watches it

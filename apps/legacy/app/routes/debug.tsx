@@ -19,7 +19,7 @@ export const Route = createFileRoute("/debug")({
   component: DebugPage,
   head: () => ({
     meta: [
-      { title: "Debug · Whirl" },
+      { title: "Debug · PocketBot" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),

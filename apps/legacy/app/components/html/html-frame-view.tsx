@@ -64,7 +64,7 @@ export function HtmlFrameView({
     if (fill) return; // the panel iframe just fills its container
     const onMessage = (e: MessageEvent) => {
       if (e.source !== frameRef.current?.contentWindow) return;
-      if ((e.data as { type?: string } | null)?.type !== "whirl-html-height") {
+      if ((e.data as { type?: string } | null)?.type !== "pocketbot-html-height") {
         return;
       }
       const reported = Number((e.data as { height?: unknown }).height);
@@ -82,7 +82,7 @@ export function HtmlFrameView({
     return (
       <iframe
         ref={frameRef}
-        title={title || "Whirl visualization"}
+        title={title || "PocketBot visualization"}
         sandbox="allow-scripts"
         srcDoc={srcDoc}
         className="h-full w-full border-0 bg-transparent"
@@ -100,7 +100,7 @@ export function HtmlFrameView({
       {mounted && (
         <iframe
           ref={frameRef}
-          title={title || "Whirl visualization"}
+          title={title || "PocketBot visualization"}
           sandbox="allow-scripts"
           srcDoc={srcDoc}
           className="block h-full w-full border-0 bg-transparent"

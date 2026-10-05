@@ -2,8 +2,8 @@
 
 import { memo, useCallback, useEffect } from "react";
 import { useMutation } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import { api } from "@pocketbot/backend/convex/_generated/api";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 
 import { ThreadView } from "@/components/thread/thread-view";
 import { useIsThreadOpen } from "@/lib/locked/keyring";
@@ -56,7 +56,7 @@ export const LockedThread = memo(function LockedThread({
         .retry(threadId, message, messages ?? [])
         .catch((error: unknown) =>
           showToast(
-            error instanceof Error ? error.message : "Whirl cannot retry.",
+            error instanceof Error ? error.message : "PocketBot cannot retry.",
           ),
         );
     },
@@ -71,7 +71,7 @@ export const LockedThread = memo(function LockedThread({
           showToast(
             error instanceof Error
               ? error.message
-              : "Whirl cannot save the change.",
+              : "PocketBot cannot save the change.",
           ),
         );
     },
@@ -84,7 +84,7 @@ export const LockedThread = memo(function LockedThread({
         threadId: threadId as Id<"threads">,
         messageId: message.id as Id<"messages">,
       }).catch(() =>
-        showToast("Whirl cannot delete the messages. Try again."),
+        showToast("PocketBot cannot delete the messages. Try again."),
       );
     },
     [rollback, threadId],

@@ -61,7 +61,7 @@ export function InstalledSkillsList({
       <ConfirmDialog
         open={confirming !== null}
         title={`Uninstall ${confirming?.name ?? "this skill"}?`}
-        message="Whirl forgets how to do this. You can always reinstall it from the store."
+        message="PocketBot forgets how to do this. You can always reinstall it from the store."
         confirmLabel="Uninstall"
         tone="danger"
         onConfirm={() => {

@@ -26,7 +26,7 @@ import { useMinMd } from "~/lib/use-media";
  * panel that pushes the chat aside (mount it inside the content flex row); on
  * mobile it drops down to a full-screen overlay. It hosts a full TipTap markdown
  * editor and shows whichever document {@link useDocumentSidebar} has open — an
- * attachment/composer draft (`doc`) or a whirl-authored live row (`liveDocId`).
+ * attachment/composer draft (`doc`) or a pocketbot-authored live row (`liveDocId`).
  * The resizable/fullscreen shell itself is shared with the HTML panel (see
  * artifact-shell).
  */
@@ -148,10 +148,10 @@ const updateDocumentContentRef = makeFunctionReference<"mutation">(
 const SAVE_DEBOUNCE_MS = 600;
 
 /**
- * The panel contents for a first-class, whirl-authored document. Reads a live
- * `documents` row: while whirl is writing it (`status: "streaming"`) the editor
+ * The panel contents for a first-class, pocketbot-authored document. Reads a live
+ * `documents` row: while pocketbot is writing it (`status: "streaming"`) the editor
  * mirrors the body as it fills in and stays read-only; once complete the user
- * can edit it (debounced save-back), and a later whirl revision swaps the text
+ * can edit it (debounced save-back), and a later pocketbot revision swaps the text
  * in with a soft highlight sweep so the change is seen.
  */
 function LiveDocumentContents({
@@ -172,11 +172,11 @@ function LiveDocumentContents({
   const streaming = doc?.status === "streaming";
 
   // The text the editor renders. Swapped on initial load, on every streaming
-  // tick, and on a whirl edit — but never on the user's own save echo, so a
+  // tick, and on a pocketbot edit — but never on the user's own save echo, so a
   // live query update can't yank text out from under someone mid-edit.
   const [displayValue, setDisplayValue] = useState<string | null>(null);
   // Tells the editor to flash the changed region on the *next* swap. On only
-  // for genuine whirl revisions — never during streaming or the swap that lands
+  // for genuine pocketbot revisions — never during streaming or the swap that lands
   // the final body, so the doc doesn't flash while it's still being written.
   const [highlightEdits, setHighlightEdits] = useState(false);
   const prevContentRef = useRef("");
@@ -206,7 +206,7 @@ function LiveDocumentContents({
       setHighlightEdits(false);
       setDisplayValue(content);
     } else if (!isLocalEcho) {
-      // Whirl revised the doc out from under us — show it and flash the changed
+      // PocketBot revised the doc out from under us — show it and flash the changed
       // region, unless this swap is just the stream settling to its final text.
       setHighlightEdits(!justFinishedStreaming);
       setDisplayValue(content);

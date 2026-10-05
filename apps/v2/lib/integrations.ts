@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 
 /* Client bindings for the integration store, v2 edition. Mirrors the main
    app's useMentionableIntegrations (apps/legacy/app/components/

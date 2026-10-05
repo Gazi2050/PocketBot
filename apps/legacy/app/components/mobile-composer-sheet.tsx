@@ -363,7 +363,7 @@ export function MobileComposerSheet({
                     <SheetRow
                       icon={IconSchool}
                       title="Skills"
-                      description="Mention one so Whirl learns it right away"
+                      description="Mention one so PocketBot learns it right away"
                       onClick={() => setPath("skills")}
                       trailing={
                         <IconChevronRight

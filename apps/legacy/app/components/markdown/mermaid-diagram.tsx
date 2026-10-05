@@ -35,7 +35,7 @@ async function renderMermaid(code: string, dark: boolean): Promise<string | null
     .parse(code, { suppressErrors: true })
     .catch(() => false);
   if (!ok) return null;
-  const id = `whirl-mermaid-${renderSeq++}`;
+  const id = `pocketbot-mermaid-${renderSeq++}`;
   try {
     const { svg } = await mermaid.render(id, code);
     return svg;

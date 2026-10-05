@@ -3,7 +3,7 @@ import type { SharedArtifactRef, SharedThread } from "~/lib/shared-artifacts";
 
 /**
  * Serialize a shared thread into one self-contained markdown document — the
- * raw-content view of a share. Message text and whirl-authored documents are
+ * raw-content view of a share. Message text and pocketbot-authored documents are
  * embedded in full; visualizations (which can't live in markdown) become links
  * to their public pages instead. `origin` is passed in because this also runs
  * server-side, where `window` doesn't exist.
@@ -16,11 +16,11 @@ export function sharedThreadMarkdown(
   const lines: string[] = [
     `# ${thread.title}`,
     "",
-    `> A conversation shared from [Whirl](${origin}${sharePath(shareId)}).`,
+    `> A conversation shared from [PocketBot](${origin}${sharePath(shareId)}).`,
   ];
 
   for (const message of thread.messages) {
-    lines.push("", "---", "", `## ${message.role === "user" ? "You" : "Whirl"}`);
+    lines.push("", "---", "", `## ${message.role === "user" ? "You" : "PocketBot"}`);
     const text = message.content.trim();
     if (text) lines.push("", text);
     for (const artifact of message.artifacts) {

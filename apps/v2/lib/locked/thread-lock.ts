@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useConvex, useMutation, useQuery } from "convex/react";
-import { api } from "@whirl/backend/convex/_generated/api";
-import type { Id } from "@whirl/backend/convex/_generated/dataModel";
+import { api } from "@pocketbot/backend/convex/_generated/api";
+import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 
 import type { ChatMessage } from "../messages";
 import { clearThreadMessageCache } from "../message-cache";
@@ -64,7 +64,7 @@ async function openBody(key: CryptoKey, message: ChatMessage): Promise<string> {
   try {
     return await openEnvelope(key, message.content);
   } catch {
-    return "_Whirl cannot decrypt this message._";
+    return "_PocketBot cannot decrypt this message._";
   }
 }
 

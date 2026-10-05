@@ -1,4 +1,4 @@
-/* What the Median support agent may do on Whirl's behalf.
+/* What the Median support agent may do on PocketBot's behalf.
  *
  * Every lookup is keyed on the visitor the widget already proved, never on
  * something typed into the chat, and the answers come from Convex through
@@ -7,7 +7,7 @@
  * stopped. Plans and prices live in the knowledge base instead, so there is
  * one copy of them to keep true.
  *
- * One tool writes: whirlRefundReply gives back the allowance a single reply
+ * One tool writes: pocketbotRefundReply gives back the allowance a single reply
  * used. It is high risk, so it waits for a teammate's approval in the inbox
  * before anything is credited.
  *
@@ -16,7 +16,7 @@
  * convex/deployment.ts sends after every production deploy. */
 
 import { defineConfig, navigation, p } from "@mediansh/agent-tools";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 
 import { SIGNED_OUT, supportBackend, verifiedCustomer } from "@/lib/median-backend";
 
@@ -56,7 +56,7 @@ export default defineConfig({
   }),
 
   tools: {
-    whirlAccount: {
+    pocketbotAccount: {
       description:
         "The signed-in customer's plan and allowance: which plan, whether it's active, trialing, past due or set to cancel, when the period ends, how much allowance is left (free plans count messages, paid plans a percentage), when it refills, any extra-usage balance in USD, and whether memory is switched on. Call it before answering anything about their plan, their limits, running out, or memory not working.",
       risk: "low",
@@ -93,7 +93,7 @@ export default defineConfig({
       },
     },
 
-    whirlReplyProblems: {
+    pocketbotReplyProblems: {
       description:
         "The customer's replies from the last 14 days that failed, were blocked by their plan, or were cut short, newest first. Each one says which thread, which model, what went wrong in plain words, whether it was billed, and whether a later reply in that thread worked. Call it whenever someone says a reply errored, stopped, never came, or asks what went wrong, before suggesting anything. Pass on the explanation; don't guess past it.",
       risk: "low",
@@ -110,9 +110,9 @@ export default defineConfig({
       },
     },
 
-    whirlUsageBreakdown: {
+    pocketbotUsageBreakdown: {
       description:
-        "Where the customer's allowance went over recent days, as shares: by model, how much went to thinking mode and web search, the threads that used the most, and the single heaviest replies. Shares only, never prices. Call it when someone asks why they ran out so fast or what is using up their plan, then call whirlAccount if they also need to know what's left.",
+        "Where the customer's allowance went over recent days, as shares: by model, how much went to thinking mode and web search, the threads that used the most, and the single heaviest replies. Shares only, never prices. Call it when someone asks why they ran out so fast or what is using up their plan, then call pocketbotAccount if they also need to know what's left.",
       risk: "low",
       input: {
         days: p
@@ -132,7 +132,7 @@ export default defineConfig({
       },
     },
 
-    whirlIntegrations: {
+    pocketbotIntegrations: {
       description:
         "Every integration the customer has installed and its state: working, needs reconnecting, credentials rejected, erroring, never finished connecting, or paused, with the fix for each and when it broke. Call it when someone says Gmail, Calendar, Notion, GitHub or any other connected app stopped working or isn't being used.",
       risk: "low",
@@ -149,9 +149,9 @@ export default defineConfig({
       },
     },
 
-    whirlRefundReply: {
+    pocketbotRefundReply: {
       description:
-        "Gives back the allowance one reply used: its free message, its share of the plan's usage, or the extra-usage dollars it spent. It never refunds a subscription or a card payment. Use it when a reply was clearly broken, cut short, or wrong through no fault of the customer's. Take the messageId from whirlReplyProblems or whirlUsageBreakdown. A teammate approves every call first, so don't promise the refund. Say you've asked the team to credit it back.",
+        "Gives back the allowance one reply used: its free message, its share of the plan's usage, or the extra-usage dollars it spent. It never refunds a subscription or a card payment. Use it when a reply was clearly broken, cut short, or wrong through no fault of the customer's. Take the messageId from pocketbotReplyProblems or pocketbotUsageBreakdown. A teammate approves every call first, so don't promise the refund. Say you've asked the team to credit it back.",
       risk: "high",
       input: {
         messageId: p.string("The reply's messageId, exactly as another tool returned it."),

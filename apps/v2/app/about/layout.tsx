@@ -4,11 +4,11 @@ import { MarketingShell } from "@/components/marketing/marketing-shell";
 
 export const metadata: Metadata = {
   title: {
-    default: "Whirl · A thinking partner that actually cares",
-    template: "%s · Whirl",
+    default: "PocketBot · A thinking partner that actually cares",
+    template: "%s · PocketBot",
   },
   description:
-    "Whirl is an AI chat app with real memory, the best models, living documents, visualizations, and integrations.",
+    "PocketBot is an AI chat app with real memory, the best models, living documents, visualizations, and integrations.",
 };
 
 export default function AboutLayout({

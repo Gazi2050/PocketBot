@@ -26,17 +26,17 @@ type QuoteInsertFn = (quote: string) => boolean;
 
 type ComposerIngestContextValue = {
   /**
-   * Drop an edited document into the composer's attachment tray so whirl sees
+   * Drop an edited document into the composer's attachment tray so pocketbot sees
    * the new edits on the next message. Returns true the first time a given
    * document is added (so callers can announce it once). No-op — returns false —
    * when no composer is mounted to receive it.
    */
   addEditedDocument: IngestFn;
   /**
-   * Drop a text selection from a whirl-authored document into the composer, so
-   * the user can tell whirl what to change about exactly that passage. Rides in
+   * Drop a text selection from a pocketbot-authored document into the composer, so
+   * the user can tell pocketbot what to change about exactly that passage. Rides in
    * as a small text attachment that names the source document (and its id) and
-   * quotes the selection, so whirl can target it with editDocument. Returns true
+   * quotes the selection, so pocketbot can target it with editDocument. Returns true
    * the first time a given document's selection is added.
    */
   addDocumentSelection: (selection: {
@@ -79,7 +79,7 @@ export function ComposerIngestProvider({ children }: { children: ReactNode }) {
         const trimmed = selectedText.trim();
         const text = [
           `Selection from the document "${title}" (document id: ${documentId}).`,
-          `Tell whirl what to change about this passage:`,
+          `Tell pocketbot what to change about this passage:`,
           "",
           trimmed,
         ].join("\n");

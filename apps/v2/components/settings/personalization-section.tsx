@@ -28,7 +28,7 @@ export function PersonalizationSection() {
     <>
       <SettingsHeader
         title="Personalization"
-        description="Your corner of whirl — paint it how you like."
+        description="Your corner of pocketbot — paint it how you like."
       />
       <div className="flex flex-col gap-4">
         <SettingsCard>

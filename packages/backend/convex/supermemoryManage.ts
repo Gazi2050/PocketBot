@@ -2,7 +2,7 @@ import { supermemoryRequest } from "./supermemory";
 
 /**
  * The user-facing half of Supermemory: everything the Memory settings tab needs
- * to read and rewrite what Whirl remembers. `supermemory.ts` stays the
+ * to read and rewrite what PocketBot remembers. `supermemory.ts` stays the
  * ingest/retrieval path the inference pipeline runs on; nothing here is ever
  * called outside an authenticated, paid-gated action (see `userMemory.ts`).
  *
@@ -40,7 +40,7 @@ export type MemorySource = {
   summary: string | null;
   /** Supermemory's ingestion stage: queued / embedding / done / failed / … */
   status: string;
-  /** The Whirl thread this document was built from, when it carries one. */
+  /** The PocketBot thread this document was built from, when it carries one. */
   threadId: string | null;
   updatedAt: number | null;
 };
@@ -232,7 +232,7 @@ export async function addSupermemoryMemory({
         {
           content: content.slice(0, MAX_MEMORY_CONTENT),
           isStatic,
-          metadata: { source: "whirl", origin: "user_edit" },
+          metadata: { source: "pocketbot", origin: "user_edit" },
         },
       ],
     },
@@ -282,7 +282,7 @@ export async function forgetSupermemoryMemory({
 
 /* --- Source documents ------------------------------------------------------ */
 
-/** One page of the documents Whirl has pushed for this user — the raw material
+/** One page of the documents PocketBot has pushed for this user — the raw material
  *  memories are extracted from. */
 export async function listSupermemorySources({
   containerTag,

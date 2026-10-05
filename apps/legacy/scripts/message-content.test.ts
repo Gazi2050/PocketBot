@@ -6,7 +6,7 @@ import {
   historyEventsBlock,
   messageContentForModel,
   withHistoryEvents,
-} from "@whirl/backend/convex/inference/attachments";
+} from "@pocketbot/backend/convex/inference/attachments";
 
 describe("assistantHistoryEvents", () => {
   test("tells a follow-up model not to repeat completed integration actions", () => {
@@ -66,11 +66,11 @@ describe("messageContentForModel", () => {
 
 describe("withHistoryEvents", () => {
   test("fronts the user turn with a labelled log block", () => {
-    const content = withHistoryEvents("make another one", ["whirl did a thing"]);
+    const content = withHistoryEvents("make another one", ["pocketbot did a thing"]);
 
     expect(Array.isArray(content)).toBe(true);
-    expect(content[0].text).toBe(historyEventsBlock(["whirl did a thing"]));
-    expect(content[0].text).toContain("<whirl_system_log>");
+    expect(content[0].text).toBe(historyEventsBlock(["pocketbot did a thing"]));
+    expect(content[0].text).toContain("<pocketbot_system_log>");
     expect(content[0].text).toContain("never write a link");
     expect(content[1]).toEqual({ type: "text", text: "make another one" });
   });

@@ -101,16 +101,16 @@ export function App() {
           className="relative h-16 w-16"
         >
           <img
-            src="/whirl.svg"
-            alt="Whirl"
+            src="/pocketbot.svg"
+            alt="PocketBot"
             className={`h-16 w-16 transition-opacity duration-300 dark:invert ${isLoading ? "opacity-0" : "opacity-100"}`}
           />
           <span
             aria-hidden
             className={`pointer-events-none absolute inset-0 animate-rainbow bg-[linear-gradient(90deg,#ff2e93,#ff7a00,#ffd400,#00d36e,#00b7ff,#7a5cff,#ff2e93)] bg-[length:200%_100%] transition-opacity duration-500 ${isLoading ? "opacity-100" : "opacity-0"}`}
             style={{
-              WebkitMaskImage: "url(/whirl.svg)",
-              maskImage: "url(/whirl.svg)",
+              WebkitMaskImage: "url(/pocketbot.svg)",
+              maskImage: "url(/pocketbot.svg)",
               WebkitMaskRepeat: "no-repeat",
               maskRepeat: "no-repeat",
               WebkitMaskSize: "contain",
@@ -202,7 +202,7 @@ function FormPanel({
         }}
         className="text-[44px] font-semibold leading-none tracking-tight text-neutral-900 dark:text-neutral-50"
       >
-        Whirl
+        PocketBot
       </motion.h1>
 
       <motion.p
@@ -375,7 +375,7 @@ function SuccessPanel({ email }: { email: string }) {
         <span className="font-medium text-neutral-800 dark:text-neutral-200">
           {email}
         </span>{" "}
-        as soon as Whirl is ready.
+        as soon as PocketBot is ready.
       </motion.p>
     </motion.div>
   );
@@ -390,8 +390,8 @@ function BackgroundLogo() {
       transition={{ duration: 1.1, ease: [0.22, 0.61, 0.36, 1] }}
       className="pointer-events-none absolute -right-[28vmin] -bottom-[32vmin] z-0 h-[140vmin] w-[140vmin] select-none bg-[#E4E4E4] dark:bg-[#1C1C1C]"
       style={{
-        WebkitMaskImage: "url(/whirl.svg)",
-        maskImage: "url(/whirl.svg)",
+        WebkitMaskImage: "url(/pocketbot.svg)",
+        maskImage: "url(/pocketbot.svg)",
         WebkitMaskRepeat: "no-repeat",
         maskRepeat: "no-repeat",
         WebkitMaskPosition: "center",

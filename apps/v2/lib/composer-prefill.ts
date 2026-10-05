@@ -4,7 +4,7 @@
  * browser-only global.
  */
 
-const KEY = "whirl:composer-prefill";
+const KEY = "pocketbot:composer-prefill";
 let claimedPrefill: string | undefined;
 
 export function stashComposerPrefill(text: string) {

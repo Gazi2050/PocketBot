@@ -5,7 +5,7 @@ import { IconX } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 
 import { Dialog, DialogClose, DialogContent } from "@/components/ui/dialog";
-import { WhirlLogo } from "@/components/whirl-logo";
+import { PocketBotLogo } from "@/components/pocketbot-logo";
 import { stepMotion } from "./bits";
 import { SignInPanel } from "./sign-in-panel";
 import { SignUpPanel } from "./sign-up-panel";
@@ -28,7 +28,7 @@ export function AuthModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        aria-label={mode === "sign-in" ? "Sign in to Whirl" : "Sign up for Whirl"}
+        aria-label={mode === "sign-in" ? "Sign in to PocketBot" : "Sign up for PocketBot"}
         className="top-1/2 -translate-y-1/2 p-6"
       >
         <DialogClose
@@ -38,7 +38,7 @@ export function AuthModal({
           <IconX size={16} />
         </DialogClose>
         <div className="flex justify-center pt-1 pb-5">
-          <WhirlLogo size={36} />
+          <PocketBotLogo size={36} />
         </div>
         <AnimatePresence mode="wait" initial={false}>
           {mode === "sign-in" ? (

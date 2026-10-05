@@ -10,7 +10,7 @@
  * so it never lapses on a returning visitor. */
 
 import { auth } from "@clerk/nextjs/server";
-import { api } from "@whirl/backend/convex/_generated/api";
+import { api } from "@pocketbot/backend/convex/_generated/api";
 import { checkBotId } from "botid/server";
 import { ConvexHttpClient } from "convex/browser";
 import { NextResponse, type NextRequest } from "next/server";
@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
     );
     return failure(
       "network",
-      "Whirl couldn't run that swap. Try again in a moment.",
+      "PocketBot couldn't run that swap. Try again in a moment.",
     );
   }
 

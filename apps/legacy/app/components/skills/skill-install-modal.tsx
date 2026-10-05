@@ -270,7 +270,7 @@ function DetailsStep({
           </p>
         )}
         <p className="mt-3 text-[11.5px] text-neutral-400 dark:text-neutral-500">
-          Skills are instructions Whirl picks up mid-chat, right when the task
+          Skills are instructions PocketBot picks up mid-chat, right when the task
           calls for them.
         </p>
       </div>
@@ -318,7 +318,7 @@ function SuccessStep({
         {skill.name} is in!
       </h2>
       <p className="mt-1.5 max-w-xs text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
-        Whirl will study up whenever a chat calls for it. Manage it anytime
+        PocketBot will study up whenever a chat calls for it. Manage it anytime
         from the Installed tab.
       </p>
       <button

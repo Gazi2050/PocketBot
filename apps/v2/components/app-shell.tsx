@@ -186,16 +186,16 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
   const { enabled: incognito } = useIncognitoState();
   useEffect(() => {
     document.title = settingsOpen
-      ? `${SECTION_TITLES[section]} · Whirl`
+      ? `${SECTION_TITLES[section]} · PocketBot`
       : integrationsOpen
-        ? "Integrations · Whirl"
+        ? "Integrations · PocketBot"
         : historyOpen
-          ? "Chats · Whirl"
+          ? "Chats · PocketBot"
           : activeThread
-            ? `${activeThread.title} · Whirl`
+            ? `${activeThread.title} · PocketBot`
             : incognito
-              ? "Incognito · Whirl"
-              : "Whirl";
+              ? "Incognito · PocketBot"
+              : "PocketBot";
   }, [
     settingsOpen,
     integrationsOpen,

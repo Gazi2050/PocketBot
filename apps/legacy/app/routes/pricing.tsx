@@ -15,7 +15,7 @@ import {
   IconSparkles,
 } from "@tabler/icons-react";
 
-import { WhirlLogo } from "~/components/whirl-logo";
+import { PocketBotLogo } from "~/components/pocketbot-logo";
 import { Spinner } from "~/components/spinner";
 import { useActiveMultiplier } from "~/lib/admin";
 import { useLocalCurrency } from "~/lib/local-currency";
@@ -28,9 +28,9 @@ export const Route = createFileRoute("/pricing")({
   // own title, description, and canonical.
   head: () =>
     seo({
-      title: "Plans & Pricing · Whirl",
+      title: "Plans & Pricing · PocketBot",
       description:
-        "See Whirl's plans and pricing — start free, then upgrade for more usage across the best AI models, with memory, living documents, and visualizations.",
+        "See PocketBot's plans and pricing — start free, then upgrade for more usage across the best AI models, with memory, living documents, and visualizations.",
       url: "/pricing",
     }),
 });
@@ -316,10 +316,10 @@ function PricingPage() {
         <button
           type="button"
           onClick={() => void navigate({ to: "/" })}
-          aria-label="Back to Whirl"
+          aria-label="Back to PocketBot"
           className="shrink-0"
         >
-          <WhirlLogo size={36} />
+          <PocketBotLogo size={36} />
         </button>
       </header>
 

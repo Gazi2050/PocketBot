@@ -265,7 +265,7 @@ export const getRequestForStream = internalQuery({
       })),
     );
 
-    // Documents whirl has already authored in this thread, with their CURRENT
+    // Documents pocketbot has already authored in this thread, with their CURRENT
     // text, so editDocument can target one by id and copy exact anchors from
     // what's actually stored now (the fix for the old blind-edit failure storm).
     // Only finished docs — a doc still streaming this turn isn't editable yet.
@@ -286,7 +286,7 @@ export const getRequestForStream = internalQuery({
         })),
     );
 
-    // HTML artifacts (paid-only) whirl has finished in this thread, with their
+    // HTML artifacts (paid-only) pocketbot has finished in this thread, with their
     // CURRENT html, so editHtml can target one by id and copy exact anchors.
     // Only completed ones — a viz still streaming or a page still generating
     // this turn isn't editable yet. Budgeted prompt-side like documents.
@@ -350,7 +350,7 @@ export const getRequestForStream = internalQuery({
       fileOverride?.capabilities.files ??
       MODEL_ACCEPTS_NATIVE_FILES[requestModelKey];
     // Assistant turns go in as prose and nothing else. What their tools did
-    // rides ahead of the NEXT user turn in a <whirl_system_log> block instead
+    // rides ahead of the NEXT user turn in a <pocketbot_system_log> block instead
     // — because a turn that only painted a picture has no prose, so the old
     // in-message breadcrumb was the entire assistant message, and the model
     // dutifully wrote another one (fabricated storage URL and all) the next
@@ -471,7 +471,7 @@ export const getRequestForStream = internalQuery({
         const parts = toContentParts(modelMessages[i].content);
         parts.push({
           type: "text",
-          text: `(The image whirl generated earlier in this conversation, for reference — ${lastGeneratedImage.name}:)`,
+          text: `(The image pocketbot generated earlier in this conversation, for reference — ${lastGeneratedImage.name}:)`,
         });
         parts.push({
           type: "image",

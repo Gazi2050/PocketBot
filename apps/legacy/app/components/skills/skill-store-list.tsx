@@ -77,7 +77,7 @@ export function SkillStoreList({
                   {skill.verified && <VerifiedBadge size={14} />}
                 </span>
                 <span className="truncate text-[12.5px] text-neutral-500 dark:text-neutral-400">
-                  {skill.description ?? "A skill for Whirl"}
+                  {skill.description ?? "A skill for PocketBot"}
                 </span>
               </span>
               <AnimatePresence mode="wait" initial={false}>

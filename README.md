@@ -1,9 +1,9 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="brand/banner-dark.png" />
-  <img src="brand/banner-light.png" alt="The Whirl mark" width="100%" />
+  <img src="brand/banner-light.png" alt="The PocketBot mark" width="100%" />
 </picture>
 
-<h1 align="center">Whirl</h1>
+<h1 align="center">PocketBot</h1>
 
 <p align="center">
   The AI chat app that sweats the details. Every top model, real memory,<br />
@@ -19,7 +19,7 @@
 
 ---
 
-Whirl is a full-stack AI chat app built on Next.js and Convex. It's the code
+PocketBot is a full-stack AI chat app built on Next.js and Convex. It's the code
 behind [whirl.chat](https://whirl.chat), published in full under the MIT
 license. Read it, run your own, or help make it better.
 
@@ -30,7 +30,7 @@ license. Read it, run your own, or help make it better.
 - **Living artifacts:** documents, charts, and full interactive pages that
   stay editable in a side panel and can be shared by link.
 - **Integrations** with your own tools over MCP (OAuth included), plus
-  installable skills that teach Whirl new tricks.
+  installable skills that teach PocketBot new tricks.
 - **Long-term memory** that carries preferences and projects across chats.
 - **Live web search** and page reading for answers grounded in today's web.
 - **Locked chats**, encrypted on your device with a password the server never
@@ -52,7 +52,7 @@ license. Read it, run your own, or help make it better.
 Everything beyond Convex, Clerk, and OpenRouter is **optional** and switches
 on with its own keys: billing (Autumn), web search (Exa), memory
 (Supermemory), analytics (PostHog, Axiom), tracing (Braintrust), email
-(Resend), and the support agent (Median). Leave them out and Whirl hides the
+(Resend), and the support agent (Median). Leave them out and PocketBot hides the
 features they power. See [docs/configuration.md](docs/configuration.md).
 
 ## Quick start
@@ -63,7 +63,7 @@ account, a [Clerk](https://clerk.com) application, and an
 
 ```sh
 git clone https://github.com/whirlchat/whirl.git
-cd whirl
+cd pocketbot
 bun install
 
 # 1. Create a Convex dev deployment and push the backend.
@@ -106,7 +106,7 @@ brand/        Logo, colors, banners, and app icons
 
 ## Documentation
 
-- [Self-hosting](docs/self-hosting.md): run Whirl locally and in production
+- [Self-hosting](docs/self-hosting.md): run PocketBot locally and in production
 - [Configuration](docs/configuration.md): every environment variable and
   what it switches on
 - [Architecture](docs/architecture.md): how a message travels from the

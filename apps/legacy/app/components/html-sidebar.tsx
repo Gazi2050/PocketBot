@@ -77,7 +77,7 @@ function HtmlPanelContents({
             ) : failed ? (
               "Couldn't build"
             ) : (
-              "Created with Whirl"
+              "Created with PocketBot"
             )}
           </span>
         </span>
@@ -124,7 +124,7 @@ function BuildingState() {
       <div className="h-4 w-3/4 animate-pulse rounded bg-black/[0.06] dark:bg-white/[0.07]" />
       <div className="mt-auto flex items-center justify-center gap-2 text-[12.5px] text-neutral-500 dark:text-neutral-400">
         <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#0c82f2]" />
-        Whirl is building your page…
+        PocketBot is building your page…
       </div>
     </div>
   );
@@ -142,7 +142,7 @@ function ErrorState({ error }: { error?: string }) {
         </span>
         <span className="text-[12.5px] text-neutral-500 dark:text-neutral-400">
           {error?.trim() ||
-            "Something went wrong while generating it. Ask Whirl to try again."}
+            "Something went wrong while generating it. Ask PocketBot to try again."}
         </span>
       </div>
     </div>

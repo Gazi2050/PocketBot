@@ -1,5 +1,5 @@
 name: Bug report
-description: Something in Whirl is broken or behaving strangely.
+description: Something in PocketBot is broken or behaving strangely.
 labels: ["bug"]
 body:
   - type: markdown
@@ -26,7 +26,7 @@ body:
   - type: dropdown
     id: where
     attributes:
-      label: Where are you running Whirl?
+      label: Where are you running PocketBot?
       options:
         - whirl.chat
         - Self-hosted

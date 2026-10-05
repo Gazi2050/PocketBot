@@ -30,7 +30,7 @@ import { ModalCard } from "~/components/modal-card";
 import { Squircle } from "~/components/squircle";
 import { CheckpointMenu } from "~/components/checkpoint-actions";
 import { useShouldAnimateWidgets } from "~/components/thread-widget-animation";
-import { WhirlMorph } from "~/components/whirl-morph";
+import { PocketBotMorph } from "~/components/pocketbot-morph";
 import { LiveActivity } from "~/components/activity/live-activity";
 import {
   statusActivityKind,
@@ -366,13 +366,13 @@ function GateBanner({ feature }: { feature: GateFeature }) {
 function AssistantAvatar({ busy }: { busy: boolean }) {
   return (
     <div className="relative flex h-7 w-7 shrink-0 items-center justify-center pt-0.5">
-      {/* While generating, the whirl rings breathe in rainbow; when it
+      {/* While generating, the pocketbot rings breathe in rainbow; when it
           finishes they wind down and settle into the static logo. The
           continuityId carries the ring pose across the streaming->completed
           bubble handoff, which remounts this avatar mid-motion — without it
           the fresh mount snaps to the rest pose in one frame. Only one
           avatar animates at a time, so a fixed id is enough. */}
-      <WhirlMorph busy={busy} size={20} continuityId="assistant-avatar" />
+      <PocketBotMorph busy={busy} size={20} continuityId="assistant-avatar" />
     </div>
   );
 }
@@ -513,7 +513,7 @@ function AssistantBody({
         />
       );
     }
-    // Integrations whirl suggested from the store: a chip while searching,
+    // Integrations pocketbot suggested from the store: a chip while searching,
     // then this inline card of install buttons once matches land.
     if (phase.kind === "integrationSuggestion" && !phase.pending) {
       return (
@@ -524,12 +524,12 @@ function AssistantBody({
         />
       );
     }
-    // A document whirl authored/revised, shown as a full inline card (it runs
+    // A document pocketbot authored/revised, shown as a full inline card (it runs
     // its own progress bar while pending, so it renders even before finalizing).
     if (phase.kind === "document") {
       return <DocumentCard key={`phase-${index}`} phase={phase} />;
     }
-    // An HTML artifact whirl authored/revised: an inline visualization or a
+    // An HTML artifact pocketbot authored/revised: an inline visualization or a
     // full page (which opens in the side panel). Runs its own progress state,
     // so it renders even while pending.
     if (phase.kind === "html") {
@@ -1119,7 +1119,7 @@ function TextAttachment({ attachment }: { attachment: Attachment }) {
   const isMarkdown = isMarkdownAttachment(attachment.name, attachment.type);
 
   // Editing an already-sent document hands the new text back to the composer as
-  // an attachment, so the follow-up message lets whirl see the fresh edits.
+  // an attachment, so the follow-up message lets pocketbot see the fresh edits.
   const handleEdit = (markdown: string) => {
     const created = addEditedDocument({
       sourceKey: attachment.id,

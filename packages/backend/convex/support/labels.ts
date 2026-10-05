@@ -75,7 +75,7 @@ export type ProblemKind =
   | "connection_dropped"
   | "model_error"
   | "image_failed"
-  | "whirl_misconfigured"
+  | "pocketbot_misconfigured"
   | "cut_short"
   | "failed";
 
@@ -150,9 +150,9 @@ export function describeProblem(message: Doc<"messages">): Problem | null {
   }
   if (content.startsWith("The server is missing part of its configuration")) {
     return {
-      kind: "whirl_misconfigured",
+      kind: "pocketbot_misconfigured",
       explanation:
-        "Something on Whirl's side was misconfigured, so the reply never started. Not their fault; hand this one to a teammate.",
+        "Something on PocketBot's side was misconfigured, so the reply never started. Not their fault; hand this one to a teammate.",
     };
   }
   return {

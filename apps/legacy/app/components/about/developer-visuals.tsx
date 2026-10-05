@@ -10,7 +10,7 @@ import { VISUAL_CARD_CLASS as CARD_CLASS } from "~/components/about/visual-card"
 
 const SCANNED_TOOLS = ["create_task", "list_projects", "get_invoice"] as const;
 
-/** The registration moment: an MCP URL plus the tools Whirl found behind it. */
+/** The registration moment: an MCP URL plus the tools PocketBot found behind it. */
 export function McpVisual() {
   return (
     <div aria-hidden className={CARD_CLASS}>

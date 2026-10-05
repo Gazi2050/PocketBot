@@ -14,14 +14,14 @@ export function newRedemptionCode() {
   const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0"))
     .join("")
     .toUpperCase();
-  return `WHIRL-${hex.match(/.{4}/g)!.join("-")}`;
+  return `POCKETBOT-${hex.match(/.{4}/g)!.join("-")}`;
 }
 
 export function normalizeRedemptionCode(code: string) {
   const normalized = code.trim().toUpperCase().replace(/[\s-]/g, "");
-  if (!/^WHIRL[A-F0-9]{24}$/.test(normalized))
+  if (!/^POCKETBOT[A-F0-9]{24}$/.test(normalized))
     throw new ConvexError(
       "Enter the complete code from your arcade prize tray.",
     );
-  return `WHIRL-${normalized.slice(5).match(/.{4}/g)!.join("-")}`;
+  return `POCKETBOT-${normalized.slice(5).match(/.{4}/g)!.join("-")}`;
 }

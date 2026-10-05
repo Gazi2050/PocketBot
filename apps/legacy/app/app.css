@@ -692,7 +692,7 @@ html.dark {
 }
 
 /*
- * Transient highlight painted over a region whirl just edited (see
+ * Transient highlight painted over a region pocketbot just edited (see
  * components/editor/edit-highlight.ts). A soft amber wash eases in, holds for a
  * beat, then fades out on its own — so the decoration only has to be applied,
  * not animated in JS. The rounded box-shadow gives it a "highlighter" feel

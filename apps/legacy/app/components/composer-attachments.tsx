@@ -147,7 +147,7 @@ export function ComposerAttachments({
         title="Discard your edits?"
         message={
           confirmRemove
-            ? `Removing “${confirmRemove.name}” drops the edits you made — whirl won't see them.`
+            ? `Removing “${confirmRemove.name}” drops the edits you made — pocketbot won't see them.`
             : undefined
         }
         confirmLabel="Discard edits"

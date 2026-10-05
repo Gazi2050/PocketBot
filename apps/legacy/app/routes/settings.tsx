@@ -22,7 +22,7 @@ export const Route = createFileRoute("/settings")({
   },
   component: SettingsPage,
   head: () => ({
-    meta: [{ title: "Settings · Whirl" }],
+    meta: [{ title: "Settings · PocketBot" }],
   }),
 });
 

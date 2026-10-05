@@ -18,7 +18,7 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
   head: () => ({
     meta: [
-      { title: "Admin · Whirl" },
+      { title: "Admin · PocketBot" },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -114,7 +114,7 @@ function AdminPage() {
           className="mt-4 inline-flex h-9 items-center gap-1.5 rounded-lg px-3 text-[13px] text-neutral-600 hover:bg-black/[0.04] dark:text-neutral-300 dark:hover:bg-white/[0.06]"
         >
           <IconChevronLeft size={14} stroke={2} />
-          Back to Whirl
+          Back to PocketBot
         </button>
       </div>
     );
