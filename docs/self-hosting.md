@@ -22,7 +22,7 @@ each extra service unlocks.
 - Accounts on the three services above
 
 ```sh
-git clone https://github.com/whirlchat/whirl.git
+git clone https://github.com/pocketbot/pocketbot.git
 cd pocketbot
 bun install
 ```

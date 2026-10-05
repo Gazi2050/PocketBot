@@ -6,7 +6,7 @@ import { SITE_LINKS } from "@/lib/site";
 
 export const REPO_URL = SITE_LINKS.repo;
 
-/** "whirlchat/whirl", for fine print. */
+/** "pocketbot/pocketbot", for fine print. */
 export const REPO_LABEL = new URL(REPO_URL).pathname.replace(/^\/+/, "");
 
 const SEEN_KEY = "announcement:open-source";

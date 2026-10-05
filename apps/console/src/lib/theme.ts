@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { CONSOLE_EVENTS, captureEvent } from "~/lib/analytics";
 
 // Same localStorage key and semantics as the main app, so a developer who
-// prefers dark mode on whirl.chat gets it in the console too.
+// prefers dark mode on pocketbot.chat gets it in the console too.
 export type ThemePref = "system" | "light" | "dark";
 
 export function resolveDark(pref: ThemePref): boolean {

@@ -29,10 +29,10 @@ const NAV_ITEMS = [
 const ABOUT_ITEM = { label: "About", to: "/about/about" } as const;
 
 const RESOURCES = [
-  { label: "Status", href: "https://status.whirl.chat" },
+  { label: "Status", href: "https://status.pocketbot.chat" },
   { label: "Discord", href: "https://discord.gg/SrgwbaGHqE" },
-  { label: "Privacy", href: "https://anterra.sh/legal/whirl/privacy" },
-  { label: "Terms", href: "https://anterra.sh/legal/whirl/terms" },
+  { label: "Privacy", href: "https://anterra.sh/legal/pocketbot/privacy" },
+  { label: "Terms", href: "https://anterra.sh/legal/pocketbot/terms" },
 ] as const;
 
 // Every nav row shares the same fixed height so the column rhythm stays even.

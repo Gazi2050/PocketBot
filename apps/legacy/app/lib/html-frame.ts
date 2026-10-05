@@ -210,7 +210,7 @@ export function buildStandaloneHtmlDoc(
   const c = dark ? CHROME_DARK : CHROME_LIGHT;
   const safeTitle = escapeHtml(title || "Made with PocketBot");
   const inner = escapeAttr(buildHtmlSrcDoc(html, { dark }));
-  const ctaHref = escapeAttr(origin || "https://whirl.chat");
+  const ctaHref = escapeAttr(origin || "https://pocketbot.chat");
   const shareUrl = shortId ? `${origin}/visual/${shortId}` : "";
 
   return `<!doctype html>

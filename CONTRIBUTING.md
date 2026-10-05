@@ -6,7 +6,7 @@ whole features.
 
 ## Before you start
 
-- **Bugs:** search the [issues](https://github.com/whirlchat/whirl/issues)
+- **Bugs:** search the [issues](https://github.com/pocketbot/pocketbot/issues)
   first, then open one with steps to reproduce.
 - **Features and bigger changes:** open an issue or discussion before writing
   a lot of code, so we can agree on the shape of it together. It saves

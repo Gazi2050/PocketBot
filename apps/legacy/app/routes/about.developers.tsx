@@ -12,7 +12,7 @@ import {
 } from "~/components/about/page-blocks";
 import { seo } from "~/lib/seo";
 
-const CONSOLE_URL = "https://console.whirl.chat";
+const CONSOLE_URL = "https://console.pocketbot.chat";
 
 export const Route = createFileRoute("/about/developers")({
   component: AboutDevelopers,
@@ -62,7 +62,7 @@ function AboutDevelopers() {
           rel="noreferrer"
           className="font-medium text-[#0C82F2] hover:underline"
         >
-          console.whirl.chat
+          console.pocketbot.chat
         </a>
       </p>
     </article>

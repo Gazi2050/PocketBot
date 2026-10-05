@@ -605,7 +605,7 @@ function ConsoleCallout() {
     <p className="mt-10 text-center text-[12.5px] text-neutral-500 dark:text-neutral-400">
       Built something cool? Publish your own integration from the{" "}
       <a
-        href="https://console.whirl.chat"
+        href="https://console.pocketbot.chat"
         target="_blank"
         rel="noreferrer"
         onClick={() => capture(ANALYTICS_EVENTS.integrationsConsoleLinkClicked)}

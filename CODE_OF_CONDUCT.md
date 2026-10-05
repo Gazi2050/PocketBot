@@ -15,7 +15,7 @@ and any community space run by the maintainers.
 
 ## Reporting
 
-If someone's behaviour crosses the line, email **hello@whirl.chat** with what
+If someone's behaviour crosses the line, email **hello@pocketbot.chat** with what
 happened and links where you can. Reports are handled privately, and the
 maintainers will respond with whatever the situation calls for, from a
 friendly word to a permanent ban, following the Covenant's

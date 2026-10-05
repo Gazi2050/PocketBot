@@ -7,7 +7,7 @@
 ---
 
 PocketBot is a full-stack AI chat app built on Next.js and Convex. It's the code
-behind [whirl.chat](https://whirl.chat), published in full under the MIT
+behind [pocketbot.chat](https://pocketbot.chat), published in full under the MIT
 license. Read it, run your own, or help make it better.
 
 ## Features
@@ -49,7 +49,7 @@ account, a [Clerk](https://clerk.com) application, and an
 [OpenRouter](https://openrouter.ai) API key.
 
 ```sh
-git clone https://github.com/whirlchat/whirl.git
+git clone https://github.com/pocketbot/pocketbot.git
 cd pocketbot
 bun install
 

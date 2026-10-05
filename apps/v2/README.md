@@ -1,6 +1,6 @@
 # PocketBot web app
 
-The Next.js app behind [whirl.chat](https://whirl.chat). It talks to the
+The Next.js app behind [pocketbot.chat](https://pocketbot.chat). It talks to the
 Convex backend in [`packages/backend`](../../packages/backend) for nearly
 everything, and signs people in with Clerk.
 

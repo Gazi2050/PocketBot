@@ -7,14 +7,14 @@ import { showToast } from "~/data/toasts";
 import { ANALYTICS_EVENTS, useCapture } from "~/lib/posthog";
 
 const LEGAL_LINKS = {
-  privacy: "https://anterra.sh/legal/whirl/privacy",
-  terms: "https://anterra.sh/legal/whirl/terms",
+  privacy: "https://anterra.sh/legal/pocketbot/privacy",
+  terms: "https://anterra.sh/legal/pocketbot/terms",
 } as const;
 
-const STATUS_URL = "https://status.whirl.chat";
+const STATUS_URL = "https://status.pocketbot.chat";
 const DISCORD_URL = "https://discord.gg/SrgwbaGHqE";
 
-const CONTACT_EMAIL = "hello@whirl.chat";
+const CONTACT_EMAIL = "hello@pocketbot.chat";
 
 const linkClass =
   "transition-colors hover:text-neutral-600 dark:hover:text-neutral-300";

@@ -28,16 +28,16 @@ type SiteLinks = {
 };
 
 export const SITE_LINKS: SiteLinks = {
-  repo: "https://github.com/whirlchat/whirl",
-  console: "https://console.whirl.chat",
-  status: "https://status.whirl.chat",
+  repo: "https://github.com/pocketbot/pocketbot",
+  console: "https://console.pocketbot.chat",
+  status: "https://status.pocketbot.chat",
   discord: "https://discord.gg/SrgwbaGHqE",
-  contactEmail: "hello@whirl.chat",
-  privacy: "https://anterra.sh/legal/whirl/privacy",
-  terms: "https://anterra.sh/legal/whirl/terms",
+  contactEmail: "hello@pocketbot.chat",
+  privacy: "https://anterra.sh/legal/pocketbot/privacy",
+  terms: "https://anterra.sh/legal/pocketbot/terms",
 };
 
-/** "console.whirl.chat" out of "https://console.whirl.chat", for copy. */
+/** "console.pocketbot.chat" out of "https://console.pocketbot.chat", for copy. */
 export function displayHost(url: string): string {
   try {
     return new URL(url).host;

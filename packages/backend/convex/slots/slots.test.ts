@@ -27,8 +27,8 @@ vi.mock("autumn-js", () => ({
 }));
 const identity = {
   subject: "alice",
-  issuer: "https://test.whirl.chat",
-  tokenIdentifier: "https://test.whirl.chat|alice",
+  issuer: "https://test.pocketbot.chat",
+  tokenIdentifier: "https://test.pocketbot.chat|alice",
 };
 const guestKey = "a".repeat(64);
 const owner = guestOwner(guestKey);

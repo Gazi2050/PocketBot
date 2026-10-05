@@ -58,7 +58,7 @@ export function ConsoleVisual() {
           Your submissions
         </span>
         <span className="rounded-full bg-black/[0.04] px-2 py-0.5 text-[10px] font-medium text-neutral-500 dark:bg-white/[0.06] dark:text-neutral-400">
-          console.whirl.chat
+          console.pocketbot.chat
         </span>
       </div>
       <div className="mt-3 flex flex-col gap-1.5">

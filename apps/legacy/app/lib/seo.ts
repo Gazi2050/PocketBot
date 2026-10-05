@@ -13,7 +13,7 @@
  * never on transient in-app screens.
  */
 
-export const SITE_URL = "https://whirl.chat";
+export const SITE_URL = "https://pocketbot.chat";
 export const SITE_NAME = "PocketBot";
 
 export const DEFAULT_TITLE =

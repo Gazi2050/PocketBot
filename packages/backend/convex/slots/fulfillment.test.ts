@@ -19,7 +19,7 @@ vi.mock("autumn-js", () => ({
 }));
 
 const modules = import.meta.glob("../**/*.ts");
-const owner = "https://test.whirl.chat|alice";
+const owner = "https://test.pocketbot.chat|alice";
 const free = { products: [], features: { messages: { balance: 15 } } };
 const paid = { products: [{ id: "mini", status: "active" }], features: {} };
 

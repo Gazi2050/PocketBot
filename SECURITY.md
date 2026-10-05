@@ -27,7 +27,7 @@ In scope:
 
 - the code in this repository: the web app (`apps/v2`), the Convex backend
   (`packages/backend`), and the other apps under `apps/`
-- the hosted service at [whirl.chat](https://whirl.chat)
+- the hosted service at [pocketbot.chat](https://pocketbot.chat)
 
 Out of scope:
 

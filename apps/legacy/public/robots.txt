@@ -1,4 +1,4 @@
-# https://whirl.chat
+# https://pocketbot.chat
 User-agent: *
 Allow: /
 
@@ -12,4 +12,4 @@ Disallow: /sso-callback
 # Public share + visual pages are intentionally left crawlable so their
 # social cards unfurl on Twitter, Slack, Discord, etc.
 
-Sitemap: https://whirl.chat/sitemap.xml
+Sitemap: https://pocketbot.chat/sitemap.xml

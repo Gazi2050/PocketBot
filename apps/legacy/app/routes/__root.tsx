@@ -133,7 +133,7 @@ import { useVersionWatcher } from "~/lib/version-check";
 export const Route = createRootRoute({
   // Site-wide SEO baseline. Individual routes override the title/description via
   // their own `head()` (see ~/lib/seo). This replaces the old waitlist landing
-  // metadata, which is what search + social used to show for whirl.chat.
+  // metadata, which is what search + social used to show for pocketbot.chat.
   head: () => {
     const base = seo();
     return {
