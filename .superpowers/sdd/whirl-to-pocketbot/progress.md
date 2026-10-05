@@ -9,3 +9,5 @@ Task 4: complete (commit 2ca638e; mobile tsc -> 0 errors; app.json valid; Ruling
 Task 5: complete (commit 03b23a2, README header replaced with user snippet verbatim)
 Task 6: complete (bun.lock regenerated + artifact-runtime.js rebuilt in Task 3; email logo raster deferred — windows-only Playwright script, TODO added; commit a620b1b)
 Final: minor (deferred): pocketbot-mark.png still old swirl raster until render-email-logo.mjs rerun
+Task 7: complete — grep audit 0 unprotected whirl (protected URLs intact, bun.lock clean); bun test 187 pass + vitest slots 66/66 (3 bun-test failures are the vitest-only slots files, green under their runner); v2 tsc 0 errors; mobile tsc 0 errors; v2 production build OK
+Final: fixed redemption-code slice(5) prefix bug — slots.test.ts caught it, 6 RED -> 66/66 GREEN (commit a16cc39)
