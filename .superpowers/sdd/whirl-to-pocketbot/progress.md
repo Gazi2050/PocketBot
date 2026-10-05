@@ -7,3 +7,5 @@ Ruling Task 3: marketing logo uses theme-aware bg-foreground, not a baked brand 
 Ruling Task 3: bun install pulled ahead of Task 6 — v2 tsc needs the renamed workspace links to resolve.
 Task 4: complete (commit 2ca638e; mobile tsc -> 0 errors; app.json valid; Ruling: mark stays vector via react-native-svg with new pb-logos geometry, keeps color prop theme-aware instead of fixed-color PNG)
 Task 5: complete (commit 03b23a2, README header replaced with user snippet verbatim)
+Task 6: complete (bun.lock regenerated + artifact-runtime.js rebuilt in Task 3; email logo raster deferred — windows-only Playwright script, TODO added; commit a620b1b)
+Final: minor (deferred): pocketbot-mark.png still old swirl raster until render-email-logo.mjs rerun

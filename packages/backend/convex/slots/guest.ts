@@ -9,19 +9,24 @@ export function guestOwner(key: string | undefined) {
   return `guest:${key}`;
 }
 
+const CODE_PREFIX = "POCKETBOT";
+
 export function newRedemptionCode() {
   const bytes = crypto.getRandomValues(new Uint8Array(12));
   const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0"))
     .join("")
     .toUpperCase();
-  return `POCKETBOT-${hex.match(/.{4}/g)!.join("-")}`;
+  return `${CODE_PREFIX}-${hex.match(/.{4}/g)!.join("-")}`;
 }
 
 export function normalizeRedemptionCode(code: string) {
   const normalized = code.trim().toUpperCase().replace(/[\s-]/g, "");
-  if (!/^POCKETBOT[A-F0-9]{24}$/.test(normalized))
+  if (!new RegExp(`^${CODE_PREFIX}[A-F0-9]{24}$`).test(normalized))
     throw new ConvexError(
       "Enter the complete code from your arcade prize tray.",
     );
-  return `POCKETBOT-${normalized.slice(5).match(/.{4}/g)!.join("-")}`;
+  return `${CODE_PREFIX}-${normalized
+    .slice(CODE_PREFIX.length)
+    .match(/.{4}/g)!
+    .join("-")}`;
 }
