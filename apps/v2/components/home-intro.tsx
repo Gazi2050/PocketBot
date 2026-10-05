@@ -36,7 +36,7 @@ declare global {
    Cached/user text goes through textContent only; the only innerHTML is
    the static rest-pose PocketBot mark below. */
 
-/* One masked ring of the logo's rest pose (mirrors PocketBotRings' markup,
+/* The logo's rest pose as one masked mark (mirrors PocketBotRings' markup,
    minus the interactivity). Static string — no user data. */
 function bootRing(url: string) {
   const mask =
@@ -53,8 +53,7 @@ function bootRing(url: string) {
 
 const BOOT_LOGO =
   '<span style="position:relative;display:inline-block;width:32px;height:32px;flex-shrink:0">' +
-  bootRing("/pocketbot-ring-outer.svg") +
-  bootRing("/pocketbot-ring-inner.svg") +
+  bootRing("/pocketbot.svg") +
   "</span>";
 
 /* The greeting's type, shared by the React header and by the boot script

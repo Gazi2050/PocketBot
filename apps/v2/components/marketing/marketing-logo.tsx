@@ -1,6 +1,4 @@
-"use client";
-
-import { useTwirl, PocketBotHoverMark } from "@/components/pocketbot-rings";
+import { PocketBotRings } from "@/components/pocketbot-rings";
 
 export function MarketingLogo({
   size = 36,
@@ -9,17 +7,14 @@ export function MarketingLogo({
   size?: number;
   className?: string;
 }) {
-  const { twirling, twirl } = useTwirl();
   return (
     <span
-      onMouseEnter={twirl}
       style={{ width: size, height: size }}
       className={`relative inline-block shrink-0 ${className}`}
     >
-      <PocketBotHoverMark
-        twirling={twirling}
-        layers={[{ style: { backgroundColor: "#0c82f2" } }]}
-      />
+      {/* Theme-aware fill rather than a baked brand color: the pb-logos pack
+          doesn't define a marketing accent yet. */}
+      <PocketBotRings layers={[{ className: "bg-foreground" }]} />
     </span>
   );
 }

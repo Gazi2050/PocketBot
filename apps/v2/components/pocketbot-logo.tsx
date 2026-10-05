@@ -1,6 +1,6 @@
 "use client";
 
-import { useTwirl, PocketBotHoverMark } from "./pocketbot-rings";
+import { PocketBotRings } from "./pocketbot-rings";
 
 export function PocketBotLogo({
   size = 20,
@@ -9,19 +9,12 @@ export function PocketBotLogo({
   size?: number;
   className?: string;
 }) {
-  const { twirling, twirl } = useTwirl();
-  const dim = `${size}px`;
-
   return (
     <span
-      onMouseEnter={twirl}
-      style={{ width: dim, height: dim }}
+      style={{ width: size, height: size }}
       className={`relative inline-block shrink-0 ${className}`}
     >
-      <PocketBotHoverMark
-        twirling={twirling}
-        layers={[{ className: "bg-foreground-soft" }]}
-      />
+      <PocketBotRings layers={[{ className: "bg-foreground-soft" }]} />
     </span>
   );
 }
