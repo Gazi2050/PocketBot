@@ -98,15 +98,3 @@ brand/        Logo, colors, banners, and app icons
   what it switches on
 - [Architecture](docs/architecture.md): how a message travels from the
   composer to the model and back
-- [Contributing](CONTRIBUTING.md): conventions, checks, and pull requests
-
-## Contributing
-
-Bug reports, ideas, and pull requests are all welcome. Start with
-[CONTRIBUTING.md](CONTRIBUTING.md), and please follow the
-[code of conduct](CODE_OF_CONDUCT.md). Found a security issue? See
-[SECURITY.md](SECURITY.md).
-
-## License
-
-[MIT](LICENSE) © Anterra
