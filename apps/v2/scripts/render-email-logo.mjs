@@ -8,6 +8,10 @@
  * One-shot: run it again only if public/pocketbot.svg changes.
  *   node apps/v2/scripts/render-email-logo.mjs
  *
+ * TODO(pocketbot-brand): public/pocketbot.svg is now the new pb-logos mark;
+ *   re-run this on a machine with Chrome/Edge to regenerate
+ *   public/pocketbot-mark.png (it still holds the old swirl raster).
+ *
  * node, not bun: Playwright drives the browser over a pipe transport that
  * bun's child_process doesn't wire up on Windows, so the launch sits there
  * until it times out.
