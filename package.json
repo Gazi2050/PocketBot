@@ -1,26 +1,24 @@
 {
-  "name": "openbot",
+  "name": "whirl-monorepo",
   "private": true,
-  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "pnpm build:packages && pnpm -r --parallel run dev",
-    "dev:apps": "pnpm --filter @openbot/frontend --filter @openbot/backend -r --parallel run dev",
-    "dev:frontend": "pnpm --filter @openbot/frontend dev",
-    "dev:backend": "pnpm --filter @openbot/backend dev",
-    "build": "pnpm build:packages && pnpm build:apps",
-    "build:packages": "pnpm --filter @openbot/shared build",
-    "build:apps": "pnpm --filter @openbot/backend --filter @openbot/frontend build",
-    "build:frontend": "pnpm --filter @openbot/frontend build",
-    "build:backend": "pnpm --filter @openbot/backend build",
-    "typecheck": "pnpm -r run typecheck",
-    "lint": "pnpm --filter @openbot/frontend lint",
-    "db:generate": "pnpm --filter @openbot/backend db:generate",
-    "db:migrate": "pnpm --filter @openbot/backend db:migrate",
-    "db:push": "pnpm --filter @openbot/backend db:push",
-    "db:studio": "pnpm --filter @openbot/backend db:studio",
-    "clean": "pnpm -r exec rm -rf dist node_modules && rm -rf node_modules"
+    "dev": "concurrently -n v2,console,convex -c cyan,magenta,yellow \"bun run dev:v2\" \"bun run dev:console\" \"bun run dev:backend\"",
+    "dev:v2": "bun run --cwd apps/v2 dev",
+    "dev:legacy": "bun run --cwd apps/legacy dev",
+    "dev:backend": "bun run --cwd packages/backend dev",
+    "dev:console": "bun run --cwd apps/console dev",
+    "build": "bun run --cwd apps/v2 build",
+    "build:legacy": "bun run --cwd apps/legacy build",
+    "build:console": "bun run --cwd apps/console build",
+    "dev:mobile": "bun run --cwd apps/mobile start",
+    "dev:waitlist": "bun run --cwd apps/waitlist dev",
+    "build:waitlist": "bun run --cwd apps/waitlist build"
   },
-  "engines": {
-    "node": ">=20"
+  "devDependencies": {
+    "concurrently": "^10.0.3"
   }
 }

@@ -1,7 +1,0 @@
-{
-	"buildCommand": "pnpm --filter @openbot/shared build && pnpm --filter @openbot/frontend build",
-	"installCommand": "pnpm install",
-	"rewrites": [
-		{ "source": "/api/(.*)", "destination": "https://openbot-api.vercel.app/api/$1" }
-	]
-}

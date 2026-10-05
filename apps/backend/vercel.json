@@ -1,4 +1,0 @@
-{
-  "buildCommand": "pnpm --filter @openbot/shared build",
-  "installCommand": "pnpm install"
-}

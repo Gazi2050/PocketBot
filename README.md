@@ -1,74 +1,125 @@
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="brand/banner-dark.png" />
+  <img src="brand/banner-light.png" alt="The Whirl mark" width="100%" />
+</picture>
+
+<h1 align="center">Whirl</h1>
+
 <p align="center">
-  <img src="apps/frontend/src/lib/assets/openbot.png" alt="OpenBot" width="220" />
+  The AI chat app that sweats the details. Every top model, real memory,<br />
+  living documents, and your own tools, in one fast and friendly place.
 </p>
 
-> ### **OpenBot** is a general-purpose, multi-model AI chatbot for streaming and continuing conversations across providers.
+<p align="center">
+  <a href="https://whirl.chat">whirl.chat</a> ·
+  <a href="docs/self-hosting.md">Self-hosting</a> ·
+  <a href="docs/architecture.md">Architecture</a> ·
+  <a href="CONTRIBUTING.md">Contributing</a>
+</p>
 
-## 🔑 Key features
+---
 
-- 💬 **Streaming multi-model chat** — Google Gemini, Groq Llama, and Ollama models, rendered token-by-token with markdown and mermaid.
-- 🗂️ **Persistent conversations** — every message is saved; reload a past chat and the full history hydrates.
-- 🧩 **Per-request model selection** — the available set is derived from which provider keys are configured.
-- 🔐 **Authentication** — email/password with verification, plus Google OAuth, via Clerk.
-- 🗃️ **Conversation management** — sidebar list, create/delete, search, and shareable `/c/[id]` routes.
-- 📱 **Responsive shell** — persistent sidebar on desktop, slide-in drawer on mobile.
+Whirl is a full-stack AI chat app built on Next.js and Convex. It's the code
+behind [whirl.chat](https://whirl.chat), published in full under the MIT
+license. Read it, run your own, or help make it better.
 
-## 🛠️ Installation guide
+## Features
 
-1. **Clone the repository**
+- **Every top model** in one conversation, routed through
+  [OpenRouter](https://openrouter.ai), with adjustable thinking levels.
+- **Living artifacts:** documents, charts, and full interactive pages that
+  stay editable in a side panel and can be shared by link.
+- **Integrations** with your own tools over MCP (OAuth included), plus
+  installable skills that teach Whirl new tricks.
+- **Long-term memory** that carries preferences and projects across chats.
+- **Live web search** and page reading for answers grounded in today's web.
+- **Locked chats**, encrypted on your device with a password the server never
+  sees, answered only by zero-retention models.
+- **Incognito mode**, message queueing, voice input, image generation, file
+  attachments, folders, sharing, and a lot of care around motion and polish.
+- **Light and dark mode**, accent colors, and an installable mobile web app.
 
-```bash
-git clone https://github.com/Gazi2050/OpenBot.git
-cd OpenBot
+## Tech stack
+
+| Layer     | What it uses                                                         |
+| --------- | -------------------------------------------------------------------- |
+| Web app   | [Next.js 16](https://nextjs.org), React 19, Tailwind CSS v4, Motion  |
+| Backend   | [Convex](https://convex.dev): database, functions, streaming, crons  |
+| Auth      | [Clerk](https://clerk.com)                                           |
+| Models    | [OpenRouter](https://openrouter.ai) via the [AI SDK](https://ai-sdk.dev) |
+| Tooling   | [Bun](https://bun.sh) workspaces, TypeScript                         |
+
+Everything beyond Convex, Clerk, and OpenRouter is **optional** and switches
+on with its own keys: billing (Autumn), web search (Exa), memory
+(Supermemory), analytics (PostHog, Axiom), tracing (Braintrust), email
+(Resend), and the support agent (Median). Leave them out and Whirl hides the
+features they power. See [docs/configuration.md](docs/configuration.md).
+
+## Quick start
+
+You'll need [Bun](https://bun.sh), a free [Convex](https://convex.dev)
+account, a [Clerk](https://clerk.com) application, and an
+[OpenRouter](https://openrouter.ai) API key.
+
+```sh
+git clone https://github.com/whirlchat/whirl.git
+cd whirl
+bun install
+
+# 1. Create a Convex dev deployment and push the backend.
+cd packages/backend
+bunx convex dev            # first run walks you through creating a project
+
+# 2. In another terminal, give the backend its secrets.
+bunx convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
+bunx convex env set OPENROUTER_API_KEY sk-or-v1-...
+
+# 3. Point the web app at Convex and Clerk.
+cd ../../apps/v2
+cp .env.example .env.local  # then fill in the four required values
+
+# 4. Run everything from the repo root.
+cd ../..
+bun run dev
 ```
 
-2. **Install dependencies**
+Open [localhost:3000](http://localhost:3000) and say hi. The
+[self-hosting guide](docs/self-hosting.md) covers each step in detail,
+including the Clerk JWT template Convex needs and how to deploy to
+production.
 
-```bash
-pnpm install
+## Repository layout
+
+```
+apps/
+  v2/         The web app (Next.js). This is the one in production.
+  console/    Admin console for models, integrations, and skills (Vite)
+  mobile/     Native app (Expo)
+  waitlist/   Standalone waitlist page
+  remotion/   Promo video compositions
+  legacy/     The previous web app, kept for reference. Not maintained.
+packages/
+  backend/    Convex backend: schema, functions, and the AI pipeline
+docs/         Guides for self-hosting, configuration, and architecture
+brand/        Logo, colors, banners, and app icons
 ```
 
-3. **Create `.env`**
+## Documentation
 
-Copy from `.env.example` and set:
+- [Self-hosting](docs/self-hosting.md): run Whirl locally and in production
+- [Configuration](docs/configuration.md): every environment variable and
+  what it switches on
+- [Architecture](docs/architecture.md): how a message travels from the
+  composer to the model and back
+- [Contributing](CONTRIBUTING.md): conventions, checks, and pull requests
 
-```bash
-# ---- Backend ----
-DATABASE_URL=
-PORT=3000
-# CLERK_SECRET_KEY also need in frontend too
-CLERK_SECRET_KEY=
-CLERK_PUBLISHABLE_KEY=
-GOOGLE_GENERATIVE_AI_API_KEY=
-GROQ_API_KEY=
-OLLAMA_API_KEY=
+## Contributing
 
-# ---- Frontend ----
-PUBLIC_API_URL=http://localhost:3000
-PUBLIC_CLERK_PUBLISHABLE_KEY=
-PUBLIC_CLERK_SIGN_IN_URL=/
-PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL=/
-PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL=/
-```
+Bug reports, ideas, and pull requests are all welcome. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md), and please follow the
+[code of conduct](CODE_OF_CONDUCT.md). Found a security issue? See
+[SECURITY.md](SECURITY.md).
 
-4. **Start the database**
+## License
 
-```bash
-docker compose up -d
-```
-
-5. **Run the development server**
-
-```bash
-pnpm dev
-```
-
-## 📚 Docs
-
-- 📄 [Features](./FEATURES.md) — full feature documentation
-- 🎨 [Design system](./DESIGN.md) — design spec
-
-## 🚀 Live
-
-- Frontend: https://openbott.vercel.app
-- API: https://openbot-api.vercel.app/api/health
+[MIT](LICENSE) © Anterra
