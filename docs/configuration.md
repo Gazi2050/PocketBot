@@ -15,7 +15,7 @@ A few secrets have to match on both sides; they're marked _shared_ below.
 | Where    | Variable                            | What it's for                                         |
 | -------- | ----------------------------------- | ----------------------------------------------------- |
 | Convex   | `CLERK_JWT_ISSUER_DOMAIN`           | Your Clerk Frontend API URL, so Convex trusts sign-ins |
-| Convex   | `HYPER_API_KEY`                     | Chat turns. All three modes — Auto, Fast, Heavy — run through Hyper |
+| Convex   | `HYPER_API_KEY`                     | Chat turns. All three modes — Auto, Fast, Heavy — run through [Hyper](https://hyper.charm.land/) |
 | Convex   | `OPENROUTER_API_KEY`                | Everything around chat: thread titles, voice transcription, locked chats, home suggestions, HTML compaction, image generation |
 | Convex   | `SITE_URL`                          | The web app's public origin, for share links, OAuth returns, and emails. Defaults to `http://localhost:3000` |
 | Web app  | `NEXT_PUBLIC_CONVEX_URL`            | Your deployment's `.convex.cloud` URL                 |

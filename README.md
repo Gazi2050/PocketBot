@@ -2,7 +2,7 @@
   <img src="https://files.catbox.moe/nn1qw5.png" alt="PocketBot" width="220" />
 </p>
 
-<h3 align="center">OpenBot is now PocketBot.<br/>Releasing soon.</h3>
+<h3 align="center">PocketBot</h3>
 
 ---
 
@@ -30,40 +30,52 @@ license. Read it, run your own, or help make it better.
 | Web app   | [Next.js 16](https://nextjs.org), React 19, Tailwind CSS v4, Motion  |
 | Backend   | [Convex](https://convex.dev): database, functions, streaming, crons  |
 | Auth      | [Clerk](https://clerk.com)                                           |
-| Models    | [AI SDK](https://ai-sdk.dev): Hyper for chat, OpenRouter for the rest |
+| Models    | [AI SDK](https://ai-sdk.dev) on [Hyper](https://hyper.charm.land/)   |
 | Tooling   | [pnpm](https://pnpm.io) workspaces, TypeScript                         |
 
-Everything beyond Convex, Clerk, Hyper, and OpenRouter is **optional** and
-switches on with its own keys: billing (Autumn), memory (Supermemory),
-analytics (PostHog, Axiom), tracing (Braintrust), email (Resend), and the
-support agent (Median). Leave them out and PocketBot hides the features they
-power. See [docs/configuration.md](docs/configuration.md).
+Everything beyond Convex, Clerk, and Hyper is **optional** and switches on
+with its own keys: billing (Autumn), memory (Supermemory), analytics
+(PostHog, Axiom), tracing (Braintrust), email (Resend), and the support
+agent (Median). Leave them out and PocketBot hides the features they power.
+See [docs/configuration.md](docs/configuration.md).
 
 ## Quick start
 
 You'll need [pnpm](https://pnpm.io), a free [Convex](https://convex.dev)
-account, a [Clerk](https://clerk.com) application, a Hyper API key, and an
-[OpenRouter](https://openrouter.ai) API key.
+account, a [Clerk](https://clerk.com) application, and a
+[Hyper](https://hyper.charm.land/) API key.
 
 ```sh
 git clone https://github.com/pocketbot/pocketbot.git
 cd pocketbot
 pnpm install
+```
 
-# 1. Create a Convex dev deployment and push the backend.
+**1. Push the backend.** The first run creates your Convex project:
+
+```sh
 cd packages/backend
-pnpm exec convex dev            # first run walks you through creating a project
+pnpm exec convex dev
+```
 
-# 2. In another terminal, give the backend its secrets.
+**2. Give it its secrets.** In a second terminal, while the first one keeps
+watching:
+
+```sh
 pnpm exec convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
 pnpm exec convex env set HYPER_API_KEY sk-hyper-...
-pnpm exec convex env set OPENROUTER_API_KEY sk-or-v1-...
+```
 
-# 3. Point the web app at Convex and Clerk.
+**3. Point the web app at Convex and Clerk.**
+
+```sh
 cd ../../apps/v2
-cp .env.example .env.local  # then fill in the four required values
+cp .env.example .env.local   # then fill in the four values
+```
 
-# 4. Run everything from the repo root.
+**4. Run it**, from the repository root:
+
+```sh
 cd ../..
 pnpm dev
 ```
@@ -78,7 +90,7 @@ production.
 ```
 apps/
   v2/         The web app (Next.js). This is the one in production.
-  console/    Admin console for models, integrations, and skills (Vite)
+  console/    Admin console for the model catalog (Vite)
   mobile/     Native app (Expo)
   waitlist/   Standalone waitlist page
   remotion/   Promo video compositions

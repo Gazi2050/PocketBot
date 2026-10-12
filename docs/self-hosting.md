@@ -9,7 +9,7 @@ PocketBot needs four things to run:
 | -------------------------------------- | ----------------------------------- | --------- |
 | [Convex](https://convex.dev)           | Database, backend functions, crons  | Yes       |
 | [Clerk](https://clerk.com)             | Sign-in and user accounts           | Yes       |
-| Hyper                                  | Chat replies — all three modes      | —         |
+| [Hyper](https://hyper.charm.land/)     | Chat replies — all three modes      | —         |
 | [OpenRouter](https://openrouter.ai)    | Titles, voice, locked chats, images | Pay as you go |
 
 Everything else is optional. [Configuration](configuration.md) lists what
