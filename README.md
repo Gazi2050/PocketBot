@@ -4,8 +4,6 @@
 
 <h2 align="center">PocketBot</h3>
 
----
-
 PocketBot is a full-stack AI chat app built on Next.js and Convex, published
 in full under the MIT license. Read it, run your own, or help make it better.
 
