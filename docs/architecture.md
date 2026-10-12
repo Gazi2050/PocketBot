@@ -23,7 +23,6 @@ A tour of how PocketBot fits together, for anyone about to change it.
 - **`packages/backend`** holds the Convex schema (`convex/schema.ts`) and
   every query, mutation, action, HTTP route, and cron. The apps import its
   generated bindings from `@pocketbot/backend/convex/_generated/api`.
-- **`apps/console`** is the admin console, talking to the same deployment.
   Admin-only functions check the Clerk `role` claim (`convex/admin.ts`).
 
 ## How a message travels

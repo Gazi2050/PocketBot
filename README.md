@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="brand/png/pocketbot-3d-2048.png" alt="PocketBot" width="220" />
+  <img src="brand/png/pocketbot-3d-2048.png" alt="PocketBot" width="180" />
 </p>
 
 <h1 align="center">PocketBot</h1>
@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://pocketbott.vercel.app">Live app</a> ·
   <a href="docs/self-hosting.md">Self-hosting</a> ·
   <a href="docs/architecture.md">Architecture</a> ·
   <a href="docs/configuration.md">Configuration</a>
@@ -17,8 +18,11 @@
 
 ---
 
-PocketBot is a full-stack AI platform built on Next.js and Convex, published
-in full under the MIT license. Read it, run your own, or help make it better.
+Open to run, open to shape. Use PocketBot live at
+[pocketbot](https://pocketbott.vercel.app), or clone it and shape
+it your way — your keys, your deployment, your rules. The whole stack ships
+under the MIT license — web app and backend today, **mobile app coming
+soon**.
 
 ## Features
 
@@ -37,11 +41,11 @@ in full under the MIT license. Read it, run your own, or help make it better.
 
 | Layer     | What it uses                                                         |
 | --------- | -------------------------------------------------------------------- |
-| Web app   | [Next.js 16](https://nextjs.org), React 19, Tailwind CSS v4, Motion  |
+| Web app   | [Next.js 16](https://nextjs.org), [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/), [Motion](https://motion.dev/) |
 | Backend   | [Convex](https://convex.dev): database, functions, streaming, crons  |
 | Auth      | [Clerk](https://clerk.com)                                           |
 | Models    | [AI SDK](https://ai-sdk.dev) on [Hyper](https://hyper.charm.land/)   |
-| Tooling   | [pnpm](https://pnpm.io) workspaces, TypeScript                         |
+| Tooling   | [pnpm](https://pnpm.io) workspaces, [TypeScript](https://www.typescriptlang.org/) |
 
 Everything beyond Convex, Clerk, and Hyper is **optional** and switches on
 with its own keys: billing (Autumn), memory (Supermemory), analytics
@@ -100,11 +104,7 @@ production.
 ```
 apps/
   v2/         The web app (Next.js). This is the one in production.
-  console/    Admin console for the model catalog (Vite)
   mobile/     Native app (Expo)
-  waitlist/   Standalone waitlist page
-  remotion/   Promo video compositions
-  legacy/     The previous web app, kept for reference. Not maintained.
 packages/
   backend/    Convex backend: schema, functions, and the AI pipeline
 docs/         Guides for self-hosting, configuration, and architecture

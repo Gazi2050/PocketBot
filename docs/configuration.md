@@ -116,22 +116,13 @@ Leave either unset and the throttle never engages.
 | ------------------------ | ------- | ------------------------------------------------------------------------------ |
 | `VERCEL_WEBHOOK_SECRET`  | Convex  | Verifies Vercel's deploy webhook at `/api/deploy-hook`, which prompts open tabs to refresh after a release |
 | `GIT_COMMIT_SHA`         | Web app | The build's version, for that same prompt. Vercel provides its own              |
-| `DEV_ALLOWED_ORIGINS`    | Web app, console | Extra hosts allowed to reach the dev server, comma-separated            |
+| `DEV_ALLOWED_ORIGINS`    | Web app | Extra hosts allowed to reach the dev server, comma-separated            |
 
 Older deployments may still set the site origin as `POCKETBOT_SITE_URL`,
 `APP_ORIGIN`, or `CLIENT_ORIGIN`. Those keep working, but `SITE_URL` wins
 when it's set.
 
 ## Other apps
-
-**Console** (`apps/console/.env.local`)
-
-| Variable                     | What it's for                              |
-| ---------------------------- | ------------------------------------------ |
-| `VITE_CONVEX_URL`            | Same deployment as the web app             |
-| `VITE_CLERK_PUBLISHABLE_KEY` | Same Clerk instance as the web app         |
-| `VITE_APP_URL`               | The web app's address, for "Open PocketBot"    |
-| `VITE_POSTHOG_PROJECT_TOKEN`, `VITE_POSTHOG_HOST` | Optional analytics    |
 
 **Mobile** (`apps/mobile/.env.local`)
 
@@ -141,5 +132,3 @@ when it's set.
 | `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` | Same Clerk instance               |
 | `EXPO_PUBLIC_SITE_URL`              | The web app's origin, for share links |
 
-**Waitlist** (`apps/waitlist/.env.local`): `RESEND_API_KEY` and
-`RESEND_AUDIENCE_ID`.
