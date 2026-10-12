@@ -8,7 +8,7 @@ export const DEFAULT_TITLE =
 export const DEFAULT_DESCRIPTION =
   "An AI chat app with memory that actually cares about you. Chat across the best models, create living documents and visualizations, and pick up right where you left off.";
 // TODO(pocketbot-brand): still the old swirl card — needs a fresh
-// 1200x630 OG built from brand/pb-logos (the pack has no OG asset yet).
+// 1200x630 OG built from brand/logo (the pack has no OG asset yet).
 export const OG_IMAGE_PATH = "/pocketbot-og.png";
 
 export type SocialImage = {

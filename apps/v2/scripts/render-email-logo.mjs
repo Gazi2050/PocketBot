@@ -8,9 +8,10 @@
  * One-shot: run it again only if public/pocketbot.svg changes.
  *   node apps/v2/scripts/render-email-logo.mjs
  *
- * TODO(pocketbot-brand): public/pocketbot.svg is now the new pb-logos mark;
- *   re-run this on a machine with Chrome/Edge to regenerate
- *   public/pocketbot-mark.png (it still holds the old swirl raster).
+ * TODO(pocketbot-brand): regenerate public/pocketbot-mark.png from the new
+ *   kit (brand/logo/logo/app-icons/source/logo.svg) on a machine with
+ *   Chrome/Edge — the committed one still holds the old swirl raster, and
+ *   Platinum emails serve it (platinum.ts EMAIL_LOGO_URL).
  *
  * Playwright drives the browser over a pipe transport; run this with
  * node (not a bundled child_process), or the launch sits there until

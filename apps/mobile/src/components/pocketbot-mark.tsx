@@ -1,9 +1,9 @@
 import { Svg, G, Path } from "react-native-svg";
 
 /**
- * The PocketBot mark (brand/pb-logos): three rounded strokes pinwheeling
+ * The PocketBot mark (brand/logo): three rounded strokes pinwheeling
  * around the center, one arm generated at 0°/120°/240°. Geometry is lifted
- * verbatim from brand/pb-logos/logo/app-icons/source/logo.svg — regenerate
+ * verbatim from brand/logo/logo/app-icons/source/logo.svg — regenerate
  * from that file rather than hand-editing these numbers.
  */
 const ARM =

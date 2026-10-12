@@ -12,7 +12,7 @@ export function MarketingLogo({
       style={{ width: size, height: size }}
       className={`relative inline-block shrink-0 ${className}`}
     >
-      {/* Theme-aware fill rather than a baked brand color: the pb-logos pack
+      {/* Theme-aware fill rather than a baked brand color: the logo pack
           doesn't define a marketing accent yet. */}
       <PocketBotRings layers={[{ className: "bg-foreground" }]} />
     </span>
