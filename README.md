@@ -10,7 +10,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pocketbott.vercel.app">Live app</a> ·
+  <a href="https://pocketbott.vercel.app">PocketBot</a> ·
   <a href="docs/self-hosting.md">Self-hosting</a> ·
   <a href="docs/architecture.md">Architecture</a> ·
   <a href="docs/configuration.md">Configuration</a>
