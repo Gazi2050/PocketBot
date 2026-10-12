@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://files.catbox.moe/nn1qw5.png" alt="PocketBot" width="220" />
+  <img src="https://files.catbox.moe/nn1qw5.png" alt="PocketBot" width="190" />
 </p>
 
 <h3 align="center">PocketBot</h3>
