@@ -117,7 +117,7 @@ export function Sidebar() {
           instant justify-center jump. */}
       <div className="sidebar-glide relative flex h-7 items-center px-1.5 transition-[padding] sidebar-collapsed:pl-2.5">
         <PocketBotLogo
-          size={20}
+          size={24}
           className="transition-opacity duration-150 sidebar-collapsed:group-hover/sidebar:opacity-0"
         />
         <SyncIndicator />
