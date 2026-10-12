@@ -5,8 +5,8 @@
 <h1 align="center">PocketBot</h1>
 
 <p align="center">
-  The AI chat app that sweats the details. Three smart modes, real memory,<br />
-  living artifacts, and locked chats, in one fast and friendly place.
+  The open-source AI platform that sweats the details. Three smart modes, real memory,<br />
+  living artifacts, and locked chats — yours to run, yours to shape.
 </p>
 
 <p align="center">
@@ -17,7 +17,7 @@
 
 ---
 
-PocketBot is a full-stack AI chat app built on Next.js and Convex, published
+PocketBot is a full-stack AI platform built on Next.js and Convex, published
 in full under the MIT license. Read it, run your own, or help make it better.
 
 ## Features
