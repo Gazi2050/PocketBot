@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
 
      Recompiling from source instead costs a slower first load and nothing
      after that. Deleting the cache alone doesn't hold: it grows straight
-     back. Run `bun run clean` if .next ever needs resetting anyway. */
+     back. Run `pnpm --filter v2 clean` if .next ever needs resetting anyway. */
   experimental: {
     turbopackFileSystemCacheForDev: false,
   },

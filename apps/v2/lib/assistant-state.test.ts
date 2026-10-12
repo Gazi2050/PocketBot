@@ -1,6 +1,4 @@
-// @ts-expect-error Bun provides this module to its test runner; the Next app
-// intentionally does not include Bun's ambient types in its client tsconfig.
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 
 import {
   assistantActivityState,

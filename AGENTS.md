@@ -2,7 +2,7 @@
 - Never run the dev server
 - Always commit your changes after a task
 - Always use Tabler icons (`@tabler/icons-react`), preferring filled variants where it reads well
-- Always use Bun
+- Always use pnpm
 - Don't put everything in one file. Work in multiple files, so you don't have 1000+ lines of code files.
 - Utilize reusable components. If you think a component might be useful elsewhere, make it a reusable component.
 - KEEP CODE CLEAN. It should be nicely formatted and readable.

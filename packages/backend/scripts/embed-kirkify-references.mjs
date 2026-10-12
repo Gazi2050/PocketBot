@@ -4,7 +4,7 @@
 // see resolveImageReferences in convex/inference/image.ts. The JPEGs are
 // small enough that a base64 module is the boring, reliable answer.
 //
-//   bun scripts/embed-kirkify-references.mjs
+//   node scripts/embed-kirkify-references.mjs
 //
 // Sources: scripts/kirkify-sources/face-*.jpg, tight face crops upscaled to
 // ~900px. The model resizes what it's given, so a face filling the frame

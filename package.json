@@ -1,22 +1,11 @@
 {
   "name": "pocketbot-monorepo",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
-    "dev": "concurrently -n v2,console,convex -c cyan,magenta,yellow \"bun run dev:v2\" \"bun run dev:console\" \"bun run dev:backend\"",
-    "dev:v2": "bun run --cwd apps/v2 dev",
-    "dev:legacy": "bun run --cwd apps/legacy dev",
-    "dev:backend": "bun run --cwd packages/backend dev",
-    "dev:console": "bun run --cwd apps/console dev",
-    "build": "bun run --cwd apps/v2 build",
-    "build:legacy": "bun run --cwd apps/legacy build",
-    "build:console": "bun run --cwd apps/console build",
-    "dev:mobile": "bun run --cwd apps/mobile start",
-    "dev:waitlist": "bun run --cwd apps/waitlist dev",
-    "build:waitlist": "bun run --cwd apps/waitlist build"
+    "dev": "concurrently -n v2,convex -c cyan,yellow \"pnpm --filter v2 dev\" \"pnpm --filter @pocketbot/backend dev\"",
+    "dev:mobile": "pnpm --filter mobile start",
+    "build": "pnpm --filter v2 build"
   },
   "devDependencies": {
     "concurrently": "^10.0.3"

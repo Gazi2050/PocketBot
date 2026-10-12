@@ -16,15 +16,15 @@ each extra service unlocks.
 
 ## 1. Prerequisites
 
-- [Bun](https://bun.sh) 1.2 or newer. PocketBot is a Bun workspace; npm, yarn,
-  and pnpm won't install it correctly.
+- [pnpm](https://pnpm.io) 10 or newer (`corepack enable` gets you there). PocketBot
+  is a pnpm workspace; npm and yarn won't install it correctly.
 - [Git](https://git-scm.com)
 - Accounts on the three services above
 
 ```sh
 git clone https://github.com/pocketbot/pocketbot.git
 cd pocketbot
-bun install
+pnpm install
 ```
 
 ## 2. Set up Clerk
@@ -55,7 +55,7 @@ project and a personal dev deployment:
 
 ```sh
 cd packages/backend
-bunx convex dev
+pnpm exec convex dev
 ```
 
 Log in when asked and create a new project. The first push stops with an
@@ -65,22 +65,22 @@ open, and in a second one, set the required variables:
 
 ```sh
 cd packages/backend
-bunx convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
-bunx convex env set OPENROUTER_API_KEY sk-or-v1-...
-bunx convex env set SITE_URL http://localhost:3000
+pnpm exec convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
+pnpm exec convex env set OPENROUTER_API_KEY sk-or-v1-...
+pnpm exec convex env set SITE_URL http://localhost:3000
 ```
 
 If you plan to connect integrations (MCP servers), also set an encryption key
 for their stored credentials:
 
 ```sh
-bunx convex env set MCP_ENCRYPTION_KEY "$(openssl rand -base64 32)"
+pnpm exec convex env set MCP_ENCRYPTION_KEY "$(openssl rand -base64 32)"
 ```
 
-Then restart `bunx convex dev` in the first terminal. It pushes the backend
+Then restart `pnpm exec convex dev` in the first terminal. It pushes the backend
 and keeps watching for changes. Leave it running.
 
-`bunx convex dev` wrote your deployment's URLs to `packages/backend/.env.local`.
+`convex dev` wrote your deployment's URLs to `packages/backend/.env.local`.
 You'll need both of them in the next step:
 
 - `https://<name>.convex.cloud`
@@ -107,26 +107,24 @@ CLERK_SECRET_KEY=sk_test_...
 From the repository root:
 
 ```sh
-bun run dev
+pnpm dev
 ```
 
-That starts three things side by side:
+That starts two things side by side:
 
 | Process | Address                                        |
 | ------- | ---------------------------------------------- |
 | Web app | [localhost:3000](http://localhost:3000)        |
-| Console | [localhost:3001](http://localhost:3001)        |
 | Convex  | watches `packages/backend/convex` and pushes   |
 
-Prefer separate terminals? Use `bun run dev:v2`, `bun run dev:console`, and
-`bun run dev:backend`.
+Prefer separate terminals? Use `pnpm --filter v2 dev` and
+`pnpm --filter @pocketbot/backend dev`.
 
 Sign in, send a message, and you're up. 🎉
 
 ## 6. Make yourself an admin
 
-Admins manage the model catalog, integrations, and skills from the console
-(`apps/console`).
+Admins bypass the lock on locked chats and manage admin-only data directly.
 
 1. Make sure your Clerk `convex` JWT template includes the `role` claim from
    step 2.
@@ -137,13 +135,6 @@ Admins manage the model catalog, integrations, and skills from the console
    ```
 
 3. Sign out and back in so your token picks up the claim.
-4. Set up the console's environment and open
-   [localhost:3001](http://localhost:3001):
-
-   ```sh
-   cd apps/console
-   cp .env.example .env.local   # same Convex URL and Clerk key as the web app
-   ```
 
 ## 7. Turn on extras
 
@@ -174,19 +165,14 @@ Create a production deployment and give it the same variables as dev:
 
 ```sh
 cd packages/backend
-bunx convex deploy
-bunx convex env set --prod CLERK_JWT_ISSUER_DOMAIN https://clerk.your-domain
-bunx convex env set --prod OPENROUTER_API_KEY sk-or-v1-...
-bunx convex env set --prod SITE_URL https://your-domain
+pnpm exec convex deploy
+pnpm exec convex env set --prod CLERK_JWT_ISSUER_DOMAIN https://clerk.your-domain
+pnpm exec convex env set --prod OPENROUTER_API_KEY sk-or-v1-...
+pnpm exec convex env set --prod SITE_URL https://your-domain
 ```
 
 Use your Clerk **production** instance's Frontend API URL here, and add the
 same `convex` JWT template to that instance.
-
-To deploy on every push to `main`, add a `CONVEX_DEPLOY_KEY` secret (Convex
-dashboard → Settings → Deploy keys) to your GitHub repository.
-[`.github/workflows/deploy-convex.yml`](../.github/workflows/deploy-convex.yml)
-picks it up automatically, and skips the deploy in any copy without one.
 
 ### Web app
 
@@ -201,16 +187,10 @@ On other hosts, also set `NEXT_PUBLIC_SITE_URL` to your public address, then
 build and start from the repository root:
 
 ```sh
-bun install
-bun run build
-bun run --cwd apps/v2 start
+pnpm install
+pnpm build
+pnpm --filter v2 start
 ```
-
-### Console (optional)
-
-The console is a static Vite app. Build it with `bun run build:console` and
-serve `apps/console/dist`, or import it into Vercel with the root directory
-set to `apps/console`. Set `VITE_APP_URL` to the web app's address.
 
 ## Make it yours
 
@@ -229,7 +209,7 @@ build your own copy.
 
 **"The server is missing part of its configuration" on every reply.**
 `OPENROUTER_API_KEY` isn't set on the Convex deployment. Check with
-`bunx convex env list`.
+`pnpm exec convex env list` (run from `packages/backend`).
 
 **Signed in, but every request is unauthenticated.**
 The Clerk JWT template has to be named exactly `convex`, and

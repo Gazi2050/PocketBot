@@ -60,7 +60,7 @@ an intentional retry without guessing whether the previous grant succeeded.
 
 ## Validation and rollout
 
-Run `bun run test:slots` and `bun run typecheck` in `packages/backend`. Tests use
+Run `pnpm test` and `pnpm typecheck` in `packages/backend`. Tests use
 isolated `convex-test` databases and mocked billing, including concurrent stock
 and code claims, eligibility, payouts, expiry and failed grant recovery.
 

@@ -1,6 +1,4 @@
-// @ts-expect-error Bun provides this module to its test runner; the Next app
-// intentionally does not include Bun's ambient types in its client tsconfig.
-import { beforeEach, describe, expect, test } from "bun:test";
+import { beforeEach, describe, expect, test } from "vitest";
 
 /* The store is what stands between a reload and a locked chat painting its
    contents, so what's tested is the part that has to survive one: what gets

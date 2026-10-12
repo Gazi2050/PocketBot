@@ -1,0 +1,13 @@
+packages:
+  - apps/*
+  - packages/*
+
+# pnpm 11 blocks dependency build scripts unless ruled on here.
+allowBuilds:
+  esbuild: true
+  braintrust: true
+  unrs-resolver: true
+  # reviewed: postinstalls are funding notices / no-op fallbacks
+  "@clerk/shared": false
+  "browser-tabs-lock": false
+  "core-js": false

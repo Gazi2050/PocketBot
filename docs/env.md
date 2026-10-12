@@ -2,11 +2,11 @@
 
 Where which env lives. `.example` files are committed templates, `.local` files are gitignored local overrides (see `.gitignore`).
 
-Backend server secrets never go in a file — set them with `bunx convex env set NAME value` from `packages/backend`. See `docs/configuration.md` for the full reference and `docs/self-hosting.md` for the Clerk JWT template.
+Backend server secrets never go in a file — set them with `pnpm exec convex env set NAME value` from `packages/backend`. See `docs/configuration.md` for the full reference and `docs/self-hosting.md` for the Clerk JWT template.
 
 ### packages/backend/.env.example
 ```
-# Deployment used by `bunx convex dev` (written automatically on first run).
+# Deployment used by `pnpm exec convex dev` (written automatically on first run).
 CONVEX_DEPLOYMENT=dev:your-deployment
 
 # Set on the Convex deployment itself, listed here so you know what the backend reads:
@@ -52,25 +52,6 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 ```
 
-### apps/console/.env.example
-```
-# Same Convex deployment + Clerk instance as apps/v2.
-VITE_CONVEX_URL=https://your-deployment.convex.cloud
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-# VITE_APP_URL=https://your-domain
-# VITE_POSTHOG_PROJECT_TOKEN=phc_your_project_token
-# VITE_POSTHOG_HOST=https://us.i.posthog.com
-# DEV_ALLOWED_ORIGINS=my-laptop.local
-```
-
-### apps/console/.env.local
-```
-# Gitignored. Same deployment + Clerk as apps/v2.
-VITE_CONVEX_URL=https://your-deployment.convex.cloud
-VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-VITE_APP_URL=http://localhost:3000
-```
-
 ### apps/mobile/.env.example
 ```
 # Same Convex deployment + Clerk instance as apps/v2.
@@ -87,9 +68,3 @@ EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 EXPO_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
-### apps/waitlist/.env.example
-```
-# Resend only. No .env.local committed.
-RESEND_API_KEY=
-RESEND_AUDIENCE_ID=
-```

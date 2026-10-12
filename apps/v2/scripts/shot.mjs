@@ -2,7 +2,7 @@
    work can be looked at instead of guessed at. Sibling to console-check.mjs
    and it follows the same rules: fresh profile per run, one page target.
 
-   usage: bun scripts/shot.mjs <path> <out.png> [--w 390] [--h 844]
+   usage: node scripts/shot.mjs <path> <out.png> [--w 390] [--h 844]
                                [--dpr 3] [--desktop] [--dark]
                                [--wait 4000] [--eval "<js>"] [--full]
                                [--swipe x1,y1,x2,y2] [--hold]

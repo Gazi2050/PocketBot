@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, test } from "vitest";
 
 import { StepOutputBuffer } from "../convex/inference/stepOutput";
 

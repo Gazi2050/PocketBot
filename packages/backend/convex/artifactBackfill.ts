@@ -13,7 +13,7 @@ import { internalAction, internalMutation } from "./_generated/server";
  * and every listing query keeps paying for it.
  *
  * Run it with:
- *   bunx convex run --% artifactBackfill:run "{}"
+ *   pnpm exec convex run --% artifactBackfill:run "{}"
  *
  * Safe to re-run and safe to interrupt: rows are claimed by `contentId` being
  * unset, so a second pass skips everything the first one finished.

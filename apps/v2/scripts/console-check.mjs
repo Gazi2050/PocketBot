@@ -2,7 +2,7 @@
    page throw. Enough to catch a module-level or render-level crash without
    signing in — those happen before auth ever matters.
 
-   usage: bun scripts/console-check.mjs [path] */
+   usage: node scripts/console-check.mjs [path] */
 import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";

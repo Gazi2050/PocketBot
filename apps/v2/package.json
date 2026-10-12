@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predev": "bun scripts/build-artifact-runtime.mjs",
+    "predev": "node scripts/build-artifact-runtime.mjs",
     "dev": "next dev",
-    "build:runtime": "bun scripts/build-artifact-runtime.mjs",
-    "build": "bun scripts/build-artifact-runtime.mjs && next build",
+    "build:runtime": "node scripts/build-artifact-runtime.mjs",
+    "build": "node scripts/build-artifact-runtime.mjs && next build",
     "start": "next start",
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest run"
   },
   "dependencies": {
     "@axiomhq/js": "^1.8.0",
@@ -21,6 +22,7 @@
     "@clerk/themes": "^2.4.57",
     "@mediansh/agent-tools": "0.3.2",
     "@mediansh/widget": "0.9.0",
+    "@pocketbot/backend": "workspace:*",
     "@shadcn/react": "^0.2.1",
     "@streamdown/code": "^1.1.1",
     "@streamdown/math": "^1.0.2",
@@ -31,7 +33,6 @@
     "@tiptap/pm": "^3.27.3",
     "@tiptap/react": "^3.27.3",
     "@tiptap/starter-kit": "^3.27.3",
-    "@pocketbot/backend": "workspace:*",
     "autumn-js": "0.1.85",
     "border-beam": "^1.3.0",
     "botid": "^1.5.11",
@@ -65,10 +66,12 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "esbuild": "^0.28.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.3"
   },
   "ignoreScripts": [
     "sharp",

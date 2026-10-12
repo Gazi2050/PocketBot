@@ -2,11 +2,11 @@
 .env
 node_modules/
 
-# bun is the package manager here — keep npm/yarn/pnpm lockfiles out
-# (a committed package-lock.json makes Vercel pick npm, which chokes on workspace:*)
+# pnpm is the package manager here — its lockfile is committed. Keep the
+# other package managers' lockfiles out (a committed package-lock.json makes
+# Vercel pick npm, which chokes on workspace:*)
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
 
 # React Router
 .react-router/
@@ -30,7 +30,6 @@ apps/*/.output/
 *.tsbuildinfo
 
 # Remotion render output
-apps/remotion/out/
 
 # Per-machine agent state
 .agents/settings.local.json

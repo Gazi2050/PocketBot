@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, test } from "vitest";
 import { ConvexError } from "convex/values";
 
 import { isAdminIdentity, requireAdmin } from "../convex/admin";

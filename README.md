@@ -34,7 +34,7 @@ license. Read it, run your own, or help make it better.
 | Backend   | [Convex](https://convex.dev): database, functions, streaming, crons  |
 | Auth      | [Clerk](https://clerk.com)                                           |
 | Models    | [OpenRouter](https://openrouter.ai) via the [AI SDK](https://ai-sdk.dev) |
-| Tooling   | [Bun](https://bun.sh) workspaces, TypeScript                         |
+| Tooling   | [pnpm](https://pnpm.io) workspaces, TypeScript                         |
 
 Everything beyond Convex, Clerk, and OpenRouter is **optional** and switches
 on with its own keys: billing (Autumn), web search (Exa), memory
@@ -44,22 +44,22 @@ features they power. See [docs/configuration.md](docs/configuration.md).
 
 ## Quick start
 
-You'll need [Bun](https://bun.sh), a free [Convex](https://convex.dev)
+You'll need [pnpm](https://pnpm.io), a free [Convex](https://convex.dev)
 account, a [Clerk](https://clerk.com) application, and an
 [OpenRouter](https://openrouter.ai) API key.
 
 ```sh
 git clone https://github.com/pocketbot/pocketbot.git
 cd pocketbot
-bun install
+pnpm install
 
 # 1. Create a Convex dev deployment and push the backend.
 cd packages/backend
-bunx convex dev            # first run walks you through creating a project
+pnpm exec convex dev            # first run walks you through creating a project
 
 # 2. In another terminal, give the backend its secrets.
-bunx convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
-bunx convex env set OPENROUTER_API_KEY sk-or-v1-...
+pnpm exec convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
+pnpm exec convex env set OPENROUTER_API_KEY sk-or-v1-...
 
 # 3. Point the web app at Convex and Clerk.
 cd ../../apps/v2
@@ -67,7 +67,7 @@ cp .env.example .env.local  # then fill in the four required values
 
 # 4. Run everything from the repo root.
 cd ../..
-bun run dev
+pnpm dev
 ```
 
 Open [localhost:3000](http://localhost:3000) and say hi. The

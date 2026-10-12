@@ -1,6 +1,4 @@
-// @ts-expect-error Bun provides this module to its test runner; the Convex
-// tsconfig intentionally does not include Bun's ambient types.
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 
 import {
   defaultLockedModel,

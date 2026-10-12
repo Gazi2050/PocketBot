@@ -3,7 +3,7 @@
 PocketBot reads its configuration from environment variables in two places:
 
 - **The Convex deployment**, for everything the backend does. Set these with
-  `bunx convex env set NAME value` from `packages/backend` (add `--prod` for
+  `pnpm exec convex env set NAME value` from `packages/backend` (add `--prod` for
   production), or in the Convex dashboard. They never go in a file.
 - **The web app** (`apps/v2/.env.local` locally, your host's settings in
   production).
@@ -48,7 +48,7 @@ controls it can't honor instead of letting them fail.
 each integration. It must decode to exactly 32 bytes:
 
 ```sh
-bunx convex env set MCP_ENCRYPTION_KEY "$(openssl rand -base64 32)"
+pnpm exec convex env set MCP_ENCRYPTION_KEY "$(openssl rand -base64 32)"
 ```
 
 Don't rotate it casually: credentials encrypted with the old key can't be

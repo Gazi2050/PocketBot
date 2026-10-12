@@ -7,7 +7,9 @@
     "codegen": "convex codegen",
     "deploy": "convex deploy",
     "typecheck": "tsc -p convex",
-    "test:slots": "vitest run"
+    "test": "vitest run",
+    "test:slots": "vitest run --project convex",
+    "test:unit": "vitest run --project unit"
   },
   "dependencies": {
     "@convex-dev/persistent-text-streaming": "^0.3.3",

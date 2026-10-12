@@ -13,9 +13,9 @@
  * One-shot: run it again only if public/pocketbot.svg changes.
  *   node apps/v2/scripts/render-app-icons.mjs
  *
- * node, not bun: Playwright drives the browser over a pipe transport that
- * bun's child_process doesn't wire up on Windows, so the launch sits there
- * until it times out.
+ * Playwright drives the browser over a pipe transport; run this with
+ * node (not a bundled child_process), or the launch sits there until
+ * it times out.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";

@@ -8,8 +8,8 @@
     "ios": "expo start --ios",
     "typecheck": "tsc --noEmit",
     "export": "expo export --platform android",
-    "build:dev:ios": "bunx eas-cli build --profile development --platform ios",
-    "build:dev:android": "bunx eas-cli build --profile development --platform android"
+    "build:dev:ios": "pnpm dlx eas-cli build --profile development --platform ios",
+    "build:dev:android": "pnpm dlx eas-cli build --profile development --platform android"
   },
   "dependencies": {
     "@clerk/expo": "^4.2.0",

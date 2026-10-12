@@ -12,9 +12,9 @@
  *   re-run this on a machine with Chrome/Edge to regenerate
  *   public/pocketbot-mark.png (it still holds the old swirl raster).
  *
- * node, not bun: Playwright drives the browser over a pipe transport that
- * bun's child_process doesn't wire up on Windows, so the launch sits there
- * until it times out.
+ * Playwright drives the browser over a pipe transport; run this with
+ * node (not a bundled child_process), or the launch sits there until
+ * it times out.
  */
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
