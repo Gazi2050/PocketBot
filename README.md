@@ -6,9 +6,8 @@
 
 ---
 
-PocketBot is a full-stack AI chat app built on Next.js and Convex. It's the code
-behind [pocketbot.chat](https://pocketbot.chat), published in full under the MIT
-license. Read it, run your own, or help make it better.
+PocketBot is a full-stack AI chat app built on Next.js and Convex, published
+in full under the MIT license. Read it, run your own, or help make it better.
 
 ## Features
 
