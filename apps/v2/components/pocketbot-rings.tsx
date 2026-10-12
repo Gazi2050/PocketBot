@@ -2,7 +2,7 @@
 
 import type { CSSProperties } from "react";
 
-/* The PocketBot mark ships static (brand/logo), so the old
+/* The PocketBot mark ships static (brand/), so the old
    counter-rotating ring rig is retired. The component keeps its name and
    `layers` fill mechanism — the mark is drawn through a CSS mask so the
    layers (usually bg-current / bg-foreground-soft) keep driving its color

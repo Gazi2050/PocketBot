@@ -4,7 +4,7 @@ export function HeroArt() {
   return (
     <div className="relative mt-8 aspect-[5/2] overflow-hidden rounded-3xl bg-neutral-950 ring-1 ring-black/7 sm:aspect-[4/1] dark:ring-white/8">
       <PlasmaWave className="absolute inset-0" />
-      {/* Static brand mark (brand/logo); the dark hero keeps the
+      {/* Static brand mark (brand/); the dark hero keeps the
           light-on-dark artwork legible, the scale lands it in the wave. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
