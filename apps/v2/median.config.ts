@@ -27,13 +27,11 @@ import { SIGNED_OUT, supportBackend, verifiedCustomer } from "@/lib/median-backe
 const NAVIGABLE_ROUTES = [
   "/",
   "/pricing",
-  "/integrations",
   "/settings",
   "/settings/general",
   "/settings/personalization",
   "/settings/memory",
   "/settings/models",
-  "/settings/integrations",
   "/settings/account",
   "/settings/billing",
   "/settings/usage",
@@ -41,7 +39,6 @@ const NAVIGABLE_ROUTES = [
   "/about",
   "/about/features",
   "/about/pricing",
-  "/about/developers",
 ];
 
 export default defineConfig({
@@ -128,23 +125,6 @@ export default defineConfig({
           secret,
           externalId: customer,
           days: days ?? 7,
-        });
-      },
-    },
-
-    pocketbotIntegrations: {
-      description:
-        "Every integration the customer has installed and its state: working, needs reconnecting, credentials rejected, erroring, never finished connecting, or paused, with the fix for each and when it broke. Call it when someone says Gmail, Calendar, Notion, GitHub or any other connected app stopped working or isn't being used.",
-      risk: "low",
-      input: {},
-      async execute(_input, context) {
-        const customer = verifiedCustomer(context);
-        if (!customer) return SIGNED_OUT;
-
-        const { convex, secret } = supportBackend();
-        return await convex.query(api.support.integrations.integrationStatus, {
-          secret,
-          externalId: customer,
         });
       },
     },

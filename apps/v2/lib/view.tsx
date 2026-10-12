@@ -11,11 +11,11 @@ import {
 
 export type { SettingsSection };
 
-/* Which face the shell is showing (chats vs settings vs the integrations
-   store), which thread the chat face is on, and the active settings
-   section — all derived from the URL. /settings, /settings/<section>,
-   /integrations, and /thread/<id> are real routes, so deep links, refresh,
-   and the back button all work, and back/forward runs the same page slide.
+/* Which face the shell is showing (chats vs settings), which thread the
+   chat face is on, and the active settings section — all derived from the
+   URL. /settings, /settings/<section>, and /thread/<id> are real routes,
+   so deep links, refresh, and the back button all work, and back/forward
+   runs the same page slide.
 
    Navigation goes through the native History API, which Next syncs into
    usePathname: the face flips the same frame the user clicks, with no
@@ -32,10 +32,6 @@ export function useView() {
   const section: SettingsSection = isSettingsSection(segment)
     ? segment
     : "general";
-
-  /* The integrations store rides the same page slide as settings — it's
-     the content pane's other "away from chats" face. */
-  const integrationsOpen = pathname === "/integrations";
 
   /* Chat history as a page of its own. It exists for the phone, where the
      tab bar replaced the rail that used to hold the list — but it is a real
@@ -59,10 +55,6 @@ export function useView() {
     window.history.pushState(null, "", "/");
   }, []);
 
-  const openIntegrations = useCallback(() => {
-    window.history.pushState(null, "", "/integrations");
-  }, []);
-
   const openHistory = useCallback(() => {
     window.history.pushState(null, "", "/history");
   }, []);
@@ -84,13 +76,11 @@ export function useView() {
 
   return {
     settingsOpen,
-    integrationsOpen,
     historyOpen,
     section,
     threadId,
     openSettings,
     closeSettings,
-    openIntegrations,
     openHistory,
     openThread,
     openHome,

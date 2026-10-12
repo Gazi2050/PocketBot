@@ -41,8 +41,6 @@ export type QueueMessageArgs = {
   attachments: AttachmentUpload[];
   search: boolean;
   thinking: ThinkingLevel;
-  integrations?: { serverId: string; name: string }[];
-  skills?: { installId: string; name: string }[];
 };
 
 const WIRE_MODEL_KEYS = ["Auto", "Fast", "Basic", "Max", "Image"] as const;
@@ -115,8 +113,6 @@ export function useQueueActions() {
       attachments,
       search,
       thinking,
-      integrations,
-      skills,
     }: QueueMessageArgs) => {
       const result = await enqueue({
         threadId: threadId as Id<"threads">,
@@ -133,22 +129,6 @@ export function useQueueActions() {
                 ...(file.skippedReason !== undefined
                   ? { skippedReason: file.skippedReason }
                   : {}),
-              })),
-            }
-          : {}),
-        ...(integrations && integrations.length > 0
-          ? {
-              integrations: integrations.map((mention) => ({
-                serverId: mention.serverId as Id<"mcpServers">,
-                name: mention.name,
-              })),
-            }
-          : {}),
-        ...(skills && skills.length > 0
-          ? {
-              skills: skills.map((mention) => ({
-                installId: mention.installId as Id<"skillInstalls">,
-                name: mention.name,
               })),
             }
           : {}),

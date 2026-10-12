@@ -4,7 +4,7 @@ import { IconArrowUpRight, IconMessage2 } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { errorText } from "@/lib/integrations-data";
+import { errorText } from "@/lib/errors";
 import { formatRelative } from "@/lib/relative-time";
 import { showToast } from "@/lib/toasts";
 import type { MemorySource, useMemorySources } from "@/lib/user-memory";

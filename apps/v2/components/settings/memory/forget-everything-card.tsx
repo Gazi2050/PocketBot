@@ -7,7 +7,7 @@ import { api } from "@pocketbot/backend/convex/_generated/api";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { errorText } from "@/lib/integrations-data";
+import { errorText } from "@/lib/errors";
 import { showToast } from "@/lib/toasts";
 import { SettingsCard, SettingsRow } from "../settings-rows";
 

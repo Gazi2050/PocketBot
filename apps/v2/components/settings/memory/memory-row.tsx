@@ -5,7 +5,7 @@ import { IconPencil } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { errorText } from "@/lib/integrations-data";
+import { errorText } from "@/lib/errors";
 import { formatRelative } from "@/lib/relative-time";
 import { showToast } from "@/lib/toasts";
 import type { Memory } from "@/lib/user-memory";

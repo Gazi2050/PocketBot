@@ -5,7 +5,7 @@ import { useAction } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "@pocketbot/backend/convex/_generated/api";
 
-import { errorText } from "./integrations-data";
+import { errorText } from "./errors";
 
 /* Client bindings for the Memory settings tab. Supermemory lives behind an
    HTTP API rather than a Convex table, so there's nothing reactive to

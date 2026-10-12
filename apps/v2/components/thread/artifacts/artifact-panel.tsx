@@ -56,7 +56,6 @@ import {
 } from "./artifact-shell";
 import { DocumentDownloadMenu } from "./document-download-menu";
 import { CodeDownloadButton } from "./code-download-button";
-import { ArtifactDataSources } from "./artifact-data-sources";
 import { ArtifactFrameView } from "./artifact-frame-view";
 import { HtmlExportButtons } from "./html-export-buttons";
 
@@ -342,8 +341,6 @@ function HtmlPanelBody({
                 <span className="size-1.5 shrink-0 animate-pulse rounded-full bg-amber-500/80" />
                 {isReact ? "Writing…" : "Building…"}
               </>
-            ) : bound ? (
-              <ArtifactDataSources bindings={live?.bindings ?? []} />
             ) : isReact ? (
               "Interactive app"
             ) : (
@@ -385,7 +382,6 @@ function HtmlPanelBody({
             <div className="min-h-0 flex-1">
               <ArtifactFrameView
                 artifact={live}
-                htmlId={htmlId}
                 title={title}
                 fill
                 onErrorChange={setFrameError}

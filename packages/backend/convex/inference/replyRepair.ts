@@ -287,7 +287,7 @@ export async function repairFinalReply(params: {
 // system prompt forbids naming tools to the user, and rightly so — but the
 // fallback still has to say something truer than "try again", so each tool gets
 // a phrase describing what the *user* got out of it. Anything unrecognized
-// (a per-integration name, a tool added later) is simply left out.
+// (a tool added later) is simply left out.
 const TOOL_WORK_LABELS: Record<string, string> = {
   answerQuestion: "searched the web",
   calculate: "worked through the maths",
@@ -303,11 +303,7 @@ const TOOL_WORK_LABELS: Record<string, string> = {
   fetchUrl: "read through some pages",
   generateImage: "painted an image",
   getWeather: "checked the weather",
-  load_skill: "loaded one of your skills",
-  mcp_call_tool: "used your connected apps",
-  mcp_list_tools: "looked through your connected apps",
   searchChatHistory: "searched your past chats",
-  suggestIntegrations: "looked through the integration store",
 };
 
 /**

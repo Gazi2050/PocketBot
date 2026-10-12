@@ -41,7 +41,6 @@ export default function manifest(): MetadataRoute.Manifest {
       },
     ],
     shortcuts: [
-      { name: "Integrations", short_name: "Integrations", url: "/integrations" },
       { name: "Settings", short_name: "Settings", url: "/settings" },
     ],
     /* PocketBot in the OS share sheet. The text lands in the home composer

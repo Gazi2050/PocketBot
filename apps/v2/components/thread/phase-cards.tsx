@@ -4,7 +4,6 @@ import { memo } from "react";
 
 import type { MessagePhase } from "@/lib/messages";
 import { samePhases } from "@/lib/phase-activity";
-import { IntegrationSuggestionCard } from "@/components/integrations/integration-suggestion-card";
 import { DocumentCard } from "./artifacts/document-card";
 import { ChartCard } from "./chart/chart-card";
 import { HtmlCard } from "./artifacts/html-card";
@@ -32,16 +31,10 @@ export const PhaseCards = memo(function PhaseCards({
   animate,
   order = 0,
   messageTerminal = false,
-  messageId,
-  phaseIndex,
 }: {
   phases: MessagePhase[];
   /** Entrance animations — only for cards landing mid-stream. */
   animate: boolean;
-  /** The message these phases belong to, and where the first one sits in it.
-   *  A live chart re-reads its integration through that address. */
-  messageId?: string;
-  phaseIndex?: number;
   /** Thread position of these phases (message createdAt + phase index),
    *  so visual cards for one artifact can agree on who is furthest along. */
   order?: number;
@@ -61,15 +54,7 @@ export const PhaseCards = memo(function PhaseCards({
              (lib/phase-activity.ts), so nothing goes here until the spec
              lands and the card can draw the whole chart at once. */
           return phase.pending ? null : (
-            <ChartCard
-              key={index}
-              phase={phase}
-              animate={animate}
-              messageId={messageId}
-              phaseIndex={
-                phaseIndex === undefined ? undefined : phaseIndex + index
-              }
-            />
+            <ChartCard key={index} phase={phase} animate={animate} />
           );
         case "document":
           return (
@@ -86,14 +71,6 @@ export const PhaseCards = memo(function PhaseCards({
               phase={phase}
               order={order + index / 1_000_000}
               messageTerminal={messageTerminal}
-            />
-          );
-        case "integrationSuggestion":
-          return phase.pending ? null : (
-            <IntegrationSuggestionCard
-              key={index}
-              phase={phase}
-              animate={animate}
             />
           );
         case "question":
@@ -137,6 +114,4 @@ export const PhaseCards = memo(function PhaseCards({
   previous.animate === next.animate &&
   previous.order === next.order &&
   previous.messageTerminal === next.messageTerminal &&
-  previous.messageId === next.messageId &&
-  previous.phaseIndex === next.phaseIndex &&
   samePhases(previous.phases, next.phases));

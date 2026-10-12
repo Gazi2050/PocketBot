@@ -27,8 +27,7 @@ import {
   UsageMultiplierBanner,
 } from "./system-status";
 
-/* The second face is nine settings sections and the whole integrations
-   store, and it used to be imported — and mounted, and subscribed — on
+/* The second face is nine settings sections, and it used to be imported — and mounted, and subscribed — on
    every page load, including the chat home nobody opens settings from.
    Split out, it costs nothing until it is wanted.
 
@@ -39,7 +38,6 @@ import {
    the face is there on the first frame — the same as when it was static,
    minus the cost to first paint. */
 const importSettings = () => import("./settings/settings-view");
-const importIntegrations = () => import("./integrations/integrations-view");
 
 /* Only ever seen by someone who opened a settings URL cold, before the warm
    below has had a chance to run — every in-app trip finds the chunk already
@@ -56,18 +54,12 @@ const SettingsView = dynamic(
   () => importSettings().then((module) => module.SettingsView),
   { loading: AwayFaceLoading },
 );
-const IntegrationsView = dynamic(
-  () => importIntegrations().then((module) => module.IntegrationsView),
-  { loading: AwayFaceLoading },
-);
-
 function useWarmAwayFace() {
   useEffect(() => {
     /* After first paint and only when the main thread is free — this must
        never compete with the chat face becoming interactive. */
     const warm = () => {
       void importSettings();
-      void importIntegrations();
     };
     if (typeof requestIdleCallback !== "function") {
       const id = setTimeout(warm, 2000);
@@ -79,17 +71,17 @@ function useWarmAwayFace() {
 }
 
 /** Everything that isn't the chat: they share the page slide's second face. */
-type AwayFaceName = "settings" | "integrations" | "history";
+type AwayFaceName = "settings" | "history";
 
-/* Settings, the integrations store and the phone's chat list share the page
-   slide's second face. Which one shows is latched: while none is open (the
-   face is sliding out), the last-open one keeps rendering, so the exit
-   animation never swaps content mid-flight. Hops between them while VISIBLE
-   ride the same quick pane flip the settings sections use — which is also
-   what a phone's tab bar wants, since three of its four tabs live here. But
-   a swap that happens off-screen (settings was latched, integrations opens
-   from home) must be silent: the epoch key remounts AnimatePresence so the
-   stale face vanishes instead of playing its exit over the incoming slide. */
+/* Settings and the phone's chat list share the page slide's second face.
+   Which one shows is latched: while none is open (the face is sliding out),
+   the last-open one keeps rendering, so the exit animation never swaps
+   content mid-flight. Hops between them while VISIBLE ride the same quick
+   pane flip the settings sections use — which is also what a phone's tab
+   bar wants, since two of its three tabs live here. But a swap that happens
+   off-screen (settings was latched, history opens from home) must be
+   silent: the epoch key remounts AnimatePresence so the stale face vanishes
+   instead of playing its exit over the incoming slide. */
 function AwayFace({ target }: { target: AwayFaceName | null }) {
   const open = target !== null;
 
@@ -131,8 +123,6 @@ function AwayFace({ target }: { target: AwayFaceName | null }) {
       >
         {face === "settings" ? (
           <SettingsView />
-        ) : face === "integrations" ? (
-          <IntegrationsView />
         ) : (
           <HistoryView />
         )}
@@ -147,17 +137,14 @@ function AwayFace({ target }: { target: AwayFaceName | null }) {
    null — they exist to claim the URLs and carry per-route metadata, and
    arrive here as empty `children`. */
 export function AppShell({ children }: { children?: React.ReactNode }) {
-  const { settingsOpen, integrationsOpen, historyOpen, section, threadId } =
-    useView();
+  const { settingsOpen, historyOpen, section, threadId } = useView();
   /* One answer for both the slide and the face inside it, so page 2 can
      never be showing while claiming to be nothing. */
   const awayFace: AwayFaceName | null = settingsOpen
     ? "settings"
-    : integrationsOpen
-      ? "integrations"
-      : historyOpen
-        ? "history"
-        : null;
+    : historyOpen
+      ? "history"
+      : null;
   useWarmAwayFace();
   const { isAuthenticated } = useConvexAuth();
   /* Shares the sidebar's subscription — no extra wire traffic. */
@@ -186,9 +173,7 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
   useEffect(() => {
     document.title = settingsOpen
       ? `${SECTION_TITLES[section]} · PocketBot`
-      : integrationsOpen
-        ? "Integrations · PocketBot"
-        : historyOpen
+      : historyOpen
           ? "Chats · PocketBot"
           : activeThread
             ? `${activeThread.title} · PocketBot`
@@ -197,7 +182,6 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
               : "PocketBot";
   }, [
     settingsOpen,
-    integrationsOpen,
     historyOpen,
     section,
     activeThread,

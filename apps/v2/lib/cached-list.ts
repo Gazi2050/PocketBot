@@ -7,8 +7,7 @@ import { writeCacheWhenIdle } from "./idle-storage";
 /* Cache-then-live for a list: null until either the cache or the live rows
    arrive, cached rows until Convex answers, live rows (mirrored back into
    the cache) after. The cache read waits a frame so SSR and hydration
-   never touch storage — mirrors lib/model-access.ts. Shared by the
-   integrations and skills stores. */
+   never touch storage — mirrors lib/model-access.ts. */
 export function useCachedList<T>(key: string, live: T[] | undefined): T[] | null {
   const [cached, setCached] = useState<T[] | null>(null);
 

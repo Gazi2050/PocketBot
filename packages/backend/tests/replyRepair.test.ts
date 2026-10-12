@@ -32,7 +32,7 @@ function repairWith(model: MockLanguageModelV4) {
     model,
     systemPrompt: "You are pocketbot.",
     messages: [{ role: "user", content: "which file holds the theme tokens?" }],
-    toolNames: ["mcp_call_tool", "mcp_call_tool", "fetchUrl"],
+    toolNames: ["answerQuestion", "answerQuestion", "fetchUrl"],
     trace: TRACE,
   });
 }
@@ -70,7 +70,7 @@ test("two empty bodies fall back to a line describing the work that happened", a
   expect(repair.source).toBe("fallback");
   expect(repair.attempts).toHaveLength(2);
   expect(repair.attempts.every((attempt) => attempt.empty)).toBe(true);
-  expect(repair.text).toContain("used your connected apps");
+  expect(repair.text).toContain("searched the web and read through some pages");
   expect(repair.text.trim().length).toBeGreaterThan(0);
 });
 
@@ -104,9 +104,9 @@ test("tool work reads as plain English, deduped, in the order it happened", () =
       "answerQuestion",
       "fetchUrl",
       "answerQuestion",
-      "mcp_call_tool",
+      "getWeather",
     ]),
-  ).toBe("searched the web, read through some pages and used your connected apps");
+  ).toBe("searched the web, read through some pages and checked the weather");
   expect(describeToolWork(["getWeather"])).toBe("checked the weather");
 });
 

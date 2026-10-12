@@ -51,11 +51,11 @@ export const MIN_USAGE_BALANCE_REQUIRED = 0.000001;
 export const SEARCH_MAX_STEPS = 10;
 
 // Upper bound on the agentic loop whenever any tool is available. Sized for a
-// real multi-integration errand run one call per step (several reads across
-// two integrations plus a final write), with the LAST step always reserved by
-// prepareStep for a tool-free final answer — so hitting this ceiling produces
-// a reply, never a silent cut-off. Loop policy (toolPolicy.ts) breaks actual
-// spirals by detecting repeated identical calls long before this bound.
+// real multi-tool errand run one call per step, with the LAST step always
+// reserved by prepareStep for a tool-free final answer — so hitting this
+// ceiling produces a reply, never a silent cut-off. Loop policy
+// (toolPolicy.ts) breaks actual spirals by detecting repeated identical calls
+// long before this bound.
 export const TOOL_MAX_STEPS = 16;
 
 // Sentinel content the client parses to know an assistant message failed
@@ -371,8 +371,8 @@ export function createOpenRouterChatModel({
   // Leave provider routing to OpenRouter so account privacy settings and
   // current provider availability can both be honored.
   const model = openRouter.chat(modelId, {
-    // A single model step can otherwise fan out into dozens of integration
-    // calls before the SDK's step cap can intervene.
+    // A single model step can otherwise fan out into dozens of tool calls
+    // before the SDK's step cap can intervene.
     parallelToolCalls: false,
   });
 

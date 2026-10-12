@@ -19,7 +19,7 @@ import "@mediansh/widget/styles.css";
    through the History API the way lib/view.tsx does. A router push would fetch
    a payload for a page with nothing in it. Everything else is a real page and
    needs the router. */
-const SHELL_PATH = /^\/(?:$|settings(?:\/|$)|integrations$|thread\/)/;
+const SHELL_PATH = /^\/(?:$|settings(?:\/|$)|thread\/)/;
 
 export function SupportPanel({ open }: { open: boolean }) {
   const router = useRouter();

@@ -1,4 +1,12 @@
-import type { MentionTarget } from "@/lib/integrations";
+/** Something the user can @mention — an attached image, once integrations
+ * and skills. Integrations and skills are gone; image tags remain, so the
+ * shape stays but the pool is just attachments now. */
+export type MentionTarget = {
+  serverId: string;
+  name: string;
+  logoUrl: string | null;
+  iconSvg?: string;
+};
 
 /* Inline mention plumbing. Mentions live in the composer text as literal
    "@Name" runs — derived on every render, never stored — and the pieces

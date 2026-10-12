@@ -70,13 +70,6 @@ pnpm exec convex env set OPENROUTER_API_KEY sk-or-v1-...
 pnpm exec convex env set SITE_URL http://localhost:3000
 ```
 
-If you plan to connect integrations (MCP servers), also set an encryption key
-for their stored credentials:
-
-```sh
-pnpm exec convex env set MCP_ENCRYPTION_KEY "$(openssl rand -base64 32)"
-```
-
 Then restart `pnpm exec convex dev` in the first terminal. It pushes the backend
 and keeps watching for changes. Leave it running.
 
@@ -219,9 +212,6 @@ Dev and production Clerk instances have different URLs.
 **Locked chats fail to start.**
 Set `NEXT_PUBLIC_CONVEX_SITE_URL` in the web app. Locked chats stream
 straight from Convex's HTTP endpoint.
-
-**Connecting an integration fails with an encryption error.**
-Set `MCP_ENCRYPTION_KEY` on Convex (step 3).
 
 **The dev server rejects requests from another device.**
 Add that host to `DEV_ALLOWED_ORIGINS` in `apps/v2/.env.local`.

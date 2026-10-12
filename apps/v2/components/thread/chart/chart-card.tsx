@@ -1,19 +1,16 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
   IconChartAreaLineFilled,
   IconChartHistogram,
   IconChartPieFilled,
   IconDownload,
-  IconPlugConnected,
-  IconRefresh,
   IconTable,
 } from "@tabler/icons-react";
 import { motion } from "motion/react";
 
 import type { MessagePhase } from "@/lib/messages";
-import { formatFetchedAt, useChartBinding } from "@/lib/chart-binding";
 import { seriesColors } from "@/lib/chart-palette";
 import { downloadChartPng } from "@/lib/chart-export";
 import {
@@ -101,37 +98,21 @@ function CardButton({
 export function ChartCard({
   phase,
   animate,
-  messageId,
-  phaseIndex,
 }: {
   phase: MessagePhase;
   /** Entrance animation — only for cards landing mid-stream. */
   animate: boolean;
-  /** Where this phase lives — a live chart re-reads its source through it. */
-  messageId?: string;
-  phaseIndex?: number;
 }) {
   if (!isRenderableChart(phase.chart)) return null;
-  return (
-    <ChartCardBody
-      chart={phase.chart}
-      animate={animate}
-      messageId={messageId}
-      phaseIndex={phaseIndex}
-    />
-  );
+  return <ChartCardBody chart={phase.chart} animate={animate} />;
 }
 
 function ChartCardBody({
   chart,
   animate,
-  messageId,
-  phaseIndex,
 }: {
   chart: ChartSpec;
   animate: boolean;
-  messageId?: string;
-  phaseIndex?: number;
 }) {
   const [showTable, setShowTable] = useState(false);
   const [active, setActive] = useState<number | null>(null);
@@ -149,24 +130,9 @@ function ChartCardBody({
      mount and never again — the card can't mount without a chart, so there
      is nothing to wait for and nothing to latch mid-render. */
   const [snapshot] = useState(chart);
-
-  /* A live chart re-reads its integration on open. The snapshot above is
-     always what draws first, so this only ever swaps fresher numbers in — a
-     failed refresh leaves yesterday's chart on screen with a note, which
-     beats blanking a card because an integration hiccuped. */
-  const binding = snapshot.binding;
-  const { live, error, refreshing, refresh } = useChartBinding({
-    messageId,
-    phaseIndex,
-    enabled: Boolean(binding),
-  });
-  const spec = useMemo(
-    () =>
-      live
-        ? { ...snapshot, categories: live.categories, series: live.series }
-        : snapshot,
-    [snapshot, live],
-  );
+  /* The snapshot is the whole chart now — live re-reads went away with
+     integrations, so what the model wrote is what draws, frozen. */
+  const spec = snapshot;
 
   /* Whether the plot animates in. A chart that arrives while you're watching
      draws itself; one you scrolled back to, or re-opened the thread on, is
@@ -289,66 +255,6 @@ function ChartCardBody({
           {spec.source}
         </p>
       )}
-
-      {binding && (
-        <LiveFootnote
-          integration={binding.integration}
-          fetchedAt={live?.fetchedAt}
-          error={error}
-          refreshing={refreshing}
-          onRefresh={refresh}
-        />
-      )}
     </motion.div>
-  );
-}
-
-/* Where a live chart's numbers came from and how old they are. Sits outside
-   the plot on purpose: a chart that refreshes itself is making a claim about
-   currency, and the claim should be legible without reading the numbers. */
-function LiveFootnote({
-  integration,
-  fetchedAt,
-  error,
-  refreshing,
-  onRefresh,
-}: {
-  integration: string;
-  fetchedAt?: number;
-  error: string | null;
-  refreshing: boolean;
-  onRefresh: () => void;
-}) {
-  return (
-    <div className="mt-3 flex items-center gap-2">
-      <IconPlugConnected
-        size={12}
-        stroke={2}
-        className="shrink-0 text-muted-foreground"
-      />
-      <span className="min-w-0 flex-1 truncate text-[11px]/4 text-muted-foreground">
-        {error
-          ? `Showing the last numbers — ${error}`
-          : refreshing && !fetchedAt
-            ? `Live from ${integration}`
-            : fetchedAt
-              ? `Live from ${integration} · updated ${formatFetchedAt(fetchedAt)}`
-              : `Live from ${integration}`}
-      </span>
-      <button
-        type="button"
-        onClick={onRefresh}
-        disabled={refreshing}
-        aria-label="Refresh this chart's data"
-        title="Refresh"
-        className="flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full text-muted-foreground transition-colors duration-150 hover:bg-black/[0.04] hover:text-foreground disabled:cursor-default disabled:opacity-40 dark:hover:bg-white/[0.06]"
-      >
-        <IconRefresh
-          size={12}
-          stroke={2}
-          className={refreshing ? "animate-spin" : undefined}
-        />
-      </button>
-    </div>
   );
 }

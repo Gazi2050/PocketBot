@@ -538,10 +538,6 @@ export const shareThread = mutationGeneric({
       }
     }
     for (const artifact of html) {
-      /* An artifact that reads live integration data has no public page —
-         getSharedArtifact refuses to serve it — so minting a token for one
-         would only ever produce a link that says "not available". */
-      if ((artifact.bindings?.length ?? 0) > 0) continue;
       if (!artifact.shortId && artifact.status === "complete") {
         await ctx.db.patch(artifact._id, {
           shortId: await uniqueHtmlShortId(ctx),
@@ -910,8 +906,6 @@ export const branchThread = mutationGeneric({
         createdAt: message.createdAt,
         updatedAt: now,
         ...(hasAttachments ? { attachments: message.attachments } : {}),
-        ...(message.integrations ? { integrations: message.integrations } : {}),
-        ...(message.skills ? { skills: message.skills } : {}),
         ...(message.role === "assistant"
           ? {
               // A stopped reply stays visibly cut short; everything else copied
@@ -1224,22 +1218,6 @@ export const getSharedThread = queryGeneric({
     > = {};
     for (const h of html) {
       if (h.status !== "complete" || !hasArtifactBody(h)) continue;
-      /* An artifact built around the owner's live integration data is
-         withheld from a shared transcript exactly like it is from its own
-         share link: it renders as a locked card, with no body attached. The
-         data could never load for a visitor anyway — but the module that
-         frames it is theirs too, and this page is public. */
-      if ((h.bindings?.length ?? 0) > 0) {
-        visualizations[h._id as string] = {
-          title: h.title?.trim() || "Visualization",
-          content: "",
-          kind: h.kind,
-          runtime: h.runtime ?? "html",
-          shortId: null,
-          dataLocked: true,
-        };
-        continue;
-      }
       const content = await readHtmlBody(ctx, h);
       if (!content) continue;
       visualizations[h._id as string] = {

@@ -13,16 +13,13 @@ import {
   appendUserTurn,
   displayNameFromIdentity,
   scheduleAssistantTurn as scheduleTurn,
-  verifyMentions,
 } from "./turns";
 import {
   attachmentValidator,
-  integrationMentionValidator,
   messageStatusValidator,
   phaseValidator,
   questionAnswerValidator,
   sendOptionsValidator,
-  skillMentionValidator,
 } from "./validators";
 
 const TITLE_INPUT_MAX_CHARS = 250;
@@ -127,12 +124,6 @@ async function formatMessage(
       cache,
       message.attachments,
     ),
-    integrations: await hydrateIntegrationMentions(
-      ctx,
-      cache,
-      message.integrations,
-    ),
-    skills: await hydrateSkillMentions(ctx, cache, message.skills),
     // The body is ciphertext; the client opens it with the thread's key.
     sealed: message.sealed === true,
     status: message.status,
@@ -173,63 +164,6 @@ async function hydrateAttachmentUrls(
       return {
         ...attachment,
         ...(url ? { url } : {}),
-      };
-    }),
-  );
-}
-
-// Mention chips render with the integration's store branding; look it up live
-// (mention → install row → store listing) so logos never go stale in old
-// messages. Uninstalled/unbranded mentions fall back to the chip's plug icon.
-async function hydrateIntegrationMentions(
-  ctx: any,
-  cache: MessageHydrationCache,
-  mentions: { serverId: string; name: string }[] | undefined,
-) {
-  if (!mentions) {
-    return mentions;
-  }
-
-  return await Promise.all(
-    mentions.map(async (mention) => {
-      const server = await getCachedDocument(ctx, cache, mention.serverId);
-      const listing = server?.integrationId
-        ? await getCachedDocument(ctx, cache, server.integrationId)
-        : null;
-      return {
-        ...mention,
-        logoUrl: listing?.logoId
-          ? await getCachedStorageUrl(ctx, cache, listing.logoId)
-          : null,
-        iconSvg: listing?.iconSvg,
-      };
-    }),
-  );
-}
-
-// Skill mention chips work the same way: mention → install row → skill
-// listing, hydrated live so branding never goes stale in old messages.
-async function hydrateSkillMentions(
-  ctx: any,
-  cache: MessageHydrationCache,
-  mentions: { installId: string; name: string }[] | undefined,
-) {
-  if (!mentions) {
-    return mentions;
-  }
-
-  return await Promise.all(
-    mentions.map(async (mention) => {
-      const install = await getCachedDocument(ctx, cache, mention.installId);
-      const listing = install
-        ? await getCachedDocument(ctx, cache, install.skillId)
-        : null;
-      return {
-        ...mention,
-        logoUrl: listing?.logoId
-          ? await getCachedStorageUrl(ctx, cache, listing.logoId)
-          : null,
-        iconSvg: listing?.iconSvg,
       };
     }),
   );
@@ -487,12 +421,6 @@ export const sendUserMessage = mutationGeneric({
     threadId: v.optional(v.id("threads")),
     content: v.string(),
     attachments: v.optional(v.array(attachmentValidator)),
-    // Integrations the user @mentioned in the composer. Verified against their
-    // own installs below; the stream preloads these servers' tools this turn.
-    integrations: v.optional(v.array(integrationMentionValidator)),
-    // Skills the user @mentioned in the composer. Verified against their own
-    // installs below; the stream preloads these skills' instructions.
-    skills: v.optional(v.array(skillMentionValidator)),
     options: v.optional(sendOptionsValidator),
     // Start (or continue) an incognito thread: nothing here is meant to outlive
     // the session. We skip the title model entirely (the thread is hidden, so a
@@ -502,19 +430,10 @@ export const sendUserMessage = mutationGeneric({
   },
   handler: async (
     ctx,
-    { threadId, content, attachments, integrations, skills, options, incognito },
+    { threadId, content, attachments, options, incognito },
   ) => {
     const userId = await getCurrentUserId(ctx);
     const now = Date.now();
-
-    // Ownership-checked and name-snapshotted — the client's labels are
-    // never trusted (see convex/turns.ts).
-    const { mentions, skillMentions } = await verifyMentions(
-      ctx,
-      userId,
-      integrations,
-      skills,
-    );
 
     const recentMessages = await ctx.db
       .query("messages")
@@ -579,8 +498,6 @@ export const sendUserMessage = mutationGeneric({
         userId,
         content,
         attachments,
-        mentions,
-        skillMentions,
         options,
         model,
         userName: await displayNameFromIdentity(ctx),

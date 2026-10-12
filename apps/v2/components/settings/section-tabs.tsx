@@ -12,10 +12,9 @@ import { cn } from "@/lib/utils";
    inline so motion can keep the capsule's corners round while the pill
    stretches between different-width chips.
  *
- * Shared by the store (two or three chips, side by side) and the settings
- * face on a phone (nine, in a scroller — that's where the rail's section
- * rows go when there's no rail). */
-export function StoreTabs<T extends string>({
+ * The settings face on a phone (eight, in a scroller — that's where the
+ * rail's section rows go when there's no rail). */
+export function SectionTabs<T extends string>({
   value,
   onChange,
   tabs,
@@ -33,7 +32,7 @@ export function StoreTabs<T extends string>({
 }) {
   const listRef = useRef<HTMLDivElement>(null);
 
-  /* Keep the selected chip in view of its own scroller — nine sections is
+  /* Keep the selected chip in view of its own scroller — eight sections is
      more than fits across a phone, and the one you're reading should never
      be the one off the end. scrollLeft rather than scrollIntoView, which is
      free to scroll every ancestor including the page. */

@@ -7,7 +7,6 @@ import {
   IconCoinFilled,
   IconCreditCardFilled,
   IconPaletteFilled,
-  IconPuzzleFilled,
   IconSparklesFilled,
   IconUserFilled,
   type Icon,
@@ -15,7 +14,6 @@ import {
 
 import { IconBrainFilled } from "@/components/icons/brain-filled";
 import { useSettingsSections } from "@/lib/deployment-features";
-import { useExpiredIntegrations } from "@/lib/integrations-data";
 import { useView, type SettingsSection } from "@/lib/view";
 import { SidebarRow } from "../sidebar-row";
 
@@ -24,7 +22,6 @@ const SECTIONS: { key: SettingsSection; label: string; icon: Icon }[] = [
   { key: "personalization", label: "Personalization", icon: IconPaletteFilled },
   { key: "memory", label: "Memory", icon: IconBrainFilled },
   { key: "models", label: "Models", icon: IconSparklesFilled },
-  { key: "integrations", label: "Integrations", icon: IconPuzzleFilled },
   { key: "account", label: "Account", icon: IconUserFilled },
   { key: "billing", label: "Billing", icon: IconCreditCardFilled },
   { key: "usage", label: "Usage", icon: IconChartPieFilled },
@@ -42,9 +39,6 @@ export function SettingsSidebar({
   onNavigate?: () => void;
 }) {
   const { section, setSection, closeSettings } = useView();
-  /* An expired integration is silent everywhere else in the app — the model
-     just stops being able to use it — so the nav carries the news. */
-  const expired = useExpiredIntegrations();
   const visible = useSettingsSections();
   const sections = SECTIONS.filter(({ key }) => visible.includes(key));
 
@@ -66,7 +60,6 @@ export function SettingsSidebar({
             icon={icon}
             label={label}
             active={section === key}
-            alert={key === "integrations" && expired.length > 0}
             className={
               index === sections.length - 1
                 ? "before:-top-px before:-bottom-1"

@@ -15,8 +15,6 @@ import {
 } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { IntegrationIcon } from "@/components/integration-logo";
-import { useIntegrationActivity } from "@/lib/integration-activity";
 import type { MessagePhase } from "@/lib/messages";
 import { EASE_OUT } from "@/lib/motion";
 import { integrationCompletedLabel } from "@/lib/phase-activity";
@@ -84,14 +82,10 @@ export function PhaseDetailContent({ phase }: { phase: MessagePhase }) {
 
 export function PhaseRow({ phase }: { phase: MessagePhase }) {
   const [open, setOpen] = useState(false);
-  const mcp = phase.kind === "mcp";
-  const integration = useIntegrationActivity(
-    mcp ? phase.server : undefined,
-    mcp ? phase.tool : undefined,
-  );
   const { expandable } = phaseDisclosure(phase);
-  const brandedIcon = mcp ? integration.iconSvg : undefined;
-  const label = integrationCompletedLabel(phase, integration.completed);
+  /* Old turns may still carry mcp/skill/integrationSuggestion phases; they
+     render with the generic glyph now that store branding is gone. */
+  const label = integrationCompletedLabel(phase);
 
   return (
     <div className="min-w-0">
@@ -103,29 +97,14 @@ export function PhaseRow({ phase }: { phase: MessagePhase }) {
           setOpen((current) => !current);
         }}
         aria-expanded={expandable ? open : undefined}
-        title={
-          mcp && phase.server && phase.tool
-            ? `${phase.server} · ${phase.tool}`
-            : undefined
-        }
         className={`-mx-1 flex max-w-full items-center gap-2 rounded-md px-1 py-0.5 text-left ${
           expandable
             ? "cursor-pointer transition-colors duration-150 hover:bg-black/[0.04] dark:hover:bg-white/[0.05]"
             : "cursor-default"
         }`}
       >
-        <PhaseIcon
-          iconKey={
-            brandedIcon
-              ? `integration-${phase.server ?? ""}`
-              : `phase-${phase.kind}`
-          }
-        >
-          {brandedIcon ? (
-            <IntegrationIcon iconSvg={brandedIcon} size={15} />
-          ) : (
-            <PhaseGlyph kind={phase.kind} />
-          )}
+        <PhaseIcon iconKey={`phase-${phase.kind}`}>
+          <PhaseGlyph kind={phase.kind} />
         </PhaseIcon>
         <PhaseLabel
           text={label}

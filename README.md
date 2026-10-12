@@ -16,8 +16,6 @@ license. Read it, run your own, or help make it better.
   [OpenRouter](https://openrouter.ai), with adjustable thinking levels.
 - **Living artifacts:** documents, charts, and full interactive pages that
   stay editable in a side panel and can be shared by link.
-- **Integrations** with your own tools over MCP (OAuth included), plus
-  installable skills that teach PocketBot new tricks.
 - **Long-term memory** that carries preferences and projects across chats.
 - **Live web search** and page reading for answers grounded in today's web.
 - **Locked chats**, encrypted on your device with a password the server never

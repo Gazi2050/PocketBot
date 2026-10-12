@@ -13,7 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import { errorText } from "@/lib/integrations-data";
+import { errorText } from "@/lib/errors";
 import { showToast } from "@/lib/toasts";
 import { MemoryTextarea } from "./memory-textarea";
 

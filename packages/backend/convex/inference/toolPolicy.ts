@@ -1,13 +1,12 @@
 // Loop control for the agentic tool phase. The old policy capped raw call
 // counts (a total budget + per-tool ceilings), which strangled legitimate
-// multi-integration tasks: a Stripe→Gmail errand needs 8+ gateway calls, and
-// retiring a tool mid-task stranded the model without the one tool it still
-// needed. A stuck model doesn't look like "many calls" — it looks like the
-// SAME call repeated with the SAME input. So progress, not volume, is the
-// signal: identical repeats draw a warning, persistent repeats or a truly
-// runaway call count force one final tool-free step, and the last allowed
-// step is always reserved for the answer so a turn can never end silently
-// mid-loop.
+// multi-step tasks, and retiring a tool mid-task stranded the model without
+// the one tool it still needed. A stuck model doesn't look like "many calls"
+// — it looks like the SAME call repeated with the SAME input. So progress,
+// not volume, is the signal: identical repeats draw a warning, persistent
+// repeats or a truly runaway call count force one final tool-free step, and
+// the last allowed step is always reserved for the answer so a turn can never
+// end silently mid-loop.
 
 // Runaway backstop, far above what any real task uses. This is not a working
 // budget — repetition detection breaks loops long before this — it only stops

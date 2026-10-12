@@ -48,16 +48,6 @@ crons.interval(
   {},
 );
 
-// Backfill shelf categories for store listings the approval hook missed
-// (admin-added Composio extensions, pre-category rows). A no-op — not even a
-// model call — when everything is already categorized.
-crons.interval(
-  "categorize store listings",
-  { hours: 6 },
-  internal.storeCategorize.categorizeStore,
-  {},
-);
-
 // /kirkify's daily counters only mean something for their own UTC day, and
 // its run log only for as long as somebody might ask what a day cost. Both
 // are dropped once they're past that (convex/kirkify.ts).

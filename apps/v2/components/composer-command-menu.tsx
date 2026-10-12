@@ -21,7 +21,6 @@ import {
 import { AnimatePresence, motion } from "motion/react";
 
 import { clampThinking } from "@/lib/composer-gates";
-import type { MentionTarget } from "@/lib/integrations";
 import { scoreText } from "@/lib/model-search";
 import { pinRasterPath } from "@/lib/motion";
 import {
@@ -30,7 +29,6 @@ import {
   type ComposerModel,
   type ThinkingLevel,
 } from "@/lib/models";
-import { IntegrationLogo } from "./integration-logo";
 import { ModelGlyph } from "./model-glyph";
 
 /* The composer's command palette: typing "/" or "@" at a word boundary
@@ -132,8 +130,6 @@ export type CommandMenuContext = {
   favorites: ReadonlySet<string>;
   isPaid: boolean | null | undefined;
   locked: (key: string) => boolean;
-  integrations: MentionTarget[];
-  skills: MentionTarget[];
   images: { id: string; name: string; previewUrl?: string }[];
   openBilling: () => void;
   compactionStatus?: "idle" | "compacting" | "error";
@@ -292,40 +288,6 @@ function buildCommands(
       : []),
   ];
 
-  const integrationCommands: Command[] = ctx.integrations.map(
-    (integration) => ({
-      id: `integration:${integration.serverId}`,
-      label: integration.name,
-      glyph: (
-        <IntegrationLogo
-          name={integration.name}
-          logoUrl={integration.logoUrl}
-          iconSvg={integration.iconSvg}
-          size={16}
-        />
-      ),
-      keywords: ["mention", "integration", "app"],
-      insertText: `@${integration.name} `,
-      onSelect: () => {},
-    }),
-  );
-
-  const skillCommands: Command[] = ctx.skills.map((skill) => ({
-    id: `skill:${skill.serverId}`,
-    label: skill.name,
-    glyph: (
-      <IntegrationLogo
-        name={skill.name}
-        logoUrl={skill.logoUrl}
-        iconSvg={skill.iconSvg}
-        size={16}
-      />
-    ),
-    keywords: ["mention", "skill"],
-    insertText: `@${skill.name} `,
-    onSelect: () => {},
-  }));
-
   const imageCommands: Command[] = ctx.images.map((image) => ({
     id: `image:${image.id}`,
     label: `@${image.name}`,
@@ -344,7 +306,7 @@ function buildCommands(
     onSelect: () => {},
   }));
 
-  const mentions = [...integrationCommands, ...skillCommands, ...imageCommands];
+  const mentions = [...imageCommands];
   const compactCommand: Command[] = ctx.onCompact
     ? [
         {

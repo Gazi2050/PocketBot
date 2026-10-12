@@ -79,7 +79,6 @@ import {
   type HtmlPhasePayload,
 } from "./html";
 import { createReactArtifactTool } from "./reactArtifact";
-import type { ArtifactBinding } from "../validators";
 import { createGenerateImageTool } from "./generateImage";
 import {
   ASK_QUESTION_TOOL_NAME,
@@ -92,27 +91,12 @@ import {
 } from "./historySearch";
 import { createChartTool, type ChartSpec } from "./chart";
 import {
-  createSuggestIntegrationsTool,
-  type IntegrationSuggestionPhasePayload,
-} from "./integrationSuggest";
-import {
   buildImagePrompt,
   callOpenRouterImageGeneration,
   ImageReferenceError,
   resolveImageReferences,
 } from "./image";
-import { readDeclaredSource } from "./bindingRead";
-import {
-  createMcpGatewayTools,
-  isMcpToolName,
-  MCP_CALL_TOOL_NAME,
-  MCP_LIST_TOOLS_NAME,
-  type McpServerConfig,
-} from "./mcp";
-import { resolveMcpLifecycleMetadata } from "./mcpMetadata";
-import { resolveMcpServerConfigs } from "./mcpResolve";
 import { createExaAnswerTool } from "./search";
-import { createLoadSkillTool, LOAD_SKILL_NAME } from "./skills";
 import { createWebFetchTool } from "./webFetch";
 import { createWeatherTool, type WeatherPhasePayload } from "./weather";
 import { resolveWeatherUnits } from "./openMeteo";
@@ -616,8 +600,7 @@ export async function runAssistantTurn(
       let text = "";
       let firstTextDeltaSeen = false;
       const stepOutput = new StepOutputBuffer();
-      const protectStepText =
-        requestInfo.thinking || requestInfo.latestMessageHasRuntimeMentions;
+      const protectStepText = requestInfo.thinking;
       // The user can stop generation from the UI, which writes status
       // "stopped" to the assistant message. The HTTP action keeps running
       // independently, so we poll that status while streaming and abort the
@@ -821,106 +804,6 @@ export async function runAssistantTurn(
             chart_type: chart.type,
             series: chart.series.length,
             stacked: chart.stacked === true,
-            thread_id: requestInfo.threadId,
-          },
-        });
-      };
-
-      // Finalize an MCP tool call onto the message's pending `mcp` phase and
-      // record an analytics event (mirrors the web_fetch capture).
-      const persistMcp = async (info: {
-        server: string;
-        tool: string;
-        ok: boolean;
-        error?: string;
-      }) => {
-        const lifecycle = resolveMcpLifecycleMetadata(
-          requestInfo.mcpServers,
-          info.server,
-          info.tool,
-        );
-        await runMutation(internal.inference.finalizeLastPendingMcp, {
-          assistantId: requestInfo.assistantId,
-          contentOffset: text.length,
-          server: info.server,
-          tool: info.tool,
-          ...lifecycle,
-          ok: info.ok,
-          ...(info.error ? { error: info.error } : {}),
-        });
-        await captureServerEvent({
-          event: "mcp_tool_called",
-          distinctId: customerId,
-          properties: {
-            server: info.server,
-            tool: info.tool,
-            ok: info.ok,
-            thread_id: requestInfo.threadId,
-          },
-        });
-      };
-
-      // Finalize a load_skill call onto the message's pending `skill` phase
-      // and record an analytics event (mirrors the MCP capture).
-      const persistSkill = async (info: {
-        name: string;
-        ok: boolean;
-        error?: string;
-      }) => {
-        await runMutation(internal.inference.finalizeLastPendingSkill, {
-          assistantId: requestInfo.assistantId,
-          contentOffset: text.length,
-          name: info.name,
-          ok: info.ok,
-          ...(info.error ? { error: info.error } : {}),
-        });
-        await captureServerEvent({
-          event: "skill_loaded",
-          distinctId: customerId,
-          properties: {
-            skill: info.name,
-            ok: info.ok,
-            thread_id: requestInfo.threadId,
-          },
-        });
-      };
-
-      // Settle a suggestIntegrations call: the pick becomes an install card on
-      // the message's pending `integrationSuggestion` phase; an empty result
-      // drops the phase instead (nothing to card). The search half of the flow
-      // settles the same way but stays out of the analytics — it isn't a store
-      // miss, it's the model still choosing, and counting it would bury the
-      // misses that actually tell us what the store is short of.
-      const persistIntegrationSuggestion = async (
-        payload: IntegrationSuggestionPhasePayload,
-      ) => {
-        if (payload.items.length > 0) {
-          await runMutation(
-            internal.inference.finalizeLastPendingIntegrationSuggestion,
-            {
-              assistantId: requestInfo.assistantId,
-              query: payload.query,
-              items: payload.items.map((item) => ({
-                integrationId: item.integrationId as Id<"integrations">,
-                name: item.name,
-              })),
-              contentOffset: text.length,
-            },
-          );
-        } else {
-          await runMutation(
-            internal.inference.dropLastPendingIntegrationSuggestion,
-            { assistantId: requestInfo.assistantId },
-          );
-        }
-        if (payload.stage === "searched") return;
-        await captureServerEvent({
-          event: "integrations_suggested",
-          distinctId: customerId,
-          properties: {
-            query: payload.query,
-            shown: payload.items.length,
-            integrations: payload.items.map((item) => item.name),
             thread_id: requestInfo.threadId,
           },
         });
@@ -1279,18 +1162,6 @@ export async function runAssistantTurn(
         lastFlush: number;
       };
       const htmlStreams = new Map<string, HtmlStream>();
-      // MCP gateway inputs, accumulated as they stream so the integration and
-      // tool names can be stamped onto the pending phase the moment their
-      // fields close. Discovery is a real phase too: if initialization fails,
-      // the attempted integration still belongs in the activity history.
-      const mcpPhaseStreams = new Map<
-        string,
-        {
-          raw: string;
-          described: boolean;
-          gatewayTool: string;
-        }
-      >();
       // HTML creates whose execute() already finalized. The trailing
       // `tool-call` stream part often arrives AFTER execute finished (the part
       // loop lags behind on awaited mutations), and finalize deletes the map
@@ -1415,15 +1286,12 @@ export async function runAssistantTurn(
         html,
         mode,
         runtime = "html",
-        bindings,
       }: {
         toolCallId: string;
         title: string;
         html: string;
         mode: "inline" | "full";
         runtime?: "html" | "react";
-        /** React artifacts only: the declared, already-validated data reads. */
-        bindings?: ArtifactBinding[];
       }) => {
         // Mark finished up front so a stream part processed mid-finalize can
         // never reopen this call's stream.
@@ -1438,7 +1306,6 @@ export async function runAssistantTurn(
               title,
               content: html,
               kind: mode,
-              ...(bindings ? { bindings } : {}),
             });
             // The row may have opened inline and only learned it was a panel
             // artifact from the completed input; align the card with it.
@@ -1468,7 +1335,6 @@ export async function runAssistantTurn(
           htmlId,
           title,
           content: html,
-          ...(bindings ? { bindings } : {}),
         });
         return { htmlId };
       };
@@ -1553,7 +1419,7 @@ export async function runAssistantTurn(
 
       // --- Image tier ---------------------------------------------------------
       // gpt-image-2 turns skip the whole chat pipeline — no tools, memory
-      // lookup, MCP or prompt build. One Images API request; the bytes land in
+      // lookup or prompt build. One Images API request; the bytes land in
       // storage, the attachment lands on the assistant row (which the client
       // watches reactively — that's what morphs the skeleton into the picture),
       // and billing rides the normal finalize path. Everything after this block
@@ -1789,191 +1655,6 @@ export async function runAssistantTurn(
         return;
       }
 
-      // MCP (paid-only): the model gets each connected integration's name +
-      // description in the prompt, plus two gateway tools — mcp_list_tools to
-      // discover what an integration offers and mcp_call_tool to run one. No
-      // per-turn tools/list round trips; header decryption and OAuth refresh
-      // run lazily (memoized) the first time the model reaches for one, so a
-      // turn that never touches an integration pays nothing for them.
-      let mcpTools: Record<string, Tool> = {};
-      let mcpIntegrations: { name: string; description?: string }[] = [];
-      /* The gateway's memoized server resolver, hoisted so the chart tool can
-         reach it too — a live chart validates its data source by actually
-         reading it once, here, before the chart is ever shown. Null when the
-         user has nothing connected. */
-      let resolveMcpConfigs: (() => Promise<McpServerConfig[]>) | null = null;
-      /**
-       * Read one declared data source, right now, at authoring time.
-       *
-       * Both live surfaces use it and must keep using the same one: a live
-       * chart validates its field mapping against the real response, and a
-       * react artifact proves every binding before the page is finalized. If
-       * they ever diverge, one of them starts shipping sources the other
-       * would have caught.
-       */
-      const readIntegrationSource = async ({
-        integration,
-        tool: toolName,
-        args,
-      }: {
-        integration: string;
-        tool: string;
-        args?: string;
-      }) => {
-        if (!resolveMcpConfigs) {
-          return {
-            ok: false as const,
-            error: "The user has no integrations connected.",
-          };
-        }
-        let parsedArgs: Record<string, unknown> = {};
-        if (args?.trim()) {
-          try {
-            const raw: unknown = JSON.parse(args);
-            if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
-              throw new Error("not an object");
-            }
-            parsedArgs = raw as Record<string, unknown>;
-          } catch {
-            return {
-              ok: false as const,
-              error: "`args` isn't a JSON-encoded object.",
-            };
-          }
-        }
-        return await readDeclaredSource({
-          servers: await resolveMcpConfigs(),
-          integration,
-          tool: toolName,
-          args: parsedArgs,
-        });
-      };
-      // @mentioned integrations get their toolsets fetched ahead of the model
-      // call and injected into the prompt, so the model can run their tools
-      // without a discovery round trip. Kicked off here so it overlaps the
-      // memory lookup; awaited just before the prompt is assembled.
-      let mentionedToolsPromise:
-        | Promise<{ server: string; toolLines: string[] }[]>
-        | undefined;
-      if (isPaid && requestInfo.mcpServers.length > 0) {
-        mcpIntegrations = requestInfo.mcpServers.map((server) => ({
-          name: server.name,
-          ...(server.description ? { description: server.description } : {}),
-        }));
-
-        // Shared with artifact data bindings (convex/artifactData.ts), so the
-        // model and a running dashboard can never disagree about which
-        // integrations are reachable. A server whose grant is missing or whose
-        // refresh fails drops out rather than failing the turn.
-        const resolveConfigs = (): Promise<McpServerConfig[]> =>
-          resolveMcpServerConfigs(requestInfo.mcpServers, {
-            persistRefreshedTokens: async (tokens) => {
-              await runMutation(internal.mcpOAuthFlow.updateOAuthTokens, {
-                serverId: tokens.serverId as Id<"mcpServers">,
-                accessTokenCipher: tokens.accessTokenCipher,
-                refreshTokenCipher: tokens.refreshTokenCipher,
-                expiresAt: tokens.expiresAt,
-              });
-            },
-            // A grant that won't refresh used to just vanish from the turn:
-            // the model was told the integration wasn't connected, the user
-            // was told nothing at all, and settings still said "Ready to
-            // use". Record it so the app can ask for the reconnect.
-            onAuthExpired: async ({ serverId, reason }) => {
-              await runMutation(internal.mcpServers.markAuthExpired, {
-                id: serverId as Id<"mcpServers">,
-                reason,
-                at: Date.now(),
-              });
-            },
-          });
-
-        // Memoized so the OAuth refresh + header decryption run at most once
-        // per turn, shared by every gateway call.
-        let configsPromise: Promise<McpServerConfig[]> | undefined;
-        resolveMcpConfigs = () => (configsPromise ??= resolveConfigs());
-        const gateway = createMcpGatewayTools({
-          resolveServers: resolveMcpConfigs,
-          onToolsListed: async ({ server, toolCount }) => {
-            await captureServerEvent({
-              event: "mcp_tools_listed",
-              distinctId: customerId,
-              properties: {
-                server,
-                tool_count: toolCount,
-                thread_id: requestInfo.threadId,
-              },
-            });
-          },
-          onToolsListResult: ({ server, ok, error }) =>
-            persistMcp({
-              server,
-              tool: MCP_LIST_TOOLS_NAME,
-              ok,
-              ...(error ? { error } : {}),
-            }),
-          onToolResult: persistMcp,
-          onServerResult: async ({ id, ok, error, authExpired }) => {
-            if (!id) return;
-            await runMutation(
-              internal.mcpServers.recordConnectionResult,
-              {
-                id: id as Id<"mcpServers">,
-                ok,
-                ...(error ? { error } : {}),
-                ...(authExpired ? { authExpired } : {}),
-                at: Date.now(),
-              },
-            );
-          },
-        });
-        mcpTools = gateway.tools;
-
-        const mentioned = requestInfo.mcpServers.filter(
-          (server) => server.mentioned,
-        );
-        if (mentioned.length > 0) {
-          mentionedToolsPromise = Promise.all(
-            mentioned.map((server) => gateway.preloadTools(server.name)),
-          ).then((results) =>
-            results.filter(
-              (r): r is NonNullable<typeof r> => r !== null,
-            ),
-          );
-        }
-      }
-
-      // Installed skills ride the same paid gate as integrations: name +
-      // description in the prompt, one load_skill gateway tool to pull a
-      // skill's text on demand. A turn that never needs one pays nothing.
-      // @mentioned skills arrive with their instructions inlined — those go
-      // straight into the prompt, and the tool treats them as already loaded.
-      let skillTools: Record<string, Tool> = {};
-      let installedSkills: { name: string; description?: string }[] = [];
-      let mentionedSkills: { name: string; instructions: string }[] = [];
-      if (isPaid && requestInfo.installedSkills.length > 0) {
-        installedSkills = requestInfo.installedSkills.map(
-          ({ name, description }) => ({ name, description }),
-        );
-        mentionedSkills = requestInfo.installedSkills.flatMap((skill) =>
-          skill.mentioned && skill.instructions
-            ? [{ name: skill.name, instructions: skill.instructions }]
-            : [],
-        );
-        skillTools = {
-          [LOAD_SKILL_NAME]: createLoadSkillTool({
-            skills: installedSkills,
-            preloaded: mentionedSkills.map((skill) => skill.name),
-            fetchSkill: (name) =>
-              ctx.runQuery(internal.skillStore.loadSkillText, {
-                userId: customerId,
-                name,
-              }),
-            onLoaded: persistSkill,
-          }),
-        };
-      }
-
       let memoryContext: SupermemoryPromptContext | undefined;
       if (memoryActive) {
         // Started before the stream writer so it overlapped the gate checks and
@@ -1987,13 +1668,6 @@ export async function runAssistantTurn(
           };
       }
       timings.mark("memoryLookup");
-
-      // Tool listings for @mentioned integrations, fetched concurrently with
-      // the memory lookup above. An unreachable server resolves to nothing —
-      // the turn proceeds and the model falls back to lazy discovery.
-      const mcpMentionedIntegrations = mentionedToolsPromise
-        ? await mentionedToolsPromise
-        : undefined;
 
       // Incognito turns are anonymous: the model gets none of the user's saved
       // personalization — no name, preferences, locale, timezone or location,
@@ -2021,15 +1695,6 @@ export async function runAssistantTurn(
         hasLocation:
           ctxLatitude !== undefined || Boolean(ctxTimeZone),
         memoryContext,
-        mcpIntegrations:
-          mcpIntegrations.length > 0 ? mcpIntegrations : undefined,
-        mcpMentionedIntegrations:
-          mcpMentionedIntegrations && mcpMentionedIntegrations.length > 0
-            ? mcpMentionedIntegrations
-            : undefined,
-        skills: installedSkills.length > 0 ? installedSkills : undefined,
-        mentionedSkills:
-          mentionedSkills.length > 0 ? mentionedSkills : undefined,
         threadDocuments: requestInfo.threadDocuments,
         htmlEnabled: isPaid,
         imageToolEnabled: imageToolAllowed,
@@ -2253,25 +1918,6 @@ export async function runAssistantTurn(
                   assistantId: requestInfo.assistantId,
                 });
               },
-              connectedIntegrations: mcpIntegrations.map((i) => i.name),
-              // Reading the source once, here, is what makes a live chart
-              // trustworthy: the model writes a field mapping without having
-              // seen the response, so the tool fetches it and hands any
-              // mismatch back for a retry instead of shipping an empty chart.
-              readBinding: readIntegrationSource,
-            }),
-            // The integration store's shop window. Always on: the model
-            // searches listings when the user needs an app that isn't
-            // connected, and matches render as inline install cards. The
-            // install flow itself carries the auth + paid gates, so free
-            // users still get the discovery (and the upgrade path).
-            suggestIntegrations: createSuggestIntegrationsTool({
-              search: (query) =>
-                ctx.runQuery(internal.integrationStore.searchForSuggestion, {
-                  userId: customerId,
-                  query,
-                }),
-              onResult: persistIntegrationSuggestion,
             }),
             // The clarifying-question form. Always on: when a decision
             // genuinely needs the user's call, the model raises an
@@ -2382,35 +2028,19 @@ export async function runAssistantTurn(
                     onResult: persistHtml,
                   }),
                   // The React runtime: a JSX module the host compiles and
-                  // mounts, and the only artifact that can read live data from
-                  // the user's integrations. Its bindings are declared in the
-                  // call and validated against what's actually connected — the
-                  // artifact's own code never names an integration.
+                  // mounts.
                   createReactArtifact: createReactArtifactTool({
-                    connectedIntegrations: mcpIntegrations,
-                    // Same reader the chart tool uses: every declared binding
-                    // is executed before the artifact renders, so a wrong
-                    // tool name costs the model a retry instead of costing
-                    // the user a page of empty states.
-                    readBinding: readIntegrationSource,
-                    warmBindings: async (htmlId, entries) => {
-                      await runMutation(
-                        internal.artifactData.seedArtifactBindings,
-                        { htmlId, entries },
-                      );
-                    },
                     // A rejected call never reaches finalize, so the row and
                     // card opened on tool-input-start have to be settled here
                     // or they hang for the rest of the turn.
                     abort: settleOpenHtmlStream,
-                    finalize: ({ toolCallId, title, code, mode, bindings }) =>
+                    finalize: ({ toolCallId, title, code, mode }) =>
                       finalizeHtmlCall({
                         toolCallId,
                         title,
                         html: code,
                         mode,
                         runtime: "react",
-                        bindings,
                       }),
                     onResult: ({ op, mode, htmlId, title }) =>
                       persistHtml({ op, mode, htmlId, title }),
@@ -2530,14 +2160,6 @@ export async function runAssistantTurn(
                   }),
                 }
               : {}),
-            // The gateway to the user's own integrations (MCP servers):
-            // mcp_list_tools + mcp_call_tool. Empty unless paid + the user has
-            // enabled servers; the real tools are discovered on demand.
-            ...mcpTools,
-            // The gateway to the user's installed skills: load_skill pulls a
-            // skill's instruction text in on demand. Empty unless paid + the
-            // user has enabled skill installs.
-            ...skillTools,
           },
           prepareStep: ({ steps, messages }) => {
             // Auto picks a model per request, so the encrypted reasoning the
@@ -2693,16 +2315,6 @@ export async function runAssistantTurn(
                 await openHtmlStream(part.id, "inline", "react");
                 break;
               }
-              // MCP gateway calls open pending phases below, anonymously — the
-              // integration name (and the called tool, when applicable) lives
-              // in the input that's about to stream.
-              if (isMcpToolName(part.toolName)) {
-                mcpPhaseStreams.set(part.id, {
-                  raw: "",
-                  described: false,
-                  gatewayTool: part.toolName,
-                });
-              }
               // Only the explicit search and calculator tools get a live
               // indicator. Anything we can't positively identify shows nothing
               // (just the loading dots if there's a gap) — never a stray
@@ -2755,12 +2367,6 @@ export async function runAssistantTurn(
                               contentOffset: text.length,
                               pending: true,
                             })
-                        : part.toolName === "suggestIntegrations"
-                          ? ({
-                              kind: "integrationSuggestion" as const,
-                              contentOffset: text.length,
-                              pending: true,
-                            })
                         : part.toolName === ASK_QUESTION_TOOL_NAME
                           ? ({
                               kind: "question" as const,
@@ -2785,19 +2391,7 @@ export async function runAssistantTurn(
                                 contentOffset: text.length,
                                 pending: true,
                               })
-                            : part.toolName === LOAD_SKILL_NAME
-                                ? ({
-                                    kind: "skill" as const,
-                                    contentOffset: text.length,
-                                    pending: true,
-                                  })
-                              : isMcpToolName(part.toolName)
-                                ? ({
-                                    kind: "mcp" as const,
-                                    contentOffset: text.length,
-                                    pending: true,
-                                  })
-                                : null;
+                            : null;
               if (toolPhase) {
                 await runMutation(internal.inference.addAssistantPhase, {
                   assistantId: requestInfo.assistantId,
@@ -2908,41 +2502,6 @@ export async function runAssistantTurn(
                 }
                 break;
               }
-              // MCP gateway inputs lead with the integration name. Stamp it
-              // onto the pending phase as soon as it closes; actual calls also
-              // wait for their tool name, while discovery uses its gateway
-              // name so it can settle as "Checked <integration>".
-              const mcpStream = mcpPhaseStreams.get(part.id);
-              if (mcpStream && !mcpStream.described) {
-                mcpStream.raw += part.delta;
-                const integration = extractCompleteField(
-                  mcpStream.raw,
-                  "integration",
-                );
-                const toolField =
-                  mcpStream.gatewayTool === MCP_CALL_TOOL_NAME
-                    ? extractCompleteField(mcpStream.raw, "tool")
-                    : MCP_LIST_TOOLS_NAME;
-                if (integration && toolField) {
-                  mcpStream.described = true;
-                  mcpStream.raw = "";
-                  const lifecycle = resolveMcpLifecycleMetadata(
-                    requestInfo.mcpServers,
-                    integration,
-                    toolField,
-                  );
-                  await runMutation(
-                    internal.inference.describeLastPendingMcp,
-                    {
-                      assistantId: requestInfo.assistantId,
-                      server: integration,
-                      tool: toolField,
-                      ...lifecycle,
-                    },
-                  );
-                }
-                break;
-              }
               break;
             }
             case "tool-call": {
@@ -2974,42 +2533,6 @@ export async function runAssistantTurn(
                   declared === "full" ? "full" : "inline",
                   "react",
                 );
-              }
-              // Parsed MCP gateway inputs are the backstop for providers that
-              // deliver a call in one shot instead of streaming its fields.
-              if (isMcpToolName(part.toolName)) {
-                const described =
-                  mcpPhaseStreams.get(part.toolCallId)?.described;
-                mcpPhaseStreams.delete(part.toolCallId);
-                const input = part.input as
-                  | { integration?: string; tool?: string }
-                  | undefined;
-                if (!described && input?.integration) {
-                  const toolName =
-                    part.toolName === MCP_CALL_TOOL_NAME
-                      ? input.tool
-                      : MCP_LIST_TOOLS_NAME;
-                  const lifecycle = toolName
-                    ? resolveMcpLifecycleMetadata(
-                        requestInfo.mcpServers,
-                        input.integration,
-                        toolName,
-                      )
-                    : {};
-                  await runMutation(
-                    internal.inference.describeLastPendingMcp,
-                    {
-                      assistantId: requestInfo.assistantId,
-                      server: input.integration,
-                      ...(part.toolName === MCP_CALL_TOOL_NAME
-                        ? input.tool
-                          ? { tool: input.tool }
-                          : {}
-                        : { tool: MCP_LIST_TOOLS_NAME }),
-                      ...lifecycle,
-                    },
-                  );
-                }
               }
               break;
             }

@@ -314,8 +314,6 @@ export function AssistantMessage({
              earlier ones, and the index breaks ties within a turn. */
           order={message.createdAt + item.index / 1000}
           messageTerminal={terminal}
-          messageId={message.id}
-          phaseIndex={item.index}
         />
       </div>
     );

@@ -34,25 +34,11 @@ controls it can't honor instead of letting them fail.
 
 | Feature              | Where  | Variables                                  | Without it                                                          |
 | -------------------- | ------ | ------------------------------------------ | ------------------------------------------------------------------- |
-| Integrations (MCP)   | Convex | `MCP_ENCRYPTION_KEY`                       | Connecting an integration that stores credentials fails with a clear error |
 | Web search           | Convex | `EXA_API_KEY`                              | The search toggle hides, and replies run without the web            |
 | Long-term memory     | Convex | `SUPERMEMORY_API_KEY`                      | Memory stays off                                                    |
 | Billing              | Convex | `AUTUMN_SECRET_KEY`                        | Everyone gets every feature, nothing is metered, and plan UI hides |
-| Composio integrations| Convex | `COMPOSIO_API_KEY`                         | Composio listings can't be installed                                |
 | Support agent        | Both   | `MEDIAN_KEY`, `MEDIAN_SUPPORT_SECRET` (shared) | The Support menu item hides                                     |
 | Kirkify              | Both   | `KIRKIFY_SECRET` (shared)                  | `/kirkify` returns 404 and drops out of the nav and sitemap         |
-
-### Integrations
-
-`MCP_ENCRYPTION_KEY` encrypts the headers and OAuth tokens PocketBot stores for
-each integration. It must decode to exactly 32 bytes:
-
-```sh
-pnpm exec convex env set MCP_ENCRYPTION_KEY "$(openssl rand -base64 32)"
-```
-
-Don't rotate it casually: credentials encrypted with the old key can't be
-read with a new one, so everyone would have to reconnect.
 
 ### Billing
 

@@ -5,12 +5,10 @@ import {
   IconLayoutSidebarLeftCollapseFilled,
   IconLayoutSidebarLeftExpandFilled,
   IconPlus,
-  IconPuzzleFilled,
   IconSearch,
 } from "@tabler/icons-react";
 
 import { useIncognitoState } from "@/lib/incognito";
-import { useExpiredIntegrations } from "@/lib/integrations-data";
 import {
   SIDEBAR_MAX_WIDTH,
   SIDEBAR_MIN_WIDTH,
@@ -82,14 +80,12 @@ export function Sidebar() {
     onResizePointerDown,
     onResizeDoubleClick,
   } = useSidebar();
-  const { settingsOpen, integrationsOpen, openHome, openIntegrations } =
-    useView();
+  const { settingsOpen, openHome } = useView();
   /* Incognito tucks the whole rail away: width glides to a slim gutter
      (so the main pane keeps its 8px inset) while the contents fade, and
      `invisible` lands at the curve's end to drop it from the tab order.
      Nothing here unmounts — leaving glides it right back. */
   const { enabled: incognito } = useIncognitoState();
-  const expiredIntegrations = useExpiredIntegrations();
 
   return (
     /* An even 8px beat between blocks; New and the nav rows tighten onto
@@ -169,16 +165,6 @@ export function Sidebar() {
                 New exactly like the rows stack under each other. */}
             <nav className="-mt-1.5 flex flex-col gap-0.5">
               <SearchRow />
-              <SidebarRow
-                icon={IconPuzzleFilled}
-                label="Integrations"
-                active={integrationsOpen}
-                /* The only place an expired sign-in shows on the chats face.
-                   It costs the user working tools, so it earns the dot. */
-                alert={expiredIntegrations.length > 0}
-                onClick={openIntegrations}
-                className="before:-top-px before:-bottom-1"
-              />
             </nav>
             {/* w-auto: the base w-full ignores the mx inset and skews right. */}
             <Separator className="sidebar-glide mx-1.5 transition-[margin] data-horizontal:w-auto sidebar-collapsed:mx-0" />

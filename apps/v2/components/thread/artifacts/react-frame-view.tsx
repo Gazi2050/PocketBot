@@ -2,9 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
-import { useConvex } from "convex/react";
-import { api } from "@pocketbot/backend/convex/_generated/api";
-import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 
 import { compileArtifactModule, warmJsxCompiler } from "@/lib/jsx-compile";
 import { pocketbotThemeTokens } from "@/lib/html-frame";
@@ -35,7 +32,6 @@ const RECOMPILE_DEBOUNCE_MS = 400;
  * and only mounts the real thing once it compiles.
  */
 export function ReactFrameView({
-  htmlId,
   code,
   title,
   streaming = false,
@@ -44,8 +40,6 @@ export function ReactFrameView({
   mountDelayMs = 0,
   onErrorChange,
 }: {
-  /** The artifact row, so its declared data bindings can be run for it. */
-  htmlId?: string;
   code: string;
   title?: string;
   /** The body is still being written — don't try to mount every keystroke. */
@@ -57,7 +51,6 @@ export function ReactFrameView({
   onErrorChange?: (error: string | null) => void;
 }) {
   const dark = useIsDark();
-  const convex = useConvex();
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [frameReady, setFrameReady] = useState(false);
   const [compiled, setCompiled] = useState<string | null>(null);
@@ -113,36 +106,21 @@ export function ReactFrameView({
     frameRef.current?.contentWindow?.postMessage(message, "*");
   }, []);
 
-  /* Run one of the artifact's declared bindings on its behalf. The frame
-     names a binding id and nothing else — which integration and tool that
-     maps to was decided when the artifact was written and lives server-side. */
+  /* usePocketBotData() has no server left to ask — integrations are gone,
+     so every binding read answers "unavailable" and the frame renders its
+     fallback. The channel stays so old artifacts don't hang waiting. */
   const runBinding = useCallback(
     async (
-      bindingId: string,
-      extraArgs: string | undefined,
-      force: boolean,
+      _bindingId: string,
+      _extraArgs: string | undefined,
+      _force: boolean,
     ) => {
-      if (!htmlId) {
-        return {
-          ok: false as const,
-          error: "This artifact's data isn't available here.",
-        };
-      }
-      try {
-        return await convex.action(api.artifactData.runBinding, {
-          htmlId: htmlId as Id<"htmlArtifacts">,
-          bindingId,
-          ...(extraArgs ? { extraArgs } : {}),
-          ...(force ? { force: true } : {}),
-        });
-      } catch {
-        return {
-          ok: false as const,
-          error: "Couldn't reach PocketBot to load this data.",
-        };
-      }
+      return {
+        ok: false as const,
+        error: "This artifact's data isn't available here.",
+      };
     },
-    [convex, htmlId],
+    [],
   );
 
   useEffect(() => {

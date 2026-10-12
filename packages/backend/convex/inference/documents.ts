@@ -140,8 +140,7 @@ export function extractStreamingField(
 
 /**
  * Like extractStreamingField, but only once the whole value has arrived (its
- * closing quote is in). For fields that are useless half-typed — an
- * integration's name mid-word matches nothing in the store.
+ * closing quote is in). For fields that are useless half-typed.
  */
 export function extractCompleteField(
   raw: string,

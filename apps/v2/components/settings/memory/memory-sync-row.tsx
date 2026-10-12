@@ -6,7 +6,7 @@ import { api } from "@pocketbot/backend/convex/_generated/api";
 
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { errorText } from "@/lib/integrations-data";
+import { errorText } from "@/lib/errors";
 import { formatRelative } from "@/lib/relative-time";
 import { showToast } from "@/lib/toasts";
 import { SettingsRow } from "../settings-rows";

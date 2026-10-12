@@ -29,13 +29,10 @@ import {
   type ComposerGates,
 } from "@/lib/composer-gates";
 import {
-  useMentionableIntegrations,
-  type MentionTarget,
-} from "@/lib/integrations";
-import {
   findMentionedTargets,
   mentionRanges,
   splitMentionSegments,
+  type MentionTarget,
 } from "@/lib/mentions";
 import { useModelAccess } from "@/lib/model-access";
 import { defaultLockedModel } from "@pocketbot/backend/convex/lockedPolicy";
@@ -54,7 +51,6 @@ import {
   type ComposerQuestion,
   type QuestionAnswer,
 } from "@/lib/questions";
-import { useMentionableSkills } from "@/lib/skills-data";
 import { useAttachments } from "@/lib/use-attachments";
 import { useVoiceInput, useVoiceInputSupported } from "@/lib/use-voice-input";
 import { useView } from "@/lib/view";
@@ -134,8 +130,9 @@ const FACE_SWAP = {
    later, drafts) can drop text in. */
 export type { ComposerGates };
 
-/** What the user @mentioned, split by kind — integrations preload their
- * tools for the turn, skills preload their instructions. */
+/** The @mention payload — integrations and skills are gone, so this always
+ * sends empty. Kept in the signature so the send/queue call sites don't churn;
+ * the server ignores it. */
 export type ComposerMentions = {
   integrations: { serverId: string; name: string }[];
   skills: { installId: string; name: string }[];
@@ -438,16 +435,8 @@ export function Composer({
          The gates go out through effectiveGates — the exact state the
          picker chip shows, never a raw level the model can't run. */
       const files = await attachments.resolve();
-      /* Mentions leave as structured payload — the server only trusts ids
-         it can verify, never the "@Name" text. */
-      const mentions: ComposerMentions = {
-        integrations: findMentionedTargets(value, integrations).map(
-          ({ serverId, name }) => ({ serverId, name }),
-        ),
-        skills: findMentionedTargets(value, mentionableSkills).map(
-          ({ serverId, name }) => ({ installId: serverId, name }),
-        ),
-      };
+      /* Integrations and skills are gone — mentions always send empty. */
+      const mentions: ComposerMentions = { integrations: [], skills: [] };
       if (sendModel === null) return;
       await handler(
         value.trim(),
@@ -592,29 +581,9 @@ export function Composer({
     voiceActive,
   ]);
 
-  /* Drop "@Name " into the text at the caret (with a space before it when
-     it lands mid-word), then put the caret right after — same behavior as
-     v1's plus menu. */
-  const insertMention = (name: string) => {
-    const el = ref.current;
-    const start = el?.selectionStart ?? value.length;
-    const end = el?.selectionEnd ?? start;
-    const before = value.slice(0, start);
-    const inserted = `${before && !/\s$/.test(before) ? " " : ""}@${name} `;
-    onValueChange(before + inserted + value.slice(end));
-    requestAnimationFrame(() => {
-      if (!el) return;
-      el.focus();
-      const caret = start + inserted.length;
-      el.setSelectionRange(caret, caret);
-    });
-  };
-
-  /* The "/" and "@" command palette: models, gates, and mentions without
-     leaving the keyboard. It reads the same state the chips edit. */
+  /* The "/" command palette: models and gates without leaving the keyboard.
+     It reads the same state the chips edit. */
   const { openPricing } = useView();
-  const integrations = useMentionableIntegrations();
-  const mentionableSkills = useMentionableSkills();
   const { favorites } = useModelFavorites();
   const imageTags = useMemo(
     () =>
@@ -637,8 +606,8 @@ export function Composer({
       favorites,
       isPaid,
       locked,
-      integrations,
-      skills: mentionableSkills,
+      integrations: [],
+      skills: [],
       images: imageTags,
       openBilling: openPricing,
       compactionStatus,
@@ -659,8 +628,6 @@ export function Composer({
       favorites,
       isPaid,
       locked,
-      integrations,
-      mentionableSkills,
       imageTags,
       openPricing,
       compactionStatus,
@@ -670,21 +637,19 @@ export function Composer({
       onRelock,
     ],
   );
-  /* Inline mention chips: "@Name" runs matching an integration or an
-     attached image render as Slack-style chips (via the backdrop below)
-     and behave as one character — the handlers on the textarea jump the
-     caret over them, and Backspace/Delete swallow them whole. */
+  /* Inline mention chips: "@Name" runs matching an attached image render
+     as Slack-style chips (via the backdrop below) and behave as one
+     character — the handlers on the textarea jump the caret over them,
+     and Backspace/Delete swallow them whole. */
   const mentionTargets = useMemo<MentionTarget[]>(
     () => [
-      ...integrations,
-      ...mentionableSkills,
       ...imageTags.map((tag) => ({
         serverId: `image-tag:${tag.id}`,
         name: tag.name,
         logoUrl: tag.previewUrl ?? null,
       })),
     ],
-    [integrations, mentionableSkills, imageTags],
+    [imageTags],
   );
   const mentionSegments = useMemo(
     () => splitMentionSegments(value, mentionTargets),
@@ -969,7 +934,6 @@ export function Composer({
                 </span>
                 <div ref={plusRef} className="absolute bottom-2 left-2">
                   <AttachMenu
-                    onMention={insertMention}
                     onFiles={attachments.addFiles}
                     onVoice={startVoice}
                   />

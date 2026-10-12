@@ -1,11 +1,5 @@
 import { jsonSchema, tool } from "ai";
 
-import {
-  applyChartBinding,
-  type ChartAggregate,
-  type ChartBindingSpec,
-} from "./chartBinding";
-
 /* The chart tool: the model writes a small JSON spec, the client owns the
    rendering. Nothing here draws anything — the whole point of a spec (over
    letting the model hand-write SVG) is that palette, light/dark, geometry,
@@ -68,13 +62,6 @@ export type ChartSpec = {
   currency?: string;
   /** Where the numbers came from — rendered as a footnote under the chart. */
   source?: string;
-  /**
-   * A live data source. When present, `categories` and `series` hold the
-   * values as of the moment the chart was made, and the card refreshes them
-   * from the integration on every open. Written only by the tool, never by the
-   * model directly — see createChartTool.
-   */
-  binding?: ChartBindingSpec;
 };
 
 /* Caps. The series ceiling is the categorical palette's: eight slots, never
@@ -157,8 +144,8 @@ function isNumeric(value: unknown): boolean {
  *
  * Flat (`series: string[]` + `values: number[][]`) is what the schema asks
  * for, and the only one a model should ever write. The object spelling is
- * still accepted because the binding resolver produces it — and because a
- * model that improvises it deserves a chart rather than a rejection.
+ * still accepted because a model that improvises it deserves a chart rather
+ * than a rejection.
  */
 function readSeriesInput(
   raw: Record<string, unknown>,
@@ -508,60 +495,6 @@ const CHART_INPUT_SCHEMA = {
 } as const;
 
 /**
- * The `binding` half of the schema, spliced in only when the user has
- * integrations connected. With none, every binding a model could write would
- * be rejected, so the whole concept stays out of the request.
- */
-const CHART_BINDING_SCHEMA = {
-  type: "object",
-  description:
-    "Also keep this chart live: the integration is re-read every time the user opens the thread, so the numbers stay current. Fill in `categories` and `values` from what you already have as well — the binding only refreshes them, and if the source can't be read the chart still draws from what you wrote. Only omit them when you have no numbers yet. Not available for scatter, which needs (x, y) pairs you supply yourself.",
-  properties: {
-    integration: {
-      type: "string",
-      description: "Exact connected integration name.",
-    },
-    tool: {
-      type: "string",
-      description: "The tool to run. List its schema first if unsure.",
-    },
-    args: {
-      type: "string",
-      description: "JSON-encoded arguments object for that tool.",
-    },
-    path: {
-      type: "string",
-      description:
-        "Dot path to the array of records in the response, if it isn't obvious. Usually omit — the wrapper is found automatically.",
-    },
-    categoryField: {
-      type: "string",
-      description:
-        "Field on each record that becomes the x-axis label or pie slice. Dot paths work: 'state.name'.",
-    },
-    valueFields: {
-      type: "array",
-      maxItems: MAX_SERIES,
-      items: { type: "string" },
-      description:
-        "Numeric fields, one series each. Omit when aggregate is 'count'.",
-    },
-    aggregate: {
-      type: "string",
-      enum: ["none", "count", "sum", "average"],
-      description:
-        "'count' groups the records by categoryField and charts how many fall in each — the usual answer for 'issues by status', 'orders by region'. 'sum'/'average' group the same way and aggregate valueFields. 'none' (default) charts one record per category, in the order returned.",
-    },
-    limit: {
-      type: "number",
-      description: "Keep only the N largest categories.",
-    },
-  },
-  required: ["integration", "tool", "categoryField"],
-  additionalProperties: false,
-} as const;
-
-/**
  * Render a chart inline in the reply. The model supplies data it actually
  * has; we draw it. Returns a short confirmation (never the data back) so the
  * model doesn't restate every number in prose next to the chart.
@@ -569,102 +502,33 @@ const CHART_BINDING_SCHEMA = {
 export function createChartTool({
   onResult,
   onReject,
-  connectedIntegrations = [],
-  readBinding,
 }: {
   onResult: (spec: ChartSpec) => Promise<void>;
   /** The spec didn't survive validation, so the card opened on
    *  tool-input-start has nothing coming — take it back down. */
   onReject: () => Promise<void>;
-  /** Integration names the user has connected right now. */
-  connectedIntegrations?: string[];
-  /**
-   * Run a bound chart's source once, here at authoring time. This is what
-   * keeps a live chart from being a guess: the model writes a field mapping
-   * without having seen the response, so we fetch it, apply the mapping, and
-   * hand any mismatch straight back for a retry. It also seeds the cache, so
-   * the card's first render costs nothing.
-   */
-  readBinding?: (binding: {
-    integration: string;
-    tool: string;
-    args?: string;
-  }) => Promise<{ ok: true; data: unknown } | { ok: false; error: string }>;
 }) {
-  const bindingsEnabled = connectedIntegrations.length > 0 && Boolean(readBinding);
-  const schema = bindingsEnabled
-    ? {
-        ...CHART_INPUT_SCHEMA,
-        properties: {
-          ...CHART_INPUT_SCHEMA.properties,
-          binding: CHART_BINDING_SCHEMA,
-        },
-        /* `series` stops being required once a binding can supply it — the
-           whole point is not hand-writing numbers the integration has. */
-        required: ["type", "title"],
-      }
-    : CHART_INPUT_SCHEMA;
-
   return tool({
-    description: bindingsEnabled
-      ? "Draw a chart inline in the reply — from data you already have, or bound live to a connected integration. Types: line, area, bar, hbar, pie, scatter."
-      : "Draw a chart inline in the reply from data you already have. Types: line, area, bar, hbar, pie, scatter.",
+    description:
+      "Draw a chart inline in the reply from data you already have. Types: line, area, bar, hbar, pie, scatter.",
     inputSchema: jsonSchema<Record<string, unknown>>(
-      schema as unknown as Record<string, unknown>,
+      CHART_INPUT_SCHEMA as unknown as Record<string, unknown>,
     ),
     execute: async (input) => {
-      const raw = { ...(input as Record<string, unknown>) };
-
-      /* Resolve a live source into real categories and series BEFORE the spec
-         is validated, so a bound chart goes through exactly the same checks a
-         hand-written one does.
-
-         A source that won't read is NOT fatal. The live link is a bonus on top
-         of a chart; the numbers are the chart. Killing the whole call over it
-         is what left an integration-shaped question with no chart at all —
-         the model wrote good values, guessed a tool name the server didn't
-         have, and lost everything five times over. So a failed binding is
-         dropped and reported, and whatever the model wrote still draws. */
-      let binding: ChartBindingSpec | undefined;
-      let bindingError: string | undefined;
-      if (bindingsEnabled && raw.binding) {
-        const resolved = await resolveBinding(
-          raw.binding,
-          connectedIntegrations,
-          readBinding!,
-        );
-        if (resolved.ok) {
-          binding = resolved.binding;
-          raw.categories = resolved.categories;
-          raw.series = resolved.series;
-          delete raw.values;
-        } else {
-          bindingError = resolved.error;
-        }
-        delete raw.binding;
-      }
-
       let spec: ChartSpec;
       try {
-        spec = normalizeChartSpec(raw);
+        spec = normalizeChartSpec(input);
       } catch (error) {
         if (error instanceof ChartSpecError) {
           // A rejected spec is the model's to fix, so hand back the reason
           // rather than a failed tool call — every message here says what to
-          // do instead, so one retry is usually enough. A binding that failed
-          // AND left nothing to draw says both halves at once, and says to
-          // stop hunting for a source that works.
+          // do instead, so one retry is usually enough.
           await onReject();
-          return {
-            error: bindingError
-              ? `That live source couldn't be read (${bindingError}), and there's nothing to draw without it: ${error.message} Don't retry the binding — write the numbers you already have into \`categories\` and \`values\` instead.`
-              : error.message,
-          };
+          return { error: error.message };
         }
         throw error;
       }
 
-      if (binding) spec = { ...spec, binding };
       await onResult(spec);
 
       const points = spec.series.reduce(
@@ -676,125 +540,8 @@ export function createChartTool({
         rendered: true,
         title: spec.title,
         summary: `${spec.type} chart, ${spec.series.length} series, ${points} points`,
-        note: bindingError
-          ? `The chart is drawn and visible to the user, from the numbers you supplied. The live link was dropped — that source couldn't be read (${bindingError}) — so the chart is a snapshot and won't refresh. Don't call the tool again for this; mention the numbers are a snapshot if it matters, and don't repeat them in prose.`
-          : binding
-            ? "The chart is visible to the user and refreshes itself from the integration, so its numbers will move on without you — describe what it shows, never the specific values, and don't restate them in prose."
-            : "The chart is now visible to the user. Don't repeat its numbers in prose — add only what the chart can't say (the takeaway, a caveat).",
+        note: "The chart is now visible to the user. Don't repeat its numbers in prose — add only what the chart can't say (the takeaway, a caveat).",
       };
     },
   });
-}
-
-type ResolvedBinding =
-  | {
-      ok: true;
-      binding: ChartBindingSpec;
-      categories: string[];
-      series: ChartSeries[];
-    }
-  | { ok: false; error: string };
-
-/** Validate a declared source, run it once, and map the response into series. */
-async function resolveBinding(
-  input: unknown,
-  connectedIntegrations: string[],
-  readBinding: (binding: {
-    integration: string;
-    tool: string;
-    args?: string;
-  }) => Promise<{ ok: true; data: unknown } | { ok: false; error: string }>,
-): Promise<ResolvedBinding> {
-  if (!input || typeof input !== "object") {
-    return { ok: false, error: "`binding` must be an object." };
-  }
-  const raw = input as Record<string, unknown>;
-
-  const known = new Map(
-    connectedIntegrations.map((name) => [name.trim().toLowerCase(), name]),
-  );
-  const integration =
-    typeof raw.integration === "string"
-      ? known.get(raw.integration.trim().toLowerCase())
-      : undefined;
-  if (!integration) {
-    return {
-      ok: false,
-      error: `\`binding.integration\` must be one of the connected integrations: ${connectedIntegrations.join(", ")}.`,
-    };
-  }
-
-  const toolName =
-    typeof raw.tool === "string" && raw.tool.trim() ? raw.tool.trim() : null;
-  if (!toolName) return { ok: false, error: "`binding.tool` is required." };
-
-  const categoryField =
-    typeof raw.categoryField === "string" && raw.categoryField.trim()
-      ? raw.categoryField.trim()
-      : null;
-  if (!categoryField) {
-    return { ok: false, error: "`binding.categoryField` is required." };
-  }
-
-  let args: string | undefined;
-  if (raw.args !== undefined && raw.args !== null && raw.args !== "") {
-    if (typeof raw.args !== "string") {
-      return {
-        ok: false,
-        error: "`binding.args` must be a JSON-encoded object as a string.",
-      };
-    }
-    try {
-      const parsed: unknown = JSON.parse(raw.args);
-      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-        throw new Error("not an object");
-      }
-    } catch {
-      return {
-        ok: false,
-        error: "`binding.args` isn't a JSON-encoded object.",
-      };
-    }
-    args = raw.args;
-  }
-
-  const valueFields = Array.isArray(raw.valueFields)
-    ? raw.valueFields
-        .filter((f): f is string => typeof f === "string" && f.trim().length > 0)
-        .slice(0, MAX_SERIES)
-    : undefined;
-
-  const binding: ChartBindingSpec = {
-    integration,
-    tool: toolName,
-    ...(args ? { args } : {}),
-    ...(typeof raw.path === "string" && raw.path.trim()
-      ? { path: raw.path.trim() }
-      : {}),
-    categoryField,
-    ...(valueFields && valueFields.length > 0 ? { valueFields } : {}),
-    ...(typeof raw.aggregate === "string"
-      ? { aggregate: raw.aggregate as ChartAggregate }
-      : {}),
-    ...(typeof raw.limit === "number" && raw.limit > 0
-      ? { limit: Math.floor(raw.limit) }
-      : {}),
-  };
-
-  const response = await readBinding({
-    integration,
-    tool: toolName,
-    ...(args ? { args } : {}),
-  });
-  if (!response.ok) return { ok: false, error: response.error };
-
-  const mapped = applyChartBinding(response.data, binding);
-  if (!mapped.ok) return { ok: false, error: mapped.error };
-
-  return {
-    ok: true,
-    binding,
-    categories: mapped.data.categories,
-    series: mapped.data.series,
-  };
 }

@@ -17,8 +17,7 @@ export const SITE_URL = (
 type SiteLinks = {
   /** The source code. */
   repo: string;
-  /** The admin console (apps/console), where integrations and skills are
-   *  published. */
+  /** The admin console (apps/console). */
   console: string;
   status: string | null;
   discord: string | null;

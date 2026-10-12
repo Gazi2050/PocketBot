@@ -11,9 +11,7 @@ import {
 import { BentoCell, BentoGrid } from "@/components/marketing/bento";
 import {
   ArtifactVisual,
-  IntegrationsVisual,
   MemoryVisual,
-  SkillsVisual,
 } from "@/components/marketing/feature-visuals";
 import {
   Lede,
@@ -25,7 +23,7 @@ import { publicPageMetadata } from "@/lib/seo";
 export const metadata: Metadata = publicPageMetadata({
   title: "Features · PocketBot",
   description:
-    "Integrations, skills, real memory, every top model, and living artifacts.",
+    "Real memory, every top model, and living artifacts.",
   path: "/about/features",
 });
 
@@ -34,20 +32,9 @@ export default function FeaturesPage() {
     <article>
       <PageTitle>Features</PageTitle>
       <Lede>
-        Everything PocketBot can do, and everything it plugs into. The short
-        version: it remembers, reaches into your tools, and learns new tricks.
+        Everything PocketBot can do. The short
+        version: it remembers, reasons, and builds things you can keep.
       </Lede>
-      <SplitSection
-        title="Plugs into your world"
-        body="Connect Gmail, Google Calendar, Notion, and hundreds more through a community-built catalog. PocketBot reads what you point it at and acts on your behalf."
-        visual={<IntegrationsVisual />}
-      />
-      <SplitSection
-        reverse
-        title="Skills give it new abilities"
-        body="Skills are add-on playbooks that teach PocketBot entirely new moves, from deep research runs to a morning briefing built just for you."
-        visual={<SkillsVisual />}
-      />
       <BentoGrid>
         <BentoCell
           icon={IconSparklesFilled}

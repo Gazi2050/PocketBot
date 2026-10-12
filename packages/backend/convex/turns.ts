@@ -6,9 +6,7 @@ import type { Doc, Id } from "./_generated/dataModel";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import type {
   attachmentValidator,
-  integrationMentionValidator,
   sendOptionsValidator,
-  skillMentionValidator,
 } from "./validators";
 
 /* Starting a reply, and asking whether one is in flight.
@@ -22,8 +20,6 @@ const persistentTextStreaming = new PersistentTextStreaming(
   components.persistentTextStreaming,
 );
 
-export type IntegrationMention = Infer<typeof integrationMentionValidator>;
-export type SkillMention = Infer<typeof skillMentionValidator>;
 export type SendOptions = Infer<typeof sendOptionsValidator>;
 export type SendAttachment = Infer<typeof attachmentValidator>;
 
@@ -49,51 +45,6 @@ export async function latestAssistantMessage(
     )
     .order("desc")
     .first();
-}
-
-// Keep only mentions of servers and skills the caller actually owns and has
-// enabled, and snapshot each row's current name — never trust the client's
-// label. A mention of something uninstalled mid-send just drops out quietly.
-export async function verifyMentions(
-  ctx: MutationCtx,
-  userId: string,
-  integrations: IntegrationMention[] | undefined,
-  skills: SkillMention[] | undefined,
-): Promise<{
-  mentions: IntegrationMention[] | undefined;
-  skillMentions: SkillMention[] | undefined;
-}> {
-  let mentions: IntegrationMention[] | undefined;
-  if (integrations && integrations.length > 0) {
-    const verified: IntegrationMention[] = [];
-    const seen = new Set<string>();
-    for (const mention of integrations) {
-      if (seen.has(mention.serverId)) continue;
-      seen.add(mention.serverId);
-      const server = await ctx.db.get(mention.serverId);
-      if (!server || server.userId !== userId || !server.enabled) continue;
-      verified.push({ serverId: mention.serverId, name: server.name });
-    }
-    if (verified.length > 0) mentions = verified;
-  }
-
-  let skillMentions: SkillMention[] | undefined;
-  if (skills && skills.length > 0) {
-    const verified: SkillMention[] = [];
-    const seen = new Set<string>();
-    for (const mention of skills) {
-      if (seen.has(mention.installId)) continue;
-      seen.add(mention.installId);
-      const install = await ctx.db.get(mention.installId);
-      if (!install || install.userId !== userId || !install.enabled) continue;
-      const listing = await ctx.db.get(install.skillId);
-      if (!listing) continue;
-      verified.push({ installId: mention.installId, name: listing.name });
-    }
-    if (verified.length > 0) skillMentions = verified;
-  }
-
-  return { mentions, skillMentions };
 }
 
 /** The sender's display name for the prompt. Read while there is an
@@ -141,8 +92,6 @@ export async function appendUserTurn(
     userId,
     content,
     attachments,
-    mentions,
-    skillMentions,
     options,
     model,
     userName,
@@ -152,8 +101,6 @@ export async function appendUserTurn(
     userId: string;
     content: string;
     attachments: SendAttachment[] | undefined;
-    mentions: IntegrationMention[] | undefined;
-    skillMentions: SkillMention[] | undefined;
     options: SendOptions | undefined;
     model: string;
     userName: string | undefined;
@@ -171,8 +118,6 @@ export async function appendUserTurn(
     createdAt: now,
     updatedAt: now,
     attachments,
-    ...(mentions ? { integrations: mentions } : {}),
-    ...(skillMentions ? { skills: skillMentions } : {}),
   });
 
   const assistantId = await ctx.db.insert("messages", {

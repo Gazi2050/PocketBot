@@ -51,7 +51,7 @@ import { chargeUsage } from "./usageLedger";
        other dead one and the user retries. That's the honest trade, and the
        setup modal says so before anyone commits to it.
 
-   No tools run here. Search, documents, images, integrations, memory and
+   No tools run here. Search, documents, images, memory and
    chat-history all write their results into our tables as plain text, which
    would put back exactly what the lock took out. A locked thread is a plain
    conversation, deliberately. */

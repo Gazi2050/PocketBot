@@ -340,7 +340,7 @@ export function ChatView({
     model: string,
     attachments: AttachmentUpload[],
     gates: ComposerGates,
-    mentions: ComposerMentions,
+    _mentions: ComposerMentions,
   ) => {
     if (!isAuthenticated) {
       showToast("Sign in to start chatting");
@@ -393,8 +393,6 @@ export function ChatView({
         search: gates.search,
         thinking: gates.thinking,
         incognito: incognito.enabled,
-        integrations: mentions.integrations,
-        skills: mentions.skills,
       });
       setComposerDraft("");
       /* Incognito never navigates — the thread id latches into the store
@@ -423,7 +421,7 @@ export function ChatView({
     model: string,
     attachments: AttachmentUpload[],
     gates: ComposerGates,
-    mentions: ComposerMentions,
+    _mentions: ComposerMentions,
   ) => {
     if (!threadId) return;
     try {
@@ -434,8 +432,6 @@ export function ChatView({
         attachments,
         search: gates.search,
         thinking: gates.thinking,
-        integrations: mentions.integrations,
-        skills: mentions.skills,
       });
       setComposerDraft("");
     } catch (error) {

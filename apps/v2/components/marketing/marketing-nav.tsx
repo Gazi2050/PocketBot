@@ -12,7 +12,6 @@ import { MarketingThemeSwitcher } from "./theme-switcher";
 const NAV = [
   { label: "Home", href: "/about" },
   { label: "Features", href: "/about/features" },
-  { label: "Developers", href: "/about/developers" },
   { label: "Pricing", href: "/about/pricing" },
 ] as const;
 

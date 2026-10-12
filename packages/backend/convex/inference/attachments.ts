@@ -305,18 +305,6 @@ export function assistantHistoryEvents(
         : `pocketbot asked the user with an interactive form: ${asked} — they replied in their own words instead of the form.`,
     );
   }
-  // Tool results are not replayed as provider tool messages on later turns,
-  // but the model still needs to know an integration action already ran.
-  // Without this note, a terse "continue" after a tool-heavy reply makes it
-  // start the same searches from scratch.
-  for (const phase of message.phases ?? []) {
-    if (phase.kind !== "mcp" || phase.pending) continue;
-    const label = [phase.server, phase.tool].filter(Boolean).join(" · ");
-    if (!label) continue;
-    events.push(
-      `Integration action already attempted: ${label} (${phase.ok === false ? "failed" : "succeeded"}). Do not repeat the same action on a follow-up unless the user explicitly asks to retry, refresh, or run it again.`,
-    );
-  }
   return events;
 }
 

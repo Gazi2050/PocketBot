@@ -1,11 +1,11 @@
 "use client";
 
-import { StoreTabs } from "@/components/integrations/store-tabs";
+import { SectionTabs } from "./section-tabs";
 import { SETTINGS_SECTIONS } from "@/lib/settings-sections";
 import { useSettingsSections } from "@/lib/deployment-features";
 import { useView } from "@/lib/view";
 
-/* Section navigation for a phone. On a desktop the nine sections are rows in
+/* Section navigation for a phone. On a desktop the eight sections are rows in
    the rail; there is no rail here, and the tab bar's Settings tab can only
    land you in one of them — so the rest have to be reachable from inside.
  *
@@ -19,7 +19,6 @@ const LABELS: Record<(typeof SETTINGS_SECTIONS)[number], string> = {
   personalization: "Personalization",
   memory: "Memory",
   models: "Models",
-  integrations: "Integrations",
   account: "Account",
   billing: "Billing",
   usage: "Usage",
@@ -31,7 +30,7 @@ export function SectionStrip() {
   const sections = useSettingsSections();
 
   return (
-    <StoreTabs
+    <SectionTabs
       value={section}
       onChange={setSection}
       tabs={sections.map((key) => ({ value: key, label: LABELS[key] }))}

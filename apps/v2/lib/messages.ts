@@ -416,10 +416,6 @@ export type SendMessageArgs = {
   /* Ephemeral thread: the server flags it so listings, memory, search,
      and title generation all skip it, and it purges on exit. */
   incognito?: boolean;
-  /* @mentions, already resolved to ids by the composer. The server
-     verifies ownership and preloads: integration tools, skill text. */
-  integrations?: { serverId: string; name: string }[];
-  skills?: { installId: string; name: string }[];
 };
 
 const WIRE_MODEL_KEYS = ["Auto", "Fast", "Basic", "Max", "Image"] as const;
@@ -560,8 +556,6 @@ export function useMessageActions() {
       search,
       thinking,
       incognito,
-      integrations,
-      skills,
     }: SendMessageArgs): Promise<string> => {
       const startedAt = performance.now();
       let result;
@@ -582,22 +576,6 @@ export function useMessageActions() {
                   ...(file.skippedReason !== undefined
                     ? { skippedReason: file.skippedReason }
                     : {}),
-                })),
-              }
-            : {}),
-          ...(integrations && integrations.length > 0
-            ? {
-                integrations: integrations.map((mention) => ({
-                  serverId: mention.serverId as Id<"mcpServers">,
-                  name: mention.name,
-                })),
-              }
-            : {}),
-          ...(skills && skills.length > 0
-            ? {
-                skills: skills.map((mention) => ({
-                  installId: mention.installId as Id<"skillInstalls">,
-                  name: mention.name,
                 })),
               }
             : {}),
@@ -638,8 +616,6 @@ export function useMessageActions() {
         thinking,
         incognito: Boolean(incognito),
         text_length: text.length,
-        integration_mention_count: integrations?.length ?? 0,
-        skill_mention_count: skills?.length ?? 0,
       };
       captureEvent(ANALYTICS_EVENTS.messageSent, eventProperties);
       reportFrontendPerformance({

@@ -41,8 +41,6 @@ import { generateThreadTitleForPrompt } from "./inference/titles";
 import { drainQueuedMessages } from "./messageQueue";
 import { readCustomModel, readTierOverride } from "./models";
 import { documentShareLink, visualShareLink } from "./shareLinks";
-import { listRuntimeCustomSkills } from "./customSkills";
-import { listRuntimeSkills } from "./skillStore";
 import {
   attachmentValidator,
   calcItemValidator,
@@ -122,15 +120,11 @@ export const getRequestForStream = internalQuery({
 
     // These reads are independent once the thread history is loaded. Launch
     // them together so request setup pays for one database round-trip window
-    // instead of serially waiting on settings, integrations, skills, and
-    // artifacts.
+    // instead of serially waiting on settings and artifacts.
     const [
       preferences,
       userContext,
       memorySettings,
-      mcpServerRows,
-      runtimeSkills,
-      customSkills,
       threadDocumentRows,
       threadHtmlArtifactRows,
     ] = await Promise.all([
@@ -149,12 +143,6 @@ export const getRequestForStream = internalQuery({
         .withIndex("by_user", (q) => q.eq("userId", userId))
         .unique(),
       ctx.db
-        .query("mcpServers")
-        .withIndex("by_user", (q) => q.eq("userId", userId))
-        .collect(),
-      listRuntimeSkills(ctx, userId),
-      listRuntimeCustomSkills(ctx, userId),
-      ctx.db
         .query("documents")
         .withIndex("by_thread", (q) => q.eq("threadId", assistant.threadId))
         .take(50),
@@ -163,107 +151,6 @@ export const getRequestForStream = internalQuery({
         .withIndex("by_thread", (q) => q.eq("threadId", assistant.threadId))
         .take(50),
     ]);
-
-    // MCP servers (paid-only): the user's enabled remote servers, with their
-    // header ciphertext. The stream action hands the model just each server's
-    // name + description and lets it discover tools on demand — this query
-    // stays free of Autumn calls and never decrypts, mirroring how memories
-    // are surfaced. Store-installed servers borrow their store listing's
-    // description so the prompt can say what the integration is for;
-    // hand-added servers go in by name alone.
-    // Integrations the user has @mentioned anywhere in this thread (well,
-    // the post-compaction history). A mention persists: once tagged, the
-    // integration's toolset stays preloaded on every later turn instead of
-    // waiting on lazy discovery. It's a suggestion, never a scope — untagged
-    // integrations remain available through the gateway tools.
-    const mentionedServerIds = new Set(
-      messages
-        .filter((message) => message.role === "user")
-        .flatMap((message) =>
-          (message.integrations ?? []).map((m) => m.serverId),
-        ),
-    );
-    const mcpServers = await Promise.all(
-      mcpServerRows
-        // Enabled only — and a Composio-backed install must also have its
-        // account connected (the install-time link flow) before the model
-        // may see it, mirroring how unconnected OAuth servers drop out in
-        // the stream's config resolution.
-        .filter(
-          (row) => row.enabled && (!row.composio || row.composio.connected),
-        )
-        .map(async (row) => {
-          const listing = row.integrationId
-            ? await ctx.db.get(row.integrationId)
-            : null;
-          return {
-            id: row._id,
-            name: row.name,
-            url: row.url,
-            mentioned: mentionedServerIds.has(row._id),
-            description: listing?.description,
-            // Store-configured lifecycle copy travels with the runtime config
-            // and is snapshotted onto phases. Hand-added MCP servers simply
-            // have no metadata and retain the generic fallback.
-            tools: listing?.tools ?? [],
-            authMode: row.authMode ?? "headers",
-            headers: (row.headers ?? []).map((h) => ({
-              key: h.key,
-              valueCipher: h.valueCipher,
-            })),
-            oauth: row.oauth
-              ? {
-                  clientId: row.oauth.clientId,
-                  clientSecretCipher: row.oauth.clientSecretCipher,
-                  tokenEndpoint: row.oauth.tokenEndpoint,
-                  scope: row.oauth.scope,
-                  resource: row.oauth.resource,
-                  accessTokenCipher: row.oauth.accessTokenCipher,
-                  refreshTokenCipher: row.oauth.refreshTokenCipher,
-                  expiresAt: row.oauth.expiresAt,
-                  connected: row.oauth.connected,
-                }
-              : undefined,
-          };
-        }),
-    );
-
-    // Installed skills (paid-only, like integrations): name + description
-    // only — except @mentioned ones, whose full instructions ride along so
-    // the stream can preload them into the prompt. Like integration mentions,
-    // a tag anywhere in the (post-compaction) history persists for the whole
-    // thread. Unmentioned skills stay lazy via the load_skill tool.
-    const mentionedSkillInstallIds = new Set(
-      messages
-        .filter((message) => message.role === "user")
-        .flatMap((message) =>
-          (message.skills ?? []).map((m) => m.installId),
-        ),
-    );
-    const installedSkills = await Promise.all(
-      runtimeSkills.map(async (skill) => {
-        const mentioned = mentionedSkillInstallIds.has(skill.installId);
-        return {
-          name: skill.name,
-          description: skill.description,
-          mentioned,
-          ...(mentioned
-            ? {
-                instructions: (await ctx.db.get(skill.skillId))?.instructions,
-              }
-            : {}),
-        };
-      }),
-    );
-    // Custom skills (written by hand in settings) join the same list. They
-    // aren't @mentionable, so they always stay lazy behind load_skill.
-    installedSkills.push(
-      ...customSkills.map((skill) => ({
-        name: skill.name,
-        description: skill.description,
-        mentioned: false,
-      })),
-    );
 
     // Documents pocketbot has already authored in this thread, with their CURRENT
     // text, so editDocument can target one by id and copy exact anchors from
@@ -299,14 +186,7 @@ export const getRequestForStream = internalQuery({
           mode: row.kind,
           runtime: row.runtime ?? ("html" as const),
           content: await readHtmlBody(ctx, row),
-          ...((row.bindings?.length ?? 0) > 0
-            ? { bindings: (row.bindings ?? []).map((b) => b.id) }
-            : {}),
-          // A react artifact that reads live data is withheld from public
-          // share links, so it must not be offered one here either.
-          ...(row.shortId && (row.bindings?.length ?? 0) === 0
-            ? { link: visualShareLink(row.shortId) }
-            : {}),
+          ...(row.shortId ? { link: visualShareLink(row.shortId) } : {}),
         })),
     );
 
@@ -412,9 +292,6 @@ export const getRequestForStream = internalQuery({
     const latestUserText = lastUserMessage
       ? messageTextForSupermemory(lastUserMessage)
       : "";
-    const latestMessageHasRuntimeMentions = Boolean(
-      lastUserMessage?.integrations?.length || lastUserMessage?.skills?.length,
-    );
 
     // Inputs for the Image tier. The driving user turn's raw text plus its
     // image attachments in stored order — that order IS the @imgN numbering
@@ -504,15 +381,12 @@ export const getRequestForStream = internalQuery({
       longitude: userContext?.longitude,
       place: userContext?.place,
       latestUserText,
-      latestMessageHasRuntimeMentions,
       imageRequest: {
         prompt: lastUserMessage?.content ?? "",
         userImages: latestUserImages,
         lastGeneratedImage,
       },
       memoryEnabled: memorySettings?.enabled ?? true,
-      mcpServers,
-      installedSkills,
       threadDocuments,
       threadHtmlArtifacts,
       messages: modelMessages,
@@ -957,105 +831,6 @@ export const finalizeLastPendingThought = internalMutation({
   },
 });
 
-export const finalizeLastPendingMcp = internalMutation({
-  args: {
-    assistantId: v.id("messages"),
-    server: v.optional(v.string()),
-    tool: v.optional(v.string()),
-    action: v.optional(v.string()),
-    completed: v.optional(v.string()),
-    ok: v.optional(v.boolean()),
-    error: v.optional(v.string()),
-    contentOffset: v.optional(v.number()),
-  },
-  handler: async (
-    ctx,
-    {
-      assistantId,
-      server,
-      tool,
-      action,
-      completed,
-      ok,
-      error,
-      contentOffset,
-    },
-  ) => {
-    const assistant = await ctx.db.get(assistantId);
-    if (!assistant) {
-      throw new Error("Assistant message not found");
-    }
-
-    const phases = [...(assistant.phases ?? [])];
-    const buildPhase = (offset: number | undefined) => ({
-      kind: "mcp" as const,
-      ...(server !== undefined ? { server } : {}),
-      ...(tool !== undefined ? { tool } : {}),
-      ...(action !== undefined ? { action } : {}),
-      ...(completed !== undefined ? { completed } : {}),
-      ...(ok !== undefined ? { ok } : {}),
-      ...(error !== undefined ? { error } : {}),
-      ...(offset !== undefined ? { contentOffset: offset } : {}),
-    });
-
-    // Prefer the pending phase opened on tool-input-start; fall back to an
-    // appended finalized phase when the provider delivered the call in one shot.
-    for (let i = phases.length - 1; i >= 0; i -= 1) {
-      const phase = phases[i];
-      if (phase.kind === "mcp" && phase.pending) {
-        phases[i] = buildPhase(phase.contentOffset);
-        await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-        return;
-      }
-    }
-
-    phases.push(buildPhase(contentOffset));
-    await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-  },
-});
-
-export const finalizeLastPendingSkill = internalMutation({
-  args: {
-    assistantId: v.id("messages"),
-    name: v.optional(v.string()),
-    ok: v.optional(v.boolean()),
-    error: v.optional(v.string()),
-    contentOffset: v.optional(v.number()),
-  },
-  handler: async (ctx, { assistantId, name, ok, error, contentOffset }) => {
-    const assistant = await ctx.db.get(assistantId);
-    if (!assistant) {
-      throw new Error("Assistant message not found");
-    }
-
-    const phases = [...(assistant.phases ?? [])];
-    const buildPhase = (offset: number | undefined) => ({
-      kind: "skill" as const,
-      ...(name !== undefined ? { name } : {}),
-      ...(ok !== undefined ? { ok } : {}),
-      ...(error !== undefined ? { error } : {}),
-      ...(offset !== undefined ? { contentOffset: offset } : {}),
-    });
-
-    // Prefer the pending phase opened on tool-input-start; fall back to an
-    // appended finalized phase when the provider delivered the call in one shot.
-    for (let i = phases.length - 1; i >= 0; i -= 1) {
-      const phase = phases[i];
-      if (phase.kind === "skill" && phase.pending) {
-        phases[i] = buildPhase(phase.contentOffset);
-        await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-        return;
-      }
-    }
-
-    phases.push(buildPhase(contentOffset));
-    await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-  },
-});
-
-// Settle a searchChatHistory call onto the message's pending `history` phase:
-// just the query + how many past messages matched (the excerpts themselves
-// only go to the model).
 export const finalizeLastPendingHistory = internalMutation({
   args: {
     assistantId: v.id("messages"),
@@ -1082,52 +857,6 @@ export const finalizeLastPendingHistory = internalMutation({
     for (let i = phases.length - 1; i >= 0; i -= 1) {
       const phase = phases[i];
       if (phase.kind === "history" && phase.pending) {
-        phases[i] = buildPhase(phase.contentOffset);
-        await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-        return;
-      }
-    }
-
-    phases.push(buildPhase(contentOffset));
-    await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-  },
-});
-
-// Settle a suggestIntegrations call onto the message's pending
-// `integrationSuggestion` phase. Only listing ids + name snapshots are stored;
-// the card hydrates live branding and install state from the store.
-export const finalizeLastPendingIntegrationSuggestion = internalMutation({
-  args: {
-    assistantId: v.id("messages"),
-    query: v.optional(v.string()),
-    items: v.array(
-      v.object({
-        integrationId: v.id("integrations"),
-        name: v.string(),
-      }),
-    ),
-    // Used only when no pending phase exists to inherit a position from.
-    contentOffset: v.optional(v.number()),
-  },
-  handler: async (ctx, { assistantId, query, items, contentOffset }) => {
-    const assistant = await ctx.db.get(assistantId);
-    if (!assistant) {
-      throw new Error("Assistant message not found");
-    }
-
-    const phases = [...(assistant.phases ?? [])];
-    const buildPhase = (offset: number | undefined) => ({
-      kind: "integrationSuggestion" as const,
-      ...(query !== undefined ? { query } : {}),
-      items,
-      ...(offset !== undefined ? { contentOffset: offset } : {}),
-    });
-
-    // Prefer the pending phase opened on tool-input-start; fall back to an
-    // appended finalized phase when the provider delivered the call in one shot.
-    for (let i = phases.length - 1; i >= 0; i -= 1) {
-      const phase = phases[i];
-      if (phase.kind === "integrationSuggestion" && phase.pending) {
         phases[i] = buildPhase(phase.contentOffset);
         await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
         return;
@@ -1180,28 +909,6 @@ export const finalizeLastPendingQuestion = internalMutation({
     if (questions.length === 0) return;
     phases.push(buildPhase(contentOffset));
     await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-  },
-});
-
-// A suggestIntegrations call that surfaced nothing installable renders no
-// card — drop the pending phase instead of finalizing an empty one.
-export const dropLastPendingIntegrationSuggestion = internalMutation({
-  args: {
-    assistantId: v.id("messages"),
-  },
-  handler: async (ctx, { assistantId }) => {
-    const assistant = await ctx.db.get(assistantId);
-    if (!assistant?.phases) return;
-
-    const phases = [...assistant.phases];
-    for (let i = phases.length - 1; i >= 0; i -= 1) {
-      const phase = phases[i];
-      if (phase.kind === "integrationSuggestion" && phase.pending) {
-        phases.splice(i, 1);
-        await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-        return;
-      }
-    }
   },
 });
 
@@ -1336,42 +1043,6 @@ export const finalizeLastPendingImage = internalMutation({
 
     phases.push(buildPhase(contentOffset));
     await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-  },
-});
-
-// The pending `mcp` chip opens on tool-input-start, before the call's input
-// exists, so it starts anonymous. Once the input is parsed this stamps the
-// integration + tool onto the still-pending phase, letting the client show
-// the integration's branding and the developer's action phrase mid-run.
-export const describeLastPendingMcp = internalMutation({
-  args: {
-    assistantId: v.id("messages"),
-    server: v.string(),
-    tool: v.optional(v.string()),
-    action: v.optional(v.string()),
-    completed: v.optional(v.string()),
-  },
-  handler: async (ctx, { assistantId, server, tool, action, completed }) => {
-    const assistant = await ctx.db.get(assistantId);
-    if (!assistant) {
-      return;
-    }
-
-    const phases = [...(assistant.phases ?? [])];
-    for (let i = phases.length - 1; i >= 0; i -= 1) {
-      const phase = phases[i];
-      if (phase.kind === "mcp" && phase.pending && !phase.server) {
-        phases[i] = {
-          ...phase,
-          server,
-          ...(tool !== undefined ? { tool } : {}),
-          ...(action !== undefined ? { action } : {}),
-          ...(completed !== undefined ? { completed } : {}),
-        };
-        await ctx.db.patch(assistantId, { phases, updatedAt: Date.now() });
-        return;
-      }
-    }
   },
 });
 

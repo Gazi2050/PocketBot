@@ -14,7 +14,6 @@ import { ReactFrameView } from "./react-frame-view";
  */
 export function ArtifactFrameView({
   artifact,
-  htmlId,
   title,
   fill = false,
   maxHeight,
@@ -22,8 +21,6 @@ export function ArtifactFrameView({
   onErrorChange,
 }: {
   artifact: LiveHtmlArtifact;
-  /** Needed by react artifacts to run their declared data bindings. */
-  htmlId?: string;
   title?: string;
   fill?: boolean;
   maxHeight?: number;
@@ -33,7 +30,6 @@ export function ArtifactFrameView({
   if (artifact.runtime === "react") {
     return (
       <ReactFrameView
-        htmlId={htmlId}
         code={artifact.content}
         title={title}
         streaming={artifact.status === "streaming"}

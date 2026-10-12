@@ -13,13 +13,10 @@ import {
   appendUserTurn,
   displayNameFromIdentity,
   isThreadRunning,
-  verifyMentions,
 } from "./turns";
 import {
   attachmentValidator,
-  integrationMentionValidator,
   sendOptionsValidator,
-  skillMentionValidator,
 } from "./validators";
 
 /* Messages queued behind a reply that's still being written.
@@ -90,13 +87,11 @@ export const enqueue = mutation({
     threadId: v.id("threads"),
     content: v.string(),
     attachments: v.optional(v.array(attachmentValidator)),
-    integrations: v.optional(v.array(integrationMentionValidator)),
-    skills: v.optional(v.array(skillMentionValidator)),
     options: v.optional(sendOptionsValidator),
   },
   handler: async (
     ctx,
-    { threadId, content, attachments, integrations, skills, options },
+    { threadId, content, attachments, options },
   ) => {
     const { thread, userId } = await ownedThread(ctx, threadId);
     // A locked chat's replies are written by the tab holding the key, and
@@ -113,19 +108,11 @@ export const enqueue = mutation({
       );
     }
 
-    const { mentions, skillMentions } = await verifyMentions(
-      ctx,
-      userId,
-      integrations,
-      skills,
-    );
     const queuedId = await ctx.db.insert("queuedMessages", {
       threadId,
       userId,
       content,
       attachments,
-      ...(mentions ? { integrations: mentions } : {}),
-      ...(skillMentions ? { skills: skillMentions } : {}),
       options,
       // Captured now, while there's an identity to read it from: the drain
       // runs from a settle with no caller behind it.
@@ -196,8 +183,6 @@ export async function drainQueuedMessages(
     userId: next.userId,
     content: next.content,
     attachments: next.attachments,
-    mentions: next.integrations,
-    skillMentions: next.skills,
     options: next.options,
     model,
     userName: next.userName,

@@ -81,7 +81,6 @@ export async function isAdminIdentity(ctx: AnyCtx): Promise<boolean> {
 /**
  * Throws unless the caller is an authenticated admin. Every admin query,
  * mutation, and action calls this — the client-side gate is convenience only.
- * Also used by the console's approvals flow (see convex/integrations.ts).
  */
 export async function requireAdmin(ctx: AnyCtx): Promise<void> {
   if (!(await isAdminIdentity(ctx))) {

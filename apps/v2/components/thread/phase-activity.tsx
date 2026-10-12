@@ -20,8 +20,6 @@ import {
 } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { IntegrationIcon } from "@/components/integration-logo";
-import { useIntegrationActivity } from "@/lib/integration-activity";
 import type {
   MessagePhase,
   MessageStatus,
@@ -148,8 +146,6 @@ export const PhaseActivity = memo(function PhaseActivity({
   const single = final && compact.length === 1 ? compact[0] : undefined;
   const grouped = final && compact.length > 1;
   const current = narration.mode === "live" ? narration.phase : single;
-  const mcp = current?.kind === "mcp" ? current : undefined;
-  const integration = useIntegrationActivity(mcp?.server, mcp?.tool);
   const singleExpandable = single
     ? phaseDisclosure(single).expandable
     : false;
@@ -162,30 +158,26 @@ export const PhaseActivity = memo(function PhaseActivity({
     current,
     narratedStatus,
     narratedThinking,
-    integration.action,
   );
   const label = grouped
     ? `Did ${compact.length} thing${compact.length === 1 ? "" : "s"}`
     : single
-      ? integrationCompletedLabel(single, integration.completed)
-    : actionLabel;
-  const brandedIcon = grouped ? undefined : integration.iconSvg;
+      ? integrationCompletedLabel(single)
+      : actionLabel;
   const activityKind =
     single?.kind ??
     current?.kind ??
     (narratedStatus === "searching" ? "search" : undefined);
   const glyphSize = final ? 15 : 17;
   const pocketbot =
-    !final && !brandedIcon && !GLYPH_KINDS.has(activityKind ?? "");
+    !final && !GLYPH_KINDS.has(activityKind ?? "");
   const visible = narration.mode !== "hidden";
 
   const iconKey = grouped
     ? "complete"
-    : brandedIcon
-      ? `integration-${mcp?.server ?? ""}`
-      : pocketbot
-        ? "pocketbot"
-        : `phase-${current?.kind ?? narratedStatus ?? "waiting"}`;
+    : pocketbot
+      ? "pocketbot"
+      : `phase-${current?.kind ?? narratedStatus ?? "waiting"}`;
 
   return (
     <>
@@ -220,11 +212,6 @@ export const PhaseActivity = memo(function PhaseActivity({
               setExpanded((currentValue) => !currentValue);
             }}
             aria-expanded={expandable ? expanded : undefined}
-            title={
-              single?.kind === "mcp" && single.server && single.tool
-                ? `${single.server} · ${single.tool}`
-                : undefined
-            }
             className={`-mx-1 flex max-w-full items-center rounded-md px-1 py-0.5 text-left ${
               final ? "gap-1.5" : "gap-2"
             } ${
@@ -234,14 +221,12 @@ export const PhaseActivity = memo(function PhaseActivity({
             }`}
           >
             <PhaseIcon iconKey={iconKey}>
-              {brandedIcon ? (
-                <IntegrationIcon iconSvg={brandedIcon} size={glyphSize} />
-              ) : pocketbot ? (
+              {pocketbot ? (
                 <PocketBotActivityIcon />
               ) : grouped ? (
                 <IconStack2 size={glyphSize} stroke={2} />
               ) : null}
-              {!brandedIcon && !pocketbot && !grouped && (
+              {!pocketbot && !grouped && (
                 <ActivityGlyph kind={activityKind} size={glyphSize} />
               )}
             </PhaseIcon>

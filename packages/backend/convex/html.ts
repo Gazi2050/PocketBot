@@ -15,7 +15,6 @@ import {
   readHtmlBody,
   setHtmlBody,
 } from "./artifactContent";
-import { artifactBindingValidator } from "./validators";
 
 const MAX_TITLE_LENGTH = 120;
 
@@ -72,12 +71,6 @@ export const getHtmlArtifact = query({
  * so anyone with the link can view it. Returns only what the share page needs
  * (title/content/kind), and only for a completed artifact, so in-progress,
  * failed, or empty ones are never exposed.
- *
- * An artifact that reads live integration data is never served here. Its
- * bindings only mean anything when run as the owner, and running them for a
- * stranger — or serving a body whose whole point is the owner's data — is not
- * something a share link should be able to ask for. The page gets an explicit
- * locked answer instead of a 404 so it can say why.
  */
 export const getSharedArtifact = query({
   args: { shortId: v.string() },
@@ -87,9 +80,6 @@ export const getSharedArtifact = query({
       .withIndex("by_short_id", (q) => q.eq("shortId", shortId))
       .first();
     if (!row || row.status !== "complete") return null;
-    if ((row.bindings?.length ?? 0) > 0) {
-      return { dataLocked: true as const };
-    }
     const content = await readHtmlBody(ctx, row);
     if (!content) return null;
     return {
@@ -173,23 +163,19 @@ export const finalizeStreamingHtml = internalMutation({
     htmlId: v.id("htmlArtifacts"),
     title: v.string(),
     content: v.string(),
-    // React artifacts declare their data bindings in the same tool call that
-    // writes the body, so they land here rather than at row creation.
-    bindings: v.optional(v.array(artifactBindingValidator)),
     // Likewise for inline-vs-panel: a react artifact's mode arrives inside the
     // tool input, so the row is opened before it's known. The stream promotes
     // the row as soon as the field closes; this is the backstop for when it
     // closes too late for that (or never streams at all).
     kind: v.optional(v.union(v.literal("inline"), v.literal("full"))),
   },
-  handler: async (ctx, { htmlId, title, content, bindings, kind }) => {
+  handler: async (ctx, { htmlId, title, content, kind }) => {
     const row = await ctx.db.get(htmlId);
     if (!row) return;
     await setHtmlBody(ctx, row, content);
     await ctx.db.patch(htmlId, {
       title: title.slice(0, MAX_TITLE_LENGTH),
       status: "complete",
-      ...(bindings ? { bindings } : {}),
       ...(kind && kind !== row.kind ? { kind } : {}),
       updatedAt: Date.now(),
     });

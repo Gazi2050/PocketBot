@@ -9,10 +9,8 @@ const pages = [
   { path: "/platinum", changeFrequency: "monthly", priority: 0.7 },
   { path: "/about", changeFrequency: "monthly", priority: 0.9 },
   { path: "/about/features", changeFrequency: "monthly", priority: 0.8 },
-  { path: "/about/developers", changeFrequency: "monthly", priority: 0.7 },
   { path: "/about/pricing", changeFrequency: "monthly", priority: 0.7 },
   { path: "/about/about", changeFrequency: "yearly", priority: 0.6 },
-  { path: "/integrations", changeFrequency: "weekly", priority: 0.7 },
   { path: "/kirkify", changeFrequency: "weekly", priority: 0.6 },
 ] as const;
 

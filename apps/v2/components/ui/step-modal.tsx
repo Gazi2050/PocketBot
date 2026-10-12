@@ -21,9 +21,7 @@ import { cn } from "@/lib/utils";
    glides along, and ALL content lives inside the one height morph, so
    nothing can ever resize outside the animation.
 
-   Grown out of the integration store's install modal, which is still its
-   biggest user (components/integrations/modal-bits.tsx re-exports these
-   under the store's own names). Locked threads use it for both the setup
+   Grown out of an install modal; locked threads use it for both the setup
    walkthrough and the unlock prompt. */
 
 /** Step pages slide in from the right; the outgoing page drifts left. */

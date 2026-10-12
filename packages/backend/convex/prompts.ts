@@ -52,7 +52,7 @@ export const MERMAID_SYSTEM_INSTRUCTION =
 // than the same guess in prose would, so the data-provenance rule is the
 // first line here and deliberately blunt.
 export const CHART_SYSTEM_INSTRUCTION =
-  "Use `createChart` to plot numbers you actually have — from a search, a fetched page, a connected integration, a file or table the user gave you, or your own calculation. Numbers an integration returned are among the best things to chart: pull them with the integration's tools, then plot what came back. Never chart invented, estimated, or half-remembered figures; a made-up chart reads as fact. Chart when the shape of the data is the point (a trend, a comparison, a split); for two or three numbers, just say them. Pick the type by the job: line or area for change over a sequence, bar for comparing categories, hbar for long names or rankings, pie for a few parts of one whole, scatter for the relationship between two measures. Title what it shows, name the source, and cap it at 8 series (3 for scatter) — aggregate the rest into 'Other'. The user sees the chart, so don't restate its numbers; add the takeaway instead. Use a markdown table when the exact values matter more than the shape. When the numbers come from a connected integration and would go stale — open issues, this month's orders, current inventory — add `binding` so it re-reads them every time the user opens the thread — but write the numbers you already have into the chart as well. A binding refreshes a chart; it never stands in for the data.";
+  "Use `createChart` to plot numbers you actually have — from a search, a fetched page, a file or table the user gave you, or your own calculation. Never chart invented, estimated, or half-remembered figures; a made-up chart reads as fact. Chart when the shape of the data is the point (a trend, a comparison, a split); for two or three numbers, just say them. Pick the type by the job: line or area for change over a sequence, bar for comparing categories, hbar for long names or rankings, pie for a few parts of one whole, scatter for the relationship between two measures. Title what it shows, name the source, and cap it at 8 series (3 for scatter) — aggregate the rest into 'Other'. The user sees the chart, so don't restate its numbers; add the takeaway instead. Use a markdown table when the exact values matter more than the shape.";
 
 export const MARKDOWN_IMAGE_SYSTEM_INSTRUCTION =
   "Show a known direct image URL with ![alt](url) when useful or requested. Never invent an image URL or fence the markdown.";
@@ -86,9 +86,6 @@ export const CHAT_HISTORY_SYSTEM_INSTRUCTION =
 export const CHAT_HISTORY_SEMANTIC_SYSTEM_INSTRUCTION =
   "Use `searchChatHistory` when the user refers to an earlier chat or it clearly matters. It searches by meaning — describe what you're looking for in natural language; retry once with a different description if needed. Cite the chat title/date, and never invent a memory.";
 
-export const INTEGRATION_SUGGEST_SYSTEM_INSTRUCTION =
-  "Use `suggestIntegrations` once when the user asks to connect an app or needs an unconnected service. Search by app or capability, add one brief line around the cards, and never invent listings.";
-
 // Backstop, not the fix. The fix is structural: tool records live in a
 // <pocketbot_system_log> block on the user side of the transcript, so there is
 // no assistant message shaped like one for the model to copy. This is here
@@ -101,23 +98,11 @@ export const HISTORY_NOTES_SYSTEM_INSTRUCTION =
 export const ASK_QUESTION_SYSTEM_INSTRUCTION =
   "Use `askUserQuestion` when a decision genuinely needs the user's call — a preference, a missing requirement, an ambiguous ask — never for things you can infer or for rhetorical check-ins. Ask up to 4 crisp questions in one call (single choice, multiple choice, short text, or a file request); they render as an interactive form the user fills in. After calling it, end your turn with at most one short sentence.";
 
-export const MCP_SYSTEM_INSTRUCTION =
-  "Use connected integrations only when external data or action is required. Call `mcp_list_tools` once, then the minimum targeted `mcp_call_tool` calls. Do not explore broadly or mention MCP or wiring. When the answer is something to look at rather than read — a dashboard, a view, a chart — bind it live (`createReactArtifact` bindings, or `createChart`'s binding) instead of pasting values you fetched into the output; a pasted number is stale the next time the user opens it.";
-
-export const MCP_MENTIONED_SYSTEM_INSTRUCTION =
-  "The tagged integrations below are preloaded. Call `mcp_call_tool` directly with the shown schema when needed; do not list tools or explore broadly.";
-
-export const SKILL_MENTIONED_SYSTEM_INSTRUCTION =
-  "The tagged skills below are already loaded. Follow relevant instructions directly; do not call `load_skill` or mention skill wiring.";
-
-export const SKILL_SYSTEM_INSTRUCTION =
-  "When a task matches an installed skill below, call `load_skill` before working and follow it. Do not load irrelevant skills, reload one, guess its contents, or mention skill wiring.";
-
 export const DOCUMENT_SYSTEM_INSTRUCTION =
   "Use `createDocument` for substantial keepable prose and `createCodeDocument` for any standalone text file the user should keep or download — source code, config, data (CSV, JSON, YAML, XML), SVG graphics, or any other text format; use ordinary fenced snippets for short code. An SVG file shows a live preview right in the chat, so prefer a `.svg` code document when asked to draw or design a vector graphic. Post one short heads-up first. Document prose must be unfenced GFM; it may embed images with `![alt](url)` using https URLs from this conversation (user attachments, generated images) — never invented URLs. Code-document content must be the raw complete file with no Markdown fence and a filename with the correct extension. Keep the returned id. Revise either kind with one `editDocument` call using exact unique current-text anchors; empty replacement deletes. Retry only failed edits against returned content. Do not paste the document back into chat.";
 
 export const HTML_SYSTEM_INSTRUCTION =
-  "Use `createReactArtifact` to build anything interactive or stateful — a dashboard, tool, calculator, quiz, or data view — as a React + Tailwind module; it is also the only artifact that can show live data from a connected integration. Use `createInlineHtml` for one compact static visualization or diagram, and `createHtmlPage` for a complete keepable multi-section page of written content. Post one short heads-up first. Revise any existing artifact with `editHtml` and exact unique current-source anchors. Do not paste artifact source into chat; use documents for prose.";
+  "Use `createReactArtifact` to build anything interactive or stateful — a dashboard, tool, calculator, quiz, or data view — as a React + Tailwind module. Use `createInlineHtml` for one compact static visualization or diagram, and `createHtmlPage` for a complete keepable multi-section page of written content. Post one short heads-up first. Revise any existing artifact with `editHtml` and exact unique current-source anchors. Do not paste artifact source into chat; use documents for prose.";
 
 /** "Friday, June 12, 2026, 3:42 PM" in the user's timezone, UTC fallback. */
 function formatLocalTime(now: number, timeZone?: string) {
@@ -242,7 +227,6 @@ function buildHtmlSection(
     content: string;
     link?: string;
     runtime?: "html" | "react";
-    bindings?: string[];
   }[],
 ) {
   if (!threadHtmlArtifacts || threadHtmlArtifacts.length === 0) {
@@ -258,7 +242,6 @@ function buildHtmlSection(
     content,
     link,
     runtime,
-    bindings,
   } of threadHtmlArtifacts) {
     if (budget <= 0) break;
     const truncated = content.length > budget;
@@ -267,15 +250,8 @@ function buildHtmlSection(
       : content;
     budget -= Math.min(content.length, budget);
     const isReact = runtime === "react";
-    // A react artifact's data bindings are part of its current state: the
-    // model has to know which ids usePocketBotData can already ask for before it
-    // edits the module around them.
-    const dataNote =
-      isReact && bindings && bindings.length > 0
-        ? `\n\nIts live data bindings: ${bindings.join(", ")}. It is not publicly shareable.`
-        : "";
     blocks.push(
-      `### "${title || "Untitled"}" (${isReact ? "React" : "HTML"} ${mode}, id: ${id}${link ? `, public link: ${link}` : ""})${dataNote}\n\n\`\`\`${isReact ? "jsx" : "html"}\n${body}\n\`\`\``,
+      `### "${title || "Untitled"}" (${isReact ? "React" : "HTML"} ${mode}, id: ${id}${link ? `, public link: ${link}` : ""})\n\n\`\`\`${isReact ? "jsx" : "html"}\n${body}\n\`\`\``,
     );
   }
 
@@ -320,10 +296,6 @@ export function buildSystemPrompt({
   locale,
   hasLocation,
   memoryContext,
-  mcpIntegrations,
-  mcpMentionedIntegrations,
-  skills,
-  mentionedSkills,
   threadDocuments,
   htmlEnabled,
   imageToolEnabled,
@@ -343,21 +315,6 @@ export function buildSystemPrompt({
   // Supermemory profile facts and semantic matches. Omitted when memory is off
   // or the user is on the free plan.
   memoryContext?: SupermemoryPromptContext;
-  // Connected integrations (paid-only): name + store description only. The
-  // model discovers an integration's actual tools on demand via the
-  // mcp_list_tools / mcp_call_tool gateway, keeping schemas out of the prompt.
-  mcpIntegrations?: { name: string; description?: string }[];
-  // Integrations the user @mentioned this turn, with their tool listings
-  // already fetched (compact JSON lines from the same formatter mcp_list_tools
-  // uses) — the model can call mcp_call_tool on these without listing first.
-  mcpMentionedIntegrations?: { server: string; toolLines: string[] }[];
-  // Installed skills (paid-only): name + store description only. The model
-  // pulls a skill's actual instruction text on demand via the load_skill
-  // tool, keeping unloaded skills out of the prompt.
-  skills?: { name: string; description?: string }[];
-  // Skills the user @mentioned this turn (or earlier in the thread), with
-  // their full instructions already inlined — no load_skill round trip.
-  mentionedSkills?: { name: string; instructions: string }[];
   // Documents already authored in this thread, with their CURRENT text, so
   // editDocument can target one by id and copy exact find anchors from it.
   threadDocuments?: {
@@ -380,7 +337,6 @@ export function buildSystemPrompt({
     mode: string;
     content: string;
     runtime?: "html" | "react";
-    bindings?: string[];
   }[];
   now: number;
 }) {
@@ -438,43 +394,9 @@ export function buildSystemPrompt({
       ? CHAT_HISTORY_SEMANTIC_SYSTEM_INSTRUCTION
       : CHAT_HISTORY_SYSTEM_INSTRUCTION,
   );
-  // The store's shop window rides every chat turn (the tool is always wired),
-  // so the model knows suggestions are a thing whether or not the user has
-  // anything connected yet.
-  sections.push(INTEGRATION_SUGGEST_SYSTEM_INSTRUCTION);
   // The question form rides every turn too — clarifying beats guessing on
   // any plan.
   sections.push(ASK_QUESTION_SYSTEM_INSTRUCTION);
-  if (mcpIntegrations && mcpIntegrations.length > 0) {
-    const list = mcpIntegrations
-      .map(({ name, description }) =>
-        description ? `- ${name}: ${description}` : `- ${name}`,
-      )
-      .join("\n");
-    sections.push(
-      `${MCP_SYSTEM_INSTRUCTION}\n\nConnected integrations:\n${list}`,
-    );
-  }
-  if (mcpMentionedIntegrations && mcpMentionedIntegrations.length > 0) {
-    const blocks = mcpMentionedIntegrations
-      .map(({ server, toolLines }) => `${server}:\n${toolLines.join("\n")}`)
-      .join("\n\n");
-    sections.push(`${MCP_MENTIONED_SYSTEM_INSTRUCTION}\n\n${blocks}`);
-  }
-  if (skills && skills.length > 0) {
-    const list = skills
-      .map(({ name, description }) =>
-        description ? `- ${name}: ${description}` : `- ${name}`,
-      )
-      .join("\n");
-    sections.push(`${SKILL_SYSTEM_INSTRUCTION}\n\nInstalled skills:\n${list}`);
-  }
-  if (mentionedSkills && mentionedSkills.length > 0) {
-    const blocks = mentionedSkills
-      .map(({ name, instructions }) => `### ${name}\n\n${instructions}`)
-      .join("\n\n");
-    sections.push(`${SKILL_MENTIONED_SYSTEM_INSTRUCTION}\n\n${blocks}`);
-  }
   sections.push(buildUserContextSection({ userName, timeZone, locale, now }));
   if (userPreferences?.trim()) {
     sections.push(

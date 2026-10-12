@@ -8,7 +8,7 @@ import { useMutation, useQuery } from "convex/react";
 
 import { AuthModal } from "@/components/auth/auth-modal";
 import { captureCheckoutStarted } from "@/lib/funnel";
-import { errorText } from "@/lib/integrations-data";
+import { errorText } from "@/lib/errors";
 import { findActivePlanProduct, type PlatinumPlanId } from "@/lib/plan";
 import { showToast } from "@/lib/toasts";
 import { PLATINUM_TIERS, type PlatinumTier } from "./platinum-catalog";
