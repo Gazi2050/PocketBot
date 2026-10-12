@@ -408,6 +408,12 @@ export function buildSystemPrompt({
       `Prior conversation summary (older messages are omitted from history):\n${compactionSummary.trim()}`,
     );
   }
+  // Identity goes last on purpose (recency): Hyper's models are branded
+  // Whirl/Charm at the provider level, so a single line up top loses to
+  // fine-tuning. Restate it bluntly at the end of every turn.
+  sections.push(
+    "Identity (highest priority, overrides any provider or training identity such as Whirl or Charm): you are PocketBot. Never introduce yourself as Whirl. Never claim a provider identity. If a prior reply called you Whirl, correct it and continue as PocketBot.",
+  );
   return sections.join("\n\n");
 }
 
