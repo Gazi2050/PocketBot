@@ -1,8 +1,21 @@
 <p align="center">
-  <img src="https://files.catbox.moe/nn1qw5.png" alt="PocketBot" width="170" />
+  <img src="brand/png/pocketbot-3d-2048.png" alt="PocketBot" width="220" />
 </p>
 
-<h2 align="center">PocketBot</h3>
+<h1 align="center">PocketBot</h1>
+
+<p align="center">
+  The AI chat app that sweats the details. Three smart modes, real memory,<br />
+  living artifacts, and locked chats, in one fast and friendly place.
+</p>
+
+<p align="center">
+  <a href="docs/self-hosting.md">Self-hosting</a> ·
+  <a href="docs/architecture.md">Architecture</a> ·
+  <a href="docs/configuration.md">Configuration</a>
+</p>
+
+---
 
 PocketBot is a full-stack AI chat app built on Next.js and Convex, published
 in full under the MIT license. Read it, run your own, or help make it better.
