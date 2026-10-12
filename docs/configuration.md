@@ -124,7 +124,8 @@ when it's set.
 
 ## Other apps
 
-**Mobile** (`apps/mobile/.env.local`)
+**Mobile** (`apps/mobile/.env.local`) — the mobile app is under active
+development and coming soon.
 
 | Variable                            | What it's for                     |
 | ----------------------------------- | --------------------------------- |

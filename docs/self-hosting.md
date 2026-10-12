@@ -202,7 +202,8 @@ hide them. On the backend, `APP_NAME` in
 [`packages/backend/convex/site.ts`](../packages/backend/convex/site.ts) is
 the name OpenRouter shows for your traffic.
 
-The mobile app's bundle identifiers and Expo project live in
+The mobile app is under active development and coming soon. Its bundle
+identifiers and Expo project live in
 [`apps/mobile/app.json`](../apps/mobile/app.json). Change them before you
 build your own copy.
 

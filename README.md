@@ -21,8 +21,8 @@
 Open to run, open to shape. Use PocketBot live at
 [pocketbot](https://pocketbott.vercel.app), or clone it and shape
 it your way — your keys, your deployment, your rules. The whole stack ships
-under the MIT license — web app and backend today, **mobile app coming
-soon**.
+under the MIT license — web app and backend today; the **mobile app is under
+active development and coming soon**.
 
 ## Features
 
@@ -104,7 +104,7 @@ production.
 ```
 apps/
   v2/         The web app (Next.js). This is the one in production.
-  mobile/     Native app (Expo)
+  mobile/     Native app (Expo) — under active development, coming soon.
 packages/
   backend/    Convex backend: schema, functions, and the AI pipeline
 docs/         Guides for self-hosting, configuration, and architecture

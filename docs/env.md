@@ -79,6 +79,8 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 CLERK_SECRET_KEY=sk_test_...
 ```
 
+The mobile app is under active development and coming soon.
+
 ### apps/mobile/.env.example
 ```
 # Same Convex deployment + Clerk instance as apps/v2.
