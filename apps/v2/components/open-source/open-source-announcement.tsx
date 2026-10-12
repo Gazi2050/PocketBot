@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { IconBrandGithubFilled } from "@tabler/icons-react";
 import { motion } from "motion/react";
 
@@ -11,40 +11,10 @@ import {
   StepModalCloseButton,
 } from "@/components/ui/step-modal";
 import { rise } from "@/lib/motion";
-import {
-  hasSeenOpenSourceAnnouncement,
-  markOpenSourceAnnouncementSeen,
-  REPO_LABEL,
-  REPO_URL,
-} from "@/lib/open-source";
+import { REPO_LABEL, REPO_URL } from "@/lib/open-source";
 import { OpenSourceHero } from "./open-source-hero";
 
-/* A beat after the app paints, so the modal arrives on a settled page
-   instead of racing the first frame. */
-const OPEN_DELAY_MS = 1200;
-
-/** Tells each browser, once, that PocketBot's source is public. */
-export function OpenSourceAnnouncement() {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (hasSeenOpenSourceAnnouncement()) return;
-    const timer = window.setTimeout(() => setOpen(true), OPEN_DELAY_MS);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  return (
-    <OpenSourceDialog
-      open={open}
-      onOpenChange={(next) => {
-        if (!next) markOpenSourceAnnouncementSeen();
-        setOpen(next);
-      }}
-    />
-  );
-}
-
-/** The announcement itself, ungated, so /debug can open it on demand. */
+/** The announcement, ungated, so /debug can open it on demand. */
 export function OpenSourceDialog({
   open,
   onOpenChange,

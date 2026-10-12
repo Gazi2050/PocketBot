@@ -17,7 +17,6 @@ import { ChatView } from "./chat-view";
 import { HistoryView } from "./mobile/history-view";
 import { MobileTabBar } from "./mobile/tab-bar";
 import { IncognitoJanitor } from "./incognito-toggle";
-import { OpenSourceAnnouncement } from "./open-source/open-source-announcement";
 import { PageSlide } from "./page-slide";
 import { Sidebar } from "./sidebar";
 import { LockDialogs } from "./locked/lock-dialogs";
@@ -228,7 +227,6 @@ export function AppShell({ children }: { children?: React.ReactNode }) {
       <LockDialogs />
       <IncognitoJanitor />
       <ResetNoticeDialog enabled={isAuthenticated} />
-      <OpenSourceAnnouncement />
       <DeploymentWatcher />
       {children}
     </div>
