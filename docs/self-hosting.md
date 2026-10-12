@@ -3,13 +3,14 @@
 This guide takes you from a fresh clone to a running PocketBot, first on your
 machine and then in production. Budget about half an hour the first time.
 
-PocketBot needs three services to run:
+PocketBot needs four things to run:
 
 | Service                                | What it does                        | Free tier |
 | -------------------------------------- | ----------------------------------- | --------- |
 | [Convex](https://convex.dev)           | Database, backend functions, crons  | Yes       |
 | [Clerk](https://clerk.com)             | Sign-in and user accounts           | Yes       |
-| [OpenRouter](https://openrouter.ai)    | Every model call                    | Pay as you go |
+| Hyper                                  | Chat replies — all three modes      | —         |
+| [OpenRouter](https://openrouter.ai)    | Titles, voice, locked chats, images | Pay as you go |
 
 Everything else is optional. [Configuration](configuration.md) lists what
 each extra service unlocks.
@@ -30,7 +31,9 @@ pnpm install
 ## 2. Set up Clerk
 
 1. Create an application in the [Clerk dashboard](https://dashboard.clerk.com)
-   and turn on the sign-in methods you want (email, Google, and so on).
+   and turn on the sign-in methods you want (email, Google, and so on). For
+   Google sign-in, create an OAuth **Web application** client in the Google
+   Cloud Console and paste its ID and secret into Clerk's Google connection.
 2. Open **Configure → JWT templates**, choose **New template → Convex**, and
    keep the name **`convex`**. The backend only accepts tokens from a template
    with exactly that name.
@@ -66,6 +69,7 @@ open, and in a second one, set the required variables:
 ```sh
 cd packages/backend
 pnpm exec convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
+pnpm exec convex env set HYPER_API_KEY sk-hyper-...
 pnpm exec convex env set OPENROUTER_API_KEY sk-or-v1-...
 pnpm exec convex env set SITE_URL http://localhost:3000
 ```
@@ -136,7 +140,6 @@ features it powers hide until then:
 
 | To get...              | Set...                                  |
 | ---------------------- | --------------------------------------- |
-| Web search             | `EXA_API_KEY` on Convex                 |
 | Long-term memory       | `SUPERMEMORY_API_KEY` on Convex         |
 | Plans and billing      | `AUTUMN_SECRET_KEY` on Convex           |
 | Product analytics      | PostHog keys on the web app and Convex  |
@@ -159,13 +162,16 @@ Create a production deployment and give it the same variables as dev:
 ```sh
 cd packages/backend
 pnpm exec convex deploy
-pnpm exec convex env set --prod CLERK_JWT_ISSUER_DOMAIN https://clerk.your-domain
+pnpm exec convex env set --prod CLERK_JWT_ISSUER_DOMAIN https://your-domain/__clerk
+pnpm exec convex env set --prod HYPER_API_KEY sk-hyper-...
 pnpm exec convex env set --prod OPENROUTER_API_KEY sk-or-v1-...
 pnpm exec convex env set --prod SITE_URL https://your-domain
 ```
 
-Use your Clerk **production** instance's Frontend API URL here, and add the
-same `convex` JWT template to that instance.
+In production, Clerk is served through your own domain: the web app ships a
+`/__clerk` proxy (`apps/v2/proxy.ts`), so the issuer above is your domain
+with the proxy path — no separate Clerk subdomain needed. Add the same
+`convex` JWT template to your Clerk **production** instance.
 
 ### Web app
 
@@ -173,11 +179,13 @@ Any host that runs Next.js works. On [Vercel](https://vercel.com):
 
 1. Import the repository and set the **root directory** to `apps/v2`.
 2. Add the environment variables from `apps/v2/.env.example`, using your
-   production Convex and Clerk values.
+   production Convex and Clerk values, plus
+   `NEXT_PUBLIC_CLERK_PROXY_URL=https://your-domain/__clerk`.
 3. Deploy.
 
-On other hosts, also set `NEXT_PUBLIC_SITE_URL` to your public address, then
-build and start from the repository root:
+On other hosts, also set `NEXT_PUBLIC_SITE_URL` and
+`NEXT_PUBLIC_CLERK_PROXY_URL` to your public address (the latter with the
+`/__clerk` path), then build and start from the repository root:
 
 ```sh
 pnpm install
@@ -201,8 +209,11 @@ build your own copy.
 ## Troubleshooting
 
 **"The server is missing part of its configuration" on every reply.**
-`OPENROUTER_API_KEY` isn't set on the Convex deployment. Check with
-`pnpm exec convex env list` (run from `packages/backend`).
+`HYPER_API_KEY` isn't set on the Convex deployment — chat runs through it.
+Check with `pnpm exec convex env list` (run from `packages/backend`).
+
+**Titles, voice input, locked chats, or images quietly do nothing.**
+Those run on OpenRouter; `OPENROUTER_API_KEY` isn't set on the deployment.
 
 **Signed in, but every request is unauthenticated.**
 The Clerk JWT template has to be named exactly `convex`, and

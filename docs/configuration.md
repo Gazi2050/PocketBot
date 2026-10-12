@@ -15,17 +15,19 @@ A few secrets have to match on both sides; they're marked _shared_ below.
 | Where    | Variable                            | What it's for                                         |
 | -------- | ----------------------------------- | ----------------------------------------------------- |
 | Convex   | `CLERK_JWT_ISSUER_DOMAIN`           | Your Clerk Frontend API URL, so Convex trusts sign-ins |
-| Convex   | `OPENROUTER_API_KEY`                | Every model call: chat, titles, images, transcription |
+| Convex   | `HYPER_API_KEY`                     | Chat turns. All three modes — Auto, Fast, Heavy — run through Hyper |
+| Convex   | `OPENROUTER_API_KEY`                | Everything around chat: thread titles, voice transcription, locked chats, home suggestions, HTML compaction, image generation |
 | Convex   | `SITE_URL`                          | The web app's public origin, for share links, OAuth returns, and emails. Defaults to `http://localhost:3000` |
 | Web app  | `NEXT_PUBLIC_CONVEX_URL`            | Your deployment's `.convex.cloud` URL                 |
 | Web app  | `NEXT_PUBLIC_CONVEX_SITE_URL`       | Your deployment's `.convex.site` URL                  |
 | Web app  | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key                                 |
 | Web app  | `CLERK_SECRET_KEY`                  | Clerk secret key                                      |
 | Web app  | `NEXT_PUBLIC_SITE_URL`              | Public origin for canonical URLs and share cards. Filled in automatically on Vercel |
+| Web app  | `NEXT_PUBLIC_CLERK_PROXY_URL`       | Production only: serves Clerk through your own domain at `/__clerk`. Leave unset in dev |
 
-With just these, you get the full chat experience: every model, thinking,
-artifacts, sharing, folders, locked and incognito chats, and image
-generation.
+With just these, you get the full chat experience: the three modes (Auto,
+Fast, Heavy), artifacts, sharing, folders, locked and incognito chats, and
+image generation.
 
 ## Optional features
 
@@ -34,11 +36,13 @@ controls it can't honor instead of letting them fail.
 
 | Feature              | Where  | Variables                                  | Without it                                                          |
 | -------------------- | ------ | ------------------------------------------ | ------------------------------------------------------------------- |
-| Web search           | Convex | `EXA_API_KEY`                              | The search toggle hides, and replies run without the web            |
 | Long-term memory     | Convex | `SUPERMEMORY_API_KEY`                      | Memory stays off                                                    |
 | Billing              | Convex | `AUTUMN_SECRET_KEY`                        | Everyone gets every feature, nothing is metered, and plan UI hides |
 | Support agent        | Both   | `MEDIAN_KEY`, `MEDIAN_SUPPORT_SECRET` (shared) | The Support menu item hides                                     |
 | Kirkify              | Both   | `KIRKIFY_SECRET` (shared)                  | `/kirkify` returns 404 and drops out of the nav and sitemap         |
+
+Web search is retired for now: chat turns run text-only, and no search tool
+is wired with or without `EXA_API_KEY`. Leave it unset.
 
 ### Billing
 
@@ -65,7 +69,6 @@ look them up by id.
 | `extra_usage`                    | Metered, USD        | The top-up balance, drawn after `usage`        |
 | `ai_cost`, `search`              | Metered, USD        | What turns and searches deduct from the pool   |
 | `basic`, `pro`, `max`            | Boolean             | Plan entitlements (any one means "paid")       |
-| `reasoning`, `can_search`        | Boolean             | Thinking and web search entitlements           |
 
 The pricing page reads its plans from Autumn, so names, prices, and
 allowances are yours to set.

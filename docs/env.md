@@ -1,29 +1,48 @@
 # Env Files
 
-Where which env lives. `.example` files are committed templates, `.local` files are gitignored local overrides (see `.gitignore`).
+Where which env lives. `.example` files are committed templates, `.local`
+files are gitignored local overrides (see `.gitignore`). Both `.example`
+files keep a commented reference block for the other environments — blank
+slots, never values.
 
-Backend server secrets never go in a file — set them with `pnpm exec convex env set NAME value` from `packages/backend`. See `docs/configuration.md` for the full reference and `docs/self-hosting.md` for the Clerk JWT template.
+Backend server secrets never go in a file — set them with
+`pnpm exec convex env set NAME value` from `packages/backend`. See
+`docs/configuration.md` for the full reference and `docs/self-hosting.md`
+for the Clerk JWT template.
 
 ### packages/backend/.env.example
 ```
-# Deployment used by `pnpm exec convex dev` (written automatically on first run).
-CONVEX_DEPLOYMENT=dev:your-deployment
+# Convex CLI pointer — the deployment `convex dev`/`run`/`deploy` talk to.
+# Secrets live on each deployment (`convex env set NAME value`), not here.
 
-# Set on the Convex deployment itself, listed here so you know what the backend reads:
-# Required: CLERK_JWT_ISSUER_DOMAIN, OPENROUTER_API_KEY, SITE_URL
-# Optional: EXA_API_KEY, SUPERMEMORY_API_KEY,
-# AUTUMN_SECRET_KEY,
-# POSTHOG_PROJECT_TOKEN, POSTHOG_HOST, POSTHOG_LLM_PRIVACY_MODE,
-# POSTHOG_PERSONAL_API_KEY, POSTHOG_FREE_COST_ENDPOINT,
-# BRAINTRUST_API_KEY, BRAINTRUST_PROJECT_ID, BRAINTRUST_PROJECT_NAME,
-# AXIOM_TOKEN, AXIOM_DATASET, AXIOM_HOST,
-# CLERK_WEBHOOK_SECRET, RESEND_API_KEY, RESEND_AUDIENCE_ID, RESEND_FROM_EMAIL,
-# VERCEL_WEBHOOK_SECRET, MEDIAN_KEY, MEDIAN_SUPPORT_SECRET, KIRKIFY_SECRET
+CONVEX_DEPLOYMENT=dev:your-deployment
+VITE_CONVEX_URL=https://your-deployment.convex.cloud
+VITE_CONVEX_SITE_URL=https://your-deployment.convex.site
+
+# --- Deployment env reference -----------------------------------------------
+# local
+# CLERK_JWT_ISSUER_DOMAIN=
+# HYPER_API_KEY=
+# SITE_URL=http://localhost:3000
+#
+# dev
+# CLERK_JWT_ISSUER_DOMAIN=
+# HYPER_API_KEY=
+# SITE_URL=
+#
+# prod
+# CLERK_JWT_ISSUER_DOMAIN=
+# HYPER_API_KEY=
+# SITE_URL=
 ```
+
+The deployment also reads `OPENROUTER_API_KEY` (titles, voice, locked chats,
+images) and the optional service keys — those live on the deployment too,
+listed in [configuration.md](configuration.md).
 
 ### packages/backend/.env.local
 ```
-# Gitignored. Your Convex dev deployment pointer.
+# Gitignored. Your deployment pointer, written by the CLI on first run.
 CONVEX_DEPLOYMENT=dev:your-deployment
 VITE_CONVEX_URL=https://your-deployment.convex.cloud
 VITE_CONVEX_SITE_URL=https://your-deployment.convex.site
@@ -31,17 +50,25 @@ VITE_CONVEX_SITE_URL=https://your-deployment.convex.site
 
 ### apps/v2/.env.example
 ```
-# Required: Convex deployment + Clerk + public origin.
-NEXT_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
-NEXT_PUBLIC_CONVEX_SITE_URL=https://your-deployment.convex.site
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-CLERK_SECRET_KEY=sk_test_...
-# NEXT_PUBLIC_SITE_URL=https://your-domain
+# Web app, local dev. Prod env lives in your host's settings.
 
-# Optional: NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN, NEXT_PUBLIC_POSTHOG_HOST,
-# AXIOM_TOKEN, AXIOM_DATASET, MEDIAN_KEY, MEDIAN_SUPPORT_SECRET,
-# KIRKIFY_SECRET, GIT_COMMIT_SHA, DEV_ALLOWED_ORIGINS
+NEXT_PUBLIC_CONVEX_URL=
+NEXT_PUBLIC_CONVEX_SITE_URL=
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
+
+# --- Prod reference -----------------------------------------------------------
+# NEXT_PUBLIC_CONVEX_URL=
+# NEXT_PUBLIC_CONVEX_SITE_URL=
+# NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+# CLERK_SECRET_KEY=
+# NEXT_PUBLIC_SITE_URL=
+# NEXT_PUBLIC_CLERK_PROXY_URL=
 ```
+
+`NEXT_PUBLIC_CLERK_PROXY_URL` is production-only: it serves Clerk through
+your own domain at `/__clerk`. Leave it unset in dev, where the publishable
+key's own development instance is used directly.
 
 ### apps/v2/.env.local
 ```
@@ -67,4 +94,3 @@ EXPO_PUBLIC_CONVEX_URL=https://your-deployment.convex.cloud
 EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
 EXPO_PUBLIC_SITE_URL=http://localhost:3000
 ```
-

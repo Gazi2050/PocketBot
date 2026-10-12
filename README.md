@@ -12,12 +12,11 @@ license. Read it, run your own, or help make it better.
 
 ## Features
 
-- **Every top model** in one conversation, routed through
-  [OpenRouter](https://openrouter.ai), with adjustable thinking levels.
+- **Three chat modes** — Auto, Fast, and Heavy — with the model choice handled
+  for you. No provider names, no thinking dials, nothing to tune.
 - **Living artifacts:** documents, charts, and full interactive pages that
   stay editable in a side panel and can be shared by link.
 - **Long-term memory** that carries preferences and projects across chats.
-- **Live web search** and page reading for answers grounded in today's web.
 - **Locked chats**, encrypted on your device with a password the server never
   sees, answered only by zero-retention models.
 - **Incognito mode**, message queueing, voice input, image generation, file
@@ -31,19 +30,19 @@ license. Read it, run your own, or help make it better.
 | Web app   | [Next.js 16](https://nextjs.org), React 19, Tailwind CSS v4, Motion  |
 | Backend   | [Convex](https://convex.dev): database, functions, streaming, crons  |
 | Auth      | [Clerk](https://clerk.com)                                           |
-| Models    | [OpenRouter](https://openrouter.ai) via the [AI SDK](https://ai-sdk.dev) |
+| Models    | [AI SDK](https://ai-sdk.dev): Hyper for chat, OpenRouter for the rest |
 | Tooling   | [pnpm](https://pnpm.io) workspaces, TypeScript                         |
 
-Everything beyond Convex, Clerk, and OpenRouter is **optional** and switches
-on with its own keys: billing (Autumn), web search (Exa), memory
-(Supermemory), analytics (PostHog, Axiom), tracing (Braintrust), email
-(Resend), and the support agent (Median). Leave them out and PocketBot hides the
-features they power. See [docs/configuration.md](docs/configuration.md).
+Everything beyond Convex, Clerk, Hyper, and OpenRouter is **optional** and
+switches on with its own keys: billing (Autumn), memory (Supermemory),
+analytics (PostHog, Axiom), tracing (Braintrust), email (Resend), and the
+support agent (Median). Leave them out and PocketBot hides the features they
+power. See [docs/configuration.md](docs/configuration.md).
 
 ## Quick start
 
 You'll need [pnpm](https://pnpm.io), a free [Convex](https://convex.dev)
-account, a [Clerk](https://clerk.com) application, and an
+account, a [Clerk](https://clerk.com) application, a Hyper API key, and an
 [OpenRouter](https://openrouter.ai) API key.
 
 ```sh
@@ -57,6 +56,7 @@ pnpm exec convex dev            # first run walks you through creating a project
 
 # 2. In another terminal, give the backend its secrets.
 pnpm exec convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev
+pnpm exec convex env set HYPER_API_KEY sk-hyper-...
 pnpm exec convex env set OPENROUTER_API_KEY sk-or-v1-...
 
 # 3. Point the web app at Convex and Clerk.

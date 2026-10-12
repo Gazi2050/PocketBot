@@ -14,8 +14,8 @@ A tour of how PocketBot fits together, for anyone about to change it.
 │       Clerk        │ ──── "convex") ───────▶ │  HTTP routes, crons      │
 └────────────────────┘                         └────────────┬─────────────┘
                                                             │
-                          OpenRouter (models) · Exa (search) · Supermemory
-                          (memory) · Autumn (billing) · MCP servers (tools)
+                          Hyper (chat models) · OpenRouter (aux models,
+                          images) · Supermemory (memory) · Autumn (billing)
 ```
 
 - **`apps/v2`** is the web app. Pages are thin; nearly all state is live
@@ -39,10 +39,13 @@ A tour of how PocketBot fits together, for anyone about to change it.
 3. **Prompt.** It assembles the system prompt (`convex/prompts.ts`), thread
    history (compacted when long, `convex/threadCompaction.ts`), attachments,
    memory context, and the tools this turn can use.
-4. **Generate.** The AI SDK's `streamText` runs against OpenRouter. Text
-   deltas are appended to the stream in batches; tool calls (search, charts,
-   documents, integrations, skills, image generation) record **phases** on
-   the assistant message, which the client renders as live activity rows.
+4. **Generate.** The AI SDK's `streamText` runs against Hyper. Text
+   deltas are appended to the stream in batches; tool calls (charts,
+   documents, HTML and React artifacts, history search, weather, image
+   generation) record **phases** on the assistant message, which the client
+   renders as live activity rows. The lineup is exactly three text-only
+   modes — Auto, Fast, Heavy (`MODEL_IDS` in `convex/inference/billing.ts`);
+   any stale model pick from history folds into Auto at request time.
 5. **Watch.** Every open tab subscribes to `messages.getStreamBody` and
    `messages.listForThread`, so the reply streams into all of them at once,
    whichever tab sent it.
@@ -79,18 +82,15 @@ that open in a side panel and stay editable.
   declared bindings the host runs (`convex/artifactData.ts`). There is no
   general-purpose call channel out of the frame.
 
-## Integrations and skills
+## Retired: integrations and skills
 
-- **Integrations** are MCP servers. The model sees two gateway tools,
-  `mcp_list_tools` and `mcp_call_tool`, and discovers each server's tools on
-  demand instead of loading them all up front (`convex/inference/mcp.ts`).
-  OAuth, including dynamic client registration and PKCE, lives in
-  `convex/mcpOAuthFlow.ts`; stored credentials are encrypted with
-  `MCP_ENCRYPTION_KEY`.
-- **Skills** are instruction packs the model loads with `load_skill` when a
-  conversation calls for one (`convex/skillStore.ts`, `convex/customSkills.ts`).
-- Both are published from the console and reviewed by an admin before they
-  reach the store.
+Integrations (MCP servers) and skills used to ride into turns as tools —
+`mcp_list_tools`/`mcp_call_tool` and `load_skill` — but chat no longer wires
+them. Their tables, admin surfaces, and helpers (`convex/inference/mcp.ts`,
+`convex/skillStore.ts`, `convex/customSkills.ts`) remain so history keeps
+rendering, and a fresh turn never sees them. Web search is retired the same
+way: the Exa helpers in `convex/inference/search.ts` and
+`convex/inference/webFetch.ts` are no longer handed to a turn.
 
 ## Optional services
 
@@ -101,7 +101,6 @@ On the backend, each integration degrades on its own terms:
 | Missing          | Behaviour                                                          |
 | ---------------- | ------------------------------------------------------------------ |
 | Autumn           | Everyone is treated as paid; no gates, no deductions (`createBillingClient` in `convex/inference/billing.ts`) |
-| Exa              | Search turns run without web tools                                 |
 | Supermemory      | Memory stays off                                                   |
 | PostHog, Axiom, Braintrust | Instrumentation becomes a no-op                          |
 
