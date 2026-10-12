@@ -45,7 +45,6 @@ import { useView } from "@/lib/view";
 import { useThreadActions, type ThreadSummary } from "@/lib/threads";
 import { ChatComposer } from "./chat-composer";
 import type { ComposerGates, ComposerMentions } from "./composer";
-import { HomeFooter } from "./home-footer";
 import { HomeGreeting, HomeSuggestions } from "./home-intro";
 import { IncognitoToggle } from "./incognito-toggle";
 import { QuoteSelectionPopover } from "./quote-selection";
@@ -675,11 +674,6 @@ export function ChatView({
             </AnimatePresence>
           </div>
         </div>
-        {!inThread && (
-          <div className="pointer-events-auto absolute inset-x-0 bottom-0 z-10 hidden md:block">
-            <HomeFooter />
-          </div>
-        )}
       </div>
 
       {/* The artifact side panel: squeezes the whole chat column (dock and

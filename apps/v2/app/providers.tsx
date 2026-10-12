@@ -94,6 +94,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
         theme: isDark ? dark : undefined,
         variables: { borderRadius: "0.75rem" },
       }}
+      /* Production serves Clerk through /__clerk (see proxy.ts) — set via
+         NEXT_PUBLIC_CLERK_PROXY_URL in prod only; local dev uses the key's
+         own frontend API host, so this stays undefined there. */
+      proxyUrl={process.env.NEXT_PUBLIC_CLERK_PROXY_URL}
     >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         <PostHogIdentity />
