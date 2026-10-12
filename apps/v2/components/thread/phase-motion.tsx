@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { TextMorph } from "torph/react";
 
 import { EASE_OUT } from "@/lib/motion";
-import { PocketBotRings } from "@/components/pocketbot-rings";
+import { IconLoader2 } from "@tabler/icons-react";
 
 const PHASE_SHIMMER_DURATION_MS = 720;
 
@@ -176,14 +176,11 @@ export function PhaseIcon({
   );
 }
 
-/** The brand mark doubles as the activity glyph, drawn through the same
- * mask as every other logo so it tracks the text color (`bg-current`) in
- * both themes.
- * ponytail: static until animated brand art exists. */
+/** Busy glyph while pocketbot works — a plain spinner, never the logo. */
 export function PocketBotActivityIcon() {
   return (
-    <span className="relative inline-block size-[26px] align-[-6px]">
-      <PocketBotRings layers={[{ className: "bg-current" }]} />
+    <span className="relative inline-flex size-[26px] items-center justify-center align-[-6px] text-muted-foreground">
+      <IconLoader2 size={18} className="animate-spin" />
     </span>
   );
 }
