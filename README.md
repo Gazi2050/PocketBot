@@ -2,7 +2,7 @@
   <img src="https://files.catbox.moe/nn1qw5.png" alt="PocketBot" width="170" />
 </p>
 
-<h3 align="center">PocketBot</h3>
+<h2 align="center">PocketBot</h3>
 
 ---
 
