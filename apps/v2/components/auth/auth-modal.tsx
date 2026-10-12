@@ -38,7 +38,7 @@ export function AuthModal({
           <IconX size={16} />
         </DialogClose>
         <div className="flex justify-center pt-1 pb-5">
-          <PocketBotLogo size={36} />
+          <PocketBotLogo size={44} />
         </div>
         <AnimatePresence mode="wait" initial={false}>
           {mode === "sign-in" ? (
