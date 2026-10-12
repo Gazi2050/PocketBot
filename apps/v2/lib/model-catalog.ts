@@ -205,32 +205,10 @@ export function useIsImageModelKey(key: string | undefined): boolean {
 }
 
 /**
- * The composer's full model lineup: the static tiers (re-skinned where an
- * admin customized one) followed by the admin-added catalog models.
+ * The composer's model lineup: exactly the three static text-only modes.
+ * Admin catalog/overrides are ignored — the picker never shows provider
+ * models. Kept as a hook so callers don't churn.
  */
 export function useComposerModels(): ComposerModel[] {
-  const adminModels = useAdminModels();
-
-  return useMemo(() => {
-    const overrides = new Map<string, AdminModel>();
-    for (const model of adminModels) {
-      if (model.tier !== undefined) overrides.set(model.tier, model);
-    }
-    const presets: ComposerModel[] = CHAT_MODELS.map((model) => {
-      const override = overrides.get(model.key);
-      return override ? applyOverride(model, override) : model;
-    });
-    /* Newest additions lead, and legacy models sink below the current
-       lineup — so a search reads present-to-past instead of surfacing
-       whatever was added first. */
-    const catalog = adminModels
-      .filter((model) => model.tier === undefined)
-      .sort(
-        (a, b) =>
-          Number(a.legacy === true) - Number(b.legacy === true) ||
-          (b.createdAt ?? 0) - (a.createdAt ?? 0),
-      )
-      .map(toComposerModel);
-    return [...presets, ...catalog];
-  }, [adminModels]);
+  return useMemo(() => [...CHAT_MODELS], []);
 }

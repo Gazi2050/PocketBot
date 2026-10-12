@@ -7,7 +7,6 @@ import {
   IconCoinFilled,
   IconCreditCardFilled,
   IconPaletteFilled,
-  IconSparklesFilled,
   IconUserFilled,
   type Icon,
 } from "@tabler/icons-react";
@@ -21,7 +20,6 @@ const SECTIONS: { key: SettingsSection; label: string; icon: Icon }[] = [
   { key: "general", label: "General", icon: IconAdjustmentsFilled },
   { key: "personalization", label: "Personalization", icon: IconPaletteFilled },
   { key: "memory", label: "Memory", icon: IconBrainFilled },
-  { key: "models", label: "Models", icon: IconSparklesFilled },
   { key: "account", label: "Account", icon: IconUserFilled },
   { key: "billing", label: "Billing", icon: IconCreditCardFilled },
   { key: "usage", label: "Usage", icon: IconChartPieFilled },

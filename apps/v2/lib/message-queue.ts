@@ -7,7 +7,7 @@ import { api } from "@pocketbot/backend/convex/_generated/api";
 import type { Id } from "@pocketbot/backend/convex/_generated/dataModel";
 
 import type { AttachmentUpload } from "./attachments";
-import { isCustomModelKey, type ThinkingLevel } from "./models";
+import type { ThinkingLevel } from "./models";
 import { ANALYTICS_EVENTS, captureEvent } from "./posthog";
 
 /* Messages typed while a reply was still being written. They wait in the
@@ -43,11 +43,10 @@ export type QueueMessageArgs = {
   thinking: ThinkingLevel;
 };
 
-const WIRE_MODEL_KEYS = ["Auto", "Fast", "Basic", "Max", "Image"] as const;
+const WIRE_MODEL_KEYS = ["Auto", "Basic", "Max"] as const;
 
-/* Same folding a send does: catalog slugs verbatim, tier keys or Auto. */
+/* Same folding a send does: three modes or Auto. */
 function wireModel(model: string): string {
-  if (isCustomModelKey(model)) return model;
   return WIRE_MODEL_KEYS.find((key) => key === model) ?? "Auto";
 }
 

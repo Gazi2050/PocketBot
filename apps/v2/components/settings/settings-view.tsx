@@ -10,7 +10,6 @@ import { BillingSection } from "./billing-section";
 import { ExtraUsageSection } from "./extra-usage/extra-usage-section";
 import { GeneralSection } from "./general-section";
 import { MemorySection } from "./memory/memory-section";
-import { ModelsSection } from "./models-section";
 import { PersonalizationSection } from "./personalization-section";
 import { SectionStrip } from "./section-strip";
 import { UsageSection } from "./usage/usage-section";
@@ -19,7 +18,6 @@ const SECTION_VIEWS = {
   general: GeneralSection,
   personalization: PersonalizationSection,
   memory: MemorySection,
-  models: ModelsSection,
   account: AccountSection,
   billing: BillingSection,
   usage: UsageSection,

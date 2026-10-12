@@ -5,23 +5,18 @@ import type { Id } from "../_generated/dataModel";
 import type { ActionCtx } from "../_generated/server";
 import { bestEffort } from "./bestEffort";
 import { createMutationQueue } from "./mutationQueue";
-import { routesPerRequest, stripEncryptedReasoning } from "./reasoningReplay";
 import { EMPTY_REPLY_FAILURE, repairFinalReply } from "./replyRepair";
 import { createTurnUsageMeter } from "./turnUsage";
-import { chargeUsage } from "../usageLedger";
 import { buildSystemPrompt } from "../prompts";
 import {
   checkAutumnGate,
   createBillingClient,
   createOpenRouterChatModel,
-  customModelMarkupFor,
   effectiveModelKeyFor,
   fetchBillingCustomer,
-  FREE_LOCKED_GATE,
   GATE_SENTINEL_PREFIX,
   type Gate,
   IMAGE_COST_MARKUP,
-  IMAGE_GATE,
   isUnmeteredPlatinumTurn,
   MESSAGES_GATE,
   MODEL_IDS,
@@ -30,12 +25,8 @@ import {
   OVERLOAD_SENTINEL,
   readFreeMessageUsage,
   readPlanState,
-  REASONING_GATE,
-  reasoningOffOptionsFor,
   resolveModelKey,
   resolveOverloadCap,
-  SEARCH_FEATURE_ID,
-  SEARCH_GATE,
   snapshotFreeMessageUsage,
   snapshotGateAllowed,
   snapshotPlanState,
@@ -79,7 +70,6 @@ import {
   type HtmlPhasePayload,
 } from "./html";
 import { createReactArtifactTool } from "./reactArtifact";
-import { createGenerateImageTool } from "./generateImage";
 import {
   ASK_QUESTION_TOOL_NAME,
   createAskUserQuestionTool,
@@ -96,8 +86,6 @@ import {
   ImageReferenceError,
   resolveImageReferences,
 } from "./image";
-import { createExaAnswerTool } from "./search";
-import { createWebFetchTool } from "./webFetch";
 import { createWeatherTool, type WeatherPhasePayload } from "./weather";
 import { resolveWeatherUnits } from "./openMeteo";
 import {
@@ -343,16 +331,13 @@ export async function runAssistantTurn(
   };
 
   const requestedModelKey = resolveModelKey(requestInfo.model);
-  const openRouterApiKey = process.env.OPENROUTER_API_KEY;
-  const exaApiKey = process.env.EXA_API_KEY || undefined;
-  if (!openRouterApiKey) {
-    return failPreflight("OPENROUTER_API_KEY");
+  const hyperApiKey =
+    process.env.HYPER_API_KEY ?? process.env.OPENROUTER_API_KEY;
+  if (!hyperApiKey) {
+    return failPreflight("HYPER_API_KEY");
   }
-  // Web search is optional: without an Exa key a search turn runs without
-  // the web instead of failing over a toggle this deployment can't honor.
-  // The composer hides the toggle in that case (convex/features.ts), so
-  // this only catches a stale tab.
-  const searchEnabled = requestInfo.search && exaApiKey !== undefined;
+  // Text-only platform: no web search, no thinking. Stale clients may still
+  // send the flags — they are ignored here and never reach the provider.
   // Billing is optional (see createBillingClient): without it every gate
   // below stays open and nothing is deducted.
   const autumn = createBillingClient();
@@ -388,23 +373,19 @@ export async function runAssistantTurn(
   // the request runs as plain Auto instead of failing. `modelSlug` is what
   // actually serves the request — analytics and finalize carry it so the
   // books never lie about which model ran.
-  const modelConfig = await ctx.runQuery(
-    internal.models.streamModelConfigInternal,
-    { modelKey, wireModel: requestInfo.model },
-  );
-  const modelOverride = modelConfig.custom ?? modelConfig.override;
-  const modelSlug = modelOverride?.slug ?? MODEL_IDS[modelKey];
-  // Auto is a router, not a model: every request inside this turn can be served
-  // by a different one, so nothing endpoint-bound (encrypted reasoning) may be
-  // replayed between them.
-  const unpinnedRoute = routesPerRequest(modelSlug);
+  // Hyper serves only the fixed three IDs — admin overrides and custom slugs
+  // are ignored so a stale pick can never 404 the provider.
+  const modelSlug = MODEL_IDS[modelKey];
+  // Hyper pins a model per request, so no encrypted-reasoning replay issue.
+  const unpinnedRoute = false;
+  void unpinnedRoute;
   // Platinum's Fast tier is on the house. The turn still reports its true cost
   // to analytics — we very much want to know what we spent — it just never
   // touches the customer's usage pool or their per-message usage cost.
   const unmeteredTurn = isUnmeteredPlatinumTurn({
     isPlatinum,
     modelKey,
-    isCustomModel: modelConfig.custom !== null,
+    isCustomModel: false,
   });
   timings.mark("preflightChecks");
 
@@ -458,44 +439,17 @@ export async function runAssistantTurn(
     });
   }
 
-  // Image turns never think or search — the composer forces both toggles off,
-  // and a hand-crafted request shouldn't trip those gates on a tier where the
-  // flags are meaningless. A custom catalog model that paints (imageOutput)
-  // rides the Image tier's pipeline and entitlement, not the chat loop — the
-  // Images API is model-generic, so the custom slug serves the paint.
-  const customIsImage = modelConfig.custom?.capabilities.imageOutput === true;
-  const isImageTurn = modelKey === "Image" || customIsImage;
-  // Which tier's gates the request answers to: paints follow the Image
-  // tier's Turbo+ rule regardless of which slug does the painting.
-  const gateKey: ModelKey = customIsImage ? "Image" : modelKey;
-  // The generateImage chat tool follows the Image tier's entitlement (Turbo
-  // and up). Answered from the snapshot already in hand — a missing snapshot
-  // falls back to plain isPaid rather than another Autumn round trip, erring
-  // on the side of not withholding a paid perk over a transient blip.
-  const imageToolAllowed =
-    !isImageTurn &&
-    (customer ? snapshotGateAllowed(customer, IMAGE_GATE) : isPaid);
-  // The model's own gates: paid users keep the per-tier Autumn
-  // differentiation; free users answer to the admin's restriction list — a
-  // restricted tier rejects with its usual sentinel (falling back to the
-  // any-paid gate when it has none, i.e. a restricted Free tier), and a
-  // tier taken off the list waives the model gate entirely so free users
-  // can use it, metered by their messages allowance as always.
-  const modelGates: readonly Gate[] = isPaid
-    ? MODEL_REQUIRED_FLAGS[gateKey]
-    : modelConfig.restricted
-      ? MODEL_REQUIRED_FLAGS[gateKey].length > 0
-        ? MODEL_REQUIRED_FLAGS[gateKey]
-        : [FREE_LOCKED_GATE]
-      : [];
-  const imagePass =
-    !isPaid && modelKey === "Image" && !customIsImage
-      ? await ctx.runQuery(internal.slots.imageAccessInternal, { customerId })
-      : false;
+  // Text-only platform: no image pipeline, no image entitlement, no
+  // thinking/search gates. Legacy Image keys already fold to Auto above.
+  const isImageTurn = false;
+  // Which tier's gates the request answers to.
+  const gateKey: ModelKey = modelKey;
+  // The model's own gates: paid plans use the tier gate; free users are
+  // metered by their messages allowance. No thinking/search gates.
+  const modelGates: readonly Gate[] = isPaid ? MODEL_REQUIRED_FLAGS[gateKey] : [];
+  const imagePass = false;
   const requiredGates: Gate[] = [
     ...(imagePass ? [] : modelGates),
-    ...(requestInfo.thinking && !isImageTurn ? [REASONING_GATE] : []),
-    ...(searchEnabled && !isImageTurn ? [SEARCH_GATE] : []),
     isPaid ? USAGE_GATE : MESSAGES_GATE,
   ];
 
@@ -573,9 +527,8 @@ export async function runAssistantTurn(
   timings.mark("freeThrottle");
 
   const model = createOpenRouterChatModel({
-    apiKey: openRouterApiKey,
+    apiKey: hyperApiKey,
     modelKey,
-    overrideSlug: modelOverride?.slug,
   });
   timings.mark("modelReady");
 
@@ -592,15 +545,14 @@ export async function runAssistantTurn(
       timings.mark("streamWriterStart");
       await runMutation(internal.inference.setAssistantStatus, {
         assistantId: requestInfo.assistantId,
-        status:
-          requestInfo.thinking && !isImageTurn ? "thinking" : "streaming",
+        status: "streaming",
       });
       timings.mark("initialStatus");
 
       let text = "";
       let firstTextDeltaSeen = false;
       const stepOutput = new StepOutputBuffer();
-      const protectStepText = requestInfo.thinking;
+      const protectStepText = false;
       // The user can stop generation from the UI, which writes status
       // "stopped" to the assistant message. The HTTP action keeps running
       // independently, so we poll that status while streaming and abort the
@@ -854,40 +806,6 @@ export async function runAssistantTurn(
             query: payload.query,
             matches: payload.matches,
             thread_id: requestInfo.threadId,
-          },
-        });
-      };
-
-      // Kick off a background paint for a generateImage call: one mutation
-      // stamps the prompt onto the pending `image` phase and schedules the
-      // worker atomically, then the tool returns immediately — the paint can
-      // take minutes without holding this stream open (which is what used to
-      // time image generations out). Billing, finalizing, and analytics all
-      // live in the worker (see imageWorker.ts).
-      const startImagePaint = async ({
-        prompt,
-        callIdx,
-      }: {
-        prompt: string;
-        callIdx: number;
-      }) => {
-        await runMutation(internal.inference.beginImageGeneration, {
-          assistantId: requestInfo.assistantId,
-          threadId: requestInfo.threadId,
-          userId: customerId,
-          prompt,
-          callIdx,
-          contentOffset: text.length,
-          streamId: requestInfo.streamId,
-          billingKey: `${requestInfo.assistantId}:${requestInfo.streamId}:image:${callIdx}`,
-        });
-        await captureServerEvent({
-          event: "image_paint_started",
-          distinctId: customerId,
-          properties: {
-            thread_id: requestInfo.threadId,
-            via: "tool",
-            call_idx: callIdx,
           },
         });
       };
@@ -1450,7 +1368,7 @@ export async function runAssistantTurn(
           });
           timings.mark("imageReferences");
           const result = await callOpenRouterImageGeneration({
-            apiKey: openRouterApiKey,
+            apiKey: hyperApiKey,
             prompt,
             inputReferences,
             abortSignal: abortController.signal,
@@ -1623,8 +1541,8 @@ export async function runAssistantTurn(
               distinctId: customerId,
               traceId: requestInfo.assistantId,
               model: modelSlug,
-              provider: "openrouter",
-              baseUrl: "https://openrouter.ai/api/v1",
+              provider: "hyper",
+              baseUrl: "https://hyper.charm.land/v1",
               spanName: "image",
               input: [{ role: "user", content: prompt }],
               outputChoices: [],
@@ -1686,7 +1604,7 @@ export async function runAssistantTurn(
       const ctxUnitsSystem = anon ? undefined : requestInfo.unitsSystem;
 
       const systemPrompt = buildSystemPrompt({
-        search: searchEnabled,
+        search: false,
         compactionSummary: requestInfo.compactionSummary,
         userPreferences: ctxPreferences,
         userName: ctxUserName,
@@ -1697,7 +1615,7 @@ export async function runAssistantTurn(
         memoryContext,
         threadDocuments: requestInfo.threadDocuments,
         htmlEnabled: isPaid,
-        imageToolEnabled: imageToolAllowed,
+        imageToolEnabled: false,
         threadHtmlArtifacts: requestInfo.threadHtmlArtifacts,
         now: Date.now(),
       });
@@ -1728,14 +1646,8 @@ export async function runAssistantTurn(
       // so it settles the same way a completed one does.
       const scheduleFinalize = async (latencyMs: number) => {
         const usage = meter.snapshot();
-        // Custom catalog models bill a premium over the provider's reported
-        // cost (pocketbot's own tiers keep their negotiated rates) — except on
-        // Platinum, which pays the provider's own rate. Marked up BEFORE
-        // finalize, same as the Image tier, so the deduction, the persisted
-        // usageCost and the LLM analytics all agree on one number.
-        const cost = modelConfig.custom
-          ? usage.costUsd * customModelMarkupFor(isPlatinum)
-          : usage.costUsd;
+        // Hyper serves the fixed IDs — no custom premium.
+        const cost = usage.costUsd;
         // A step that finished without a price is a step we ate. Rare, and
         // invisible until now — worth a line in the logs when it happens.
         if (usage.unpricedSteps > 0) {
@@ -1765,8 +1677,8 @@ export async function runAssistantTurn(
               memoryContainerTag,
               usageFactor,
               scaleFreeMessages,
-              thinking: requestInfo.thinking,
-              search: requestInfo.search,
+              thinking: false,
+              search: false,
               latencyMs,
               inputTokens: usage.inputTokens || undefined,
               outputTokens: usage.outputTokens || undefined,
@@ -1815,8 +1727,8 @@ export async function runAssistantTurn(
             distinctId: customerId,
             traceId: requestInfo.assistantId,
             model: modelSlug,
-            provider: "openrouter",
-            baseUrl: "https://openrouter.ai/api/v1",
+            provider: "hyper",
+            baseUrl: "https://hyper.charm.land/v1",
             spanName: "chat",
             input: [
               { role: "system", content: systemPrompt },
@@ -1831,8 +1743,8 @@ export async function runAssistantTurn(
             properties: {
               thread_id: requestInfo.threadId,
               tier: modelKey,
-              thinking: requestInfo.thinking,
-              search: requestInfo.search,
+              thinking: false,
+              search: false,
               tool_calls: toolCallCount,
               tool_forced_final: forcedFinalResponse,
             },
@@ -1847,8 +1759,8 @@ export async function runAssistantTurn(
               model: modelSlug,
               tier: modelKey,
               provider_duration_ms: latencyMs,
-              thinking: requestInfo.thinking,
-              search: requestInfo.search,
+              thinking: false,
+              search: false,
               tool_calls: toolCallCount,
             },
           }),
@@ -1868,8 +1780,8 @@ export async function runAssistantTurn(
         properties: {
           tier: modelKey,
           model: modelSlug,
-          thinking: requestInfo.thinking,
-          search: requestInfo.search,
+          thinking: false,
+          search: false,
           incognito: requestInfo.incognito,
         },
       });
@@ -2072,103 +1984,11 @@ export async function runAssistantTurn(
                   }),
                 }
               : {}),
-            // Image painting (Turbo and up, same entitlement as the Image
-            // tier): the model asks for a picture mid-reply and a background
-            // worker paints it onto the message's `image` phase — the tool
-            // returns instantly so a slow paint can't time the stream out.
-            ...(imageToolAllowed
-              ? {
-                  generateImage: createGenerateImageTool({
-                    start: startImagePaint,
-                  }),
-                }
-              : {}),
-            ...(exaApiKey
-              ? {
-                  fetchUrl: createWebFetchTool({
-                    apiKey: exaApiKey,
-                    onFetch: async ({
-                      sources,
-                      items,
-                      costDollars,
-                      callIdx,
-                    }) => {
-                      if (costDollars > 0) {
-                        await chargeUsage(ctx, {
-                          customerId,
-                          idempotencyKey: `${requestInfo.assistantId}:${requestInfo.streamId}:fetch:${callIdx}`,
-                          feature: SEARCH_FEATURE_ID,
-                          amount: costDollars * usageFactor,
-                          source: "web_fetch",
-                          assistantId: requestInfo.assistantId,
-                          messageCost: costDollars,
-                        });
-                      }
-                      await runMutation(
-                        internal.inference.finalizeLastPendingFetch,
-                        {
-                          assistantId: requestInfo.assistantId,
-                          sources,
-                          items,
-                        },
-                      );
-                      await captureServerEvent({
-                        event: "web_fetch",
-                        distinctId: customerId,
-                        properties: {
-                          pages: sources,
-                          thread_id: requestInfo.threadId,
-                        },
-                      });
-                    },
-                  }),
-                }
-              : {}),
-            ...(searchEnabled && exaApiKey
-              ? {
-                  answerQuestion: createExaAnswerTool({
-                    apiKey: exaApiKey,
-                    onAnswer: async ({
-                      sources,
-                      items,
-                      costDollars,
-                      callIdx,
-                    }) => {
-                      // Charge Exa's reported cost plan-first (via the `search`
-                      // member feature) and overflow to the extra-usage bucket,
-                      // matching how AI deductions bill provider-reported USD.
-                      if (costDollars > 0) {
-                        await chargeUsage(ctx, {
-                          customerId,
-                          idempotencyKey: `${requestInfo.assistantId}:${requestInfo.streamId}:search:${callIdx}`,
-                          feature: SEARCH_FEATURE_ID,
-                          amount: costDollars * usageFactor,
-                          source: "web_search",
-                          assistantId: requestInfo.assistantId,
-                          messageCost: costDollars,
-                        });
-                      }
-                      await runMutation(
-                        internal.inference.finalizeLastPendingSearch,
-                        {
-                          assistantId: requestInfo.assistantId,
-                          sources,
-                          items,
-                        },
-                      );
-                    },
-                  }),
-                }
-              : {}),
+            // Text-only for now: no image painting, no web fetch/search tools.
           },
-          prepareStep: ({ steps, messages }) => {
-            // Auto picks a model per request, so the encrypted reasoning the
-            // last step produced can't be replayed into this one — the
-            // provider rejects the whole request. Scrub it off the replay
-            // before anything else decides what this step looks like.
-            const replay = unpinnedRoute
-              ? { messages: stripEncryptedReasoning(messages) }
-              : {};
+          prepareStep: ({ steps }) => {
+            // Hyper pins the model per turn — no encrypted-reasoning replay.
+            const replay = {};
             // Loop control is progress-based, not count-based: every tool
             // stays available for the whole tool phase (retiring one mid-task
             // strands the model and it narrates instead of answering).
@@ -2215,30 +2035,6 @@ export async function runAssistantTurn(
             return replay;
           },
           stopWhen: stepCountIs(TOOL_MAX_STEPS),
-          providerOptions: {
-            openrouter: {
-              // Ask OpenRouter to include billing info on the final response
-              // so we can deduct the actual USD cost from the usage pool.
-              usage: { include: true },
-              // When thinking is on we stream the reasoning (no `exclude`) so
-              // it can be captured and shown in the reasoning modal. When it's
-              // off, apply the per-model verified config that actually stops
-              // reasoning from reaching the user (some models mandate it and
-              // can only be minimized + hidden) — see REASONING_OFF_OPTIONS.
-              // A custom model or tier override that can't reason gets no
-              // reasoning config at all, even with the toggle on — the
-              // parameter would be rejected, not ignored.
-              ...(requestInfo.thinking &&
-              (modelOverride?.capabilities.reasoning ?? true)
-                ? {
-                    reasoning: {
-                      enabled: true,
-                      effort: "medium",
-                    },
-                  }
-                : reasoningOffOptionsFor(modelKey, modelOverride)),
-            },
-          },
         });
 
         scheduleStopPoll();
@@ -2257,21 +2053,10 @@ export async function runAssistantTurn(
               await appendVisibleText(stepOutput.finish(part.finishReason));
               break;
             }
-            // When the thinking toggle is off, drop reasoning parts entirely:
-            // a model may still reason despite the per-model off config (Auto
-            // can route anywhere), and the user asked not to see it.
+            // Text-only: reasoning parts are always dropped.
             case "reasoning-start":
-              if (!requestInfo.thinking) break;
-              await startReasoning();
-              break;
             case "reasoning-delta":
-              if (!requestInfo.thinking) break;
-              if (!reasoningActive) await startReasoning();
-              reasoningText += part.text;
-              break;
             case "reasoning-end":
-              if (!requestInfo.thinking) break;
-              await endReasoning();
               break;
             case "tool-input-start": {
               stepOutput.markToolCall();
@@ -2322,14 +2107,7 @@ export async function runAssistantTurn(
               // finalizeLastPendingCalc's append fallback when no pending
               // phase exists.
               const toolPhase =
-                searchEnabled && part.toolName === "answerQuestion"
-                  ? ({
-                      kind: "search" as const,
-                      sources: 0,
-                      contentOffset: text.length,
-                      pending: true,
-                    })
-                  : part.toolName === "fetchUrl"
+                part.toolName === "fetchUrl"
                     ? ({
                         kind: "fetch" as const,
                         sources: 0,
@@ -2678,12 +2456,8 @@ export async function runAssistantTurn(
           const stepMessages = completedSteps.flatMap((step) =>
             step.toolCalls.length > 0 ? step.response.messages : [],
           );
-          // Same trap as the tool loop: this is a fresh request, so under Auto
-          // it can land on a model that never saw the reasoning these steps
-          // carry. Replay the tool work, not the thinking.
-          const toolMessages = unpinnedRoute
-            ? stripEncryptedReasoning(stepMessages as ModelMessage[])
-            : stepMessages;
+          // Hyper pins the model — replay tool work directly.
+          const toolMessages = stepMessages;
           // The turn's span is still current, so the repair's own spans nest
           // under it as named sub-steps rather than opening orphaned traces.
           // This never throws — worst case it hands back a written-by-hand

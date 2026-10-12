@@ -19,7 +19,7 @@ import {
   writeThreadMessageCache,
 } from "./message-cache";
 import { reconcileMessageIdentities } from "./message-identity";
-import { isCustomModelKey, type ThinkingLevel } from "./models";
+import type { ThinkingLevel } from "./models";
 import { reportFrontendPerformance } from "./performance";
 import { ANALYTICS_EVENTS, captureEvent } from "./posthog";
 import type { QuestionAnswer, QuestionSpec } from "./questions";
@@ -418,12 +418,11 @@ export type SendMessageArgs = {
   incognito?: boolean;
 };
 
-const WIRE_MODEL_KEYS = ["Auto", "Fast", "Basic", "Max", "Image"] as const;
+const WIRE_MODEL_KEYS = ["Auto", "Basic", "Max"] as const;
 
-/* Catalog slugs ride verbatim; anything else must be a known tier key or
-   it folds to Auto before it ever leaves the tab. */
+/* Only the three modes ride the wire; legacy keys, catalog slugs and
+   anything unknown fold to Auto so history stays readable. */
 function wireModel(model: string): string {
-  if (isCustomModelKey(model)) return model;
   return WIRE_MODEL_KEYS.find((key) => key === model) ?? "Auto";
 }
 

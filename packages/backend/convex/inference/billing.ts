@@ -1,44 +1,45 @@
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { createOpenAI } from "@ai-sdk/openai";
 import { Autumn, type Customer } from "autumn-js";
 
+// Hyper (OpenAI-compatible) base URL for all chat generations.
+export const HYPER_BASE_URL = "https://hyper.charm.land/v1";
+
 // Internal tier keys are persisted in the DB and wired into billing gates, so
-// they never change even as the user-facing lineup does. Current labels (see
-// app/data/models.ts): Fast=Free (free-only), Basic=Fast, Max=Heavy. The old
-// `Pro` tier (Sonnet) is retired — legacy rows still carry the key (the schema
-// validator keeps accepting it) but resolveModelKey folds it into Auto.
+// they never change even as the user-facing lineup does. Current lineup is
+// exactly three text-only modes: Auto, Basic (=Fast label), Max (=Heavy
+// label). Legacy `Fast` (old Free tier) and `Image` rows still exist in
+// history — they fold into Auto at request time.
+// ponytail: three fixed Hyper IDs; no routing/catalog logic, add only if asked.
 export const MODEL_IDS = {
-  Auto: "openrouter/auto",
-  Fast: "openai/gpt-5.4-nano",
-  Basic: "moonshotai/kimi-k2.6",
-  Max: "x-ai/grok-4.5",
-  Image: "openai/gpt-image-2",
+  Auto: "gemma-4-26b-a4b-it",
+  Fast: "gemma-4-26b-a4b-it",
+  Basic: "deepseek-v4.1-flash",
+  Max: "glm-5.3-flash",
+  Image: "gemma-4-26b-a4b-it",
 } as const;
 
 export type ModelKey = keyof typeof MODEL_IDS;
 
-// Which tiers accept raw binary file blocks (PDFs and friends) in the prompt.
-// Mirrors each model's OpenRouter `input_modalities`: kimi-k2.6 and
-// gpt-5.4-nano are text+image only, so documents reach them as text extracted
-// at upload — a file block would hard-fail the request. Keep in sync with
-// ATTACHMENT_LIMITS in app/lib/attachment-upload.ts.
+// Text-only platform: no tier accepts native file/image blocks. Documents
+// reach the model as extracted text or not at all.
 export const MODEL_ACCEPTS_NATIVE_FILES: Record<ModelKey, boolean> = {
-  Auto: true,
+  Auto: false,
   Fast: false,
   Basic: false,
-  Max: true,
-  // Image takes pictures, not documents; it never builds file blocks anyway.
+  Max: false,
   Image: false,
 };
 
-// The Free model (the `Fast` key) belongs to the free tier alone — paid plans run Fast
-// (`Basic`) and Heavy (`Max`) instead. A paid customer can still arrive with
-// `Fast` persisted (an old thread, stale localStorage), so rather than gating
-// them out we quietly route the request to their Fast tier.
+// Legacy keys (Fast=old Free, Image, Pro) fold into Auto — Hyper only serves
+// the three fixed IDs above, so a stale pick must never reach it verbatim.
 export function effectiveModelKeyFor(
   modelKey: ModelKey,
   isPaid: boolean,
 ): ModelKey {
-  return isPaid && modelKey === "Fast" ? "Basic" : modelKey;
+  void isPaid;
+  if (modelKey === "Auto" || modelKey === "Basic" || modelKey === "Max")
+    return modelKey;
+  return "Auto";
 }
 
 // Web search deductions use the cost Exa reports per call (costDollars.total,
@@ -307,27 +308,13 @@ export function resolveOverloadLevel(
 // upgrade banner. Distinct from GATE_SENTINEL_PREFIX so the two never collide.
 export const OVERLOAD_SENTINEL = "__SERVER_OVERLOAD__";
 
-// Per-model `reasoning` provider options for when the user's thinking toggle
-// is OFF, verified against OpenRouter (July 2026):
-// - Fast (gpt-5.4-nano) supports turning reasoning fully off, so we do exactly
-//   that — `enabled: false` means OFF means OFF, no hidden thinking tokens.
-// - Basic (Kimi K2.6) is a hybrid thinker: `enabled: false` selects its
-//   non-thinking mode. Never send an effort here — any effort value would
-//   ENABLE thinking.
-// - Auto can route to reasoning-by-default models, so exclude any reasoning
-//   from the output. Don't set an effort here: that would ENABLE thinking on
-//   reasoning-capable routes.
-// - Max/Heavy (Grok 4.5) always reasons and can't be turned off, so the best
-//   "off" is hiding the reasoning from the output entirely.
-export const REASONING_OFF_OPTIONS: Record<
-  ModelKey,
-  { reasoning: { enabled?: false; effort?: "low"; exclude?: true } } | undefined
-> = {
-  Auto: { reasoning: { exclude: true } },
-  Fast: { reasoning: { enabled: false } },
-  Basic: { reasoning: { enabled: false } },
-  Max: { reasoning: { exclude: true } },
-  // Image never goes through the chat-completions reasoning path.
+// Text-only platform: thinking is always off. No per-model reasoning config
+// — Hyper chat models get a plain text request with no reasoning params.
+export const REASONING_OFF_OPTIONS: Record<ModelKey, undefined> = {
+  Auto: undefined,
+  Fast: undefined,
+  Basic: undefined,
+  Max: undefined,
   Image: undefined,
 };
 
@@ -341,17 +328,15 @@ export function resolveModelKey(model: string | undefined): ModelKey {
   return "Auto";
 }
 
-// The reasoning-off table above is verified against the DEFAULT tier models,
-// so it can't speak for an admin override (console Models tab). For an
-// overridden tier: a reasoning-capable model gets `exclude` (hide it — the
-// universally safe "off"), and a model without the reasoning parameter gets
-// nothing at all, since any reasoning config risks a hard reject.
+// The reasoning-off table is gone (text-only, no thinking). Overrides get no
+// reasoning config either — any reasoning param risks a hard reject.
 export function reasoningOffOptionsFor(
   modelKey: ModelKey,
   override: { capabilities: { reasoning: boolean } } | null,
-): { reasoning: { enabled?: false; effort?: "low"; exclude?: true } } | object {
-  if (!override) return REASONING_OFF_OPTIONS[modelKey] ?? {};
-  return override.capabilities.reasoning ? { reasoning: { exclude: true } } : {};
+): object {
+  void modelKey;
+  void override;
+  return {};
 }
 
 export function createOpenRouterChatModel({
@@ -361,33 +346,19 @@ export function createOpenRouterChatModel({
 }: {
   apiKey: string;
   modelKey: ModelKey;
-  // Admin tier override (convex/models.ts) — routes the tier to this slug
-  // instead of its MODEL_IDS default.
+  // Kept for call-site compatibility — Hyper serves only the fixed IDs, so
+  // overrides are ignored (admin catalog is gone from the picker).
   overrideSlug?: string;
 }) {
-  const openRouter = createOpenRouter({ apiKey });
-  const modelId = overrideSlug ?? MODEL_IDS[modelKey];
-
-  // Leave provider routing to OpenRouter so account privacy settings and
-  // current provider availability can both be honored.
-  const model = openRouter.chat(modelId, {
-    // A single model step can otherwise fan out into dozens of tool calls
-    // before the SDK's step cap can intervene.
-    parallelToolCalls: false,
+  void overrideSlug;
+  const hyper = createOpenAI({
+    apiKey,
+    baseURL: HYPER_BASE_URL,
   });
+  const modelId = MODEL_IDS[modelKey];
 
-  // The provider's stock image allowlist is anchored on file extensions —
-  // Convex storage URLs have none, so the SDK "helpfully" downloads each
-  // image and base64-inlines it INSIDE the stream's 64MB isolate, which
-  // OOMs on multi-MB uploads ("JavaScript execution ran out of memory").
-  // OpenRouter fetches plain https URLs provider-side just fine; accept
-  // them all so image parts ride through as URLs, never as bytes here.
-  // (Typed read-only, but it's a plain instance field set in the
-  // provider's constructor — this override is the whole point.)
-  (model as { supportedUrls: Record<string, RegExp[]> }).supportedUrls = {
-    ...model.supportedUrls,
-    "image/*": [/^data:image\/[a-zA-Z]+;base64,/, /^https?:\/\//],
-  };
+  const model = hyper.chat(modelId);
+
   return model;
 }
 

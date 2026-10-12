@@ -1,19 +1,14 @@
 import {
   IconBarbellFilled,
   IconBoltFilled,
-  IconFeatherFilled,
-  IconPhotoFilled,
   IconSparklesFilled,
   type Icon,
 } from "@tabler/icons-react";
 
-/* The chat model lineup for the composer's model picker. Keys mirror the
+/* The chat lineup is exactly three text-only modes. Keys mirror the
    backend's MODEL_IDS keys (convex/inference/billing.ts) — they're what
-   gets persisted, so never rename them; the white-label names here are the
-   user-facing truth (key Fast = the Free tier). Capabilities and thinking
-   configs follow the notes in apps/legacy/app/lib/attachment-upload.ts and
-   the backend's REASONING_OFF_OPTIONS. The picker only surfaces Free for
-   free users (lib/model-access.ts) — paid plans ride Fast/Heavy instead. */
+   gets persisted, so never rename them. No provider names, no search, no
+   thinking, no vision/files — the picker shows only Auto/Fast/Heavy. */
 
 export type ChatModelKey = "Auto" | "Fast" | "Basic" | "Max" | "Image";
 
@@ -30,24 +25,19 @@ export type ChatModel = {
   key: ChatModelKey;
   name: string;
   icon: Icon;
-  /** What model search matches besides the name — underlying model names,
-   *  providers, nicknames. Lowercase. */
+  /** Kept for search-compat; modes carry no provider aliases now. */
   aliases: string[];
-  /** Accepts image input. */
+  /** Text-only: always false. Kept so callers don't churn. */
   vision: boolean;
-  /** Accepts document/file input natively. */
+  /** Text-only: always false. */
   files: boolean;
-  /** Paints pictures instead of paragraphs. */
+  /** Text-only: always false. */
   imageOutput: boolean;
-  /** What the thinking rotator cycles through — never empty. Models that
-   *  can't think just carry ["none"]; Heavy always reasons, so "none"
-   *  isn't on its wheel at all. */
+  /** Always ["none"] — thinking is gone. */
   thinkingLevels: ThinkingLevel[];
-  /** PocketBot's own white-labeled tier — cheaper for us, so users get more
-   *  usage out of these than out of by-name models. */
+  /** No badge — we don't disclose the underlying model. */
   whiteLabel: boolean;
-  /** The model runs the search/thinking gates itself (Auto decides,
-   *  Image has neither) — the picker blanks them out. */
+  /** Always false — no auto gates UI. */
   autoGates: boolean;
 };
 
@@ -56,64 +46,37 @@ export const CHAT_MODELS: ChatModel[] = [
     key: "Auto",
     name: "Auto",
     icon: IconSparklesFilled,
-    aliases: ["auto", "router", "openrouter", "picks for you"],
-    vision: true,
-    files: true,
-    imageOutput: false,
-    thinkingLevels: ["none", "low", "medium", "high"],
-    whiteLabel: true,
-    autoGates: true,
-  },
-  {
-    key: "Fast",
-    name: "Free",
-    icon: IconFeatherFilled,
-    aliases: ["free", "nano", "gpt-5.4-nano", "openai"],
-    vision: true,
+    aliases: ["auto"],
+    vision: false,
     files: false,
     imageOutput: false,
-    /* The free tier never thinks — thinking is a paid perk. */
     thinkingLevels: ["none"],
-    whiteLabel: true,
+    whiteLabel: false,
     autoGates: false,
   },
   {
     key: "Basic",
     name: "Fast",
     icon: IconBoltFilled,
-    aliases: ["kimi", "k2.6", "kimi k2.6", "moonshot", "moonshotai"],
-    vision: true,
+    aliases: ["fast"],
+    vision: false,
     files: false,
     imageOutput: false,
-    /* Kimi K2.6 is a hybrid thinker — it's either on or off. */
-    thinkingLevels: ["none", "high"],
-    whiteLabel: true,
+    thinkingLevels: ["none"],
+    whiteLabel: false,
     autoGates: false,
   },
   {
     key: "Max",
     name: "Heavy",
     icon: IconBarbellFilled,
-    aliases: ["grok", "grok 4.5", "xai", "x-ai", "max"],
-    vision: true,
-    files: true,
-    imageOutput: false,
-    /* Grok 4.5 always reasons — there's no off, only how hard. */
-    thinkingLevels: ["low", "medium", "high"],
-    whiteLabel: true,
-    autoGates: false,
-  },
-  {
-    key: "Image",
-    name: "Image",
-    icon: IconPhotoFilled,
-    aliases: ["gpt image", "gpt-image-2", "openai", "picture", "art"],
-    vision: true,
+    aliases: ["heavy"],
+    vision: false,
     files: false,
-    imageOutput: true,
+    imageOutput: false,
     thinkingLevels: ["none"],
-    whiteLabel: true,
-    autoGates: true,
+    whiteLabel: false,
+    autoGates: false,
   },
 ];
 

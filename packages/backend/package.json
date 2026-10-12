@@ -12,6 +12,7 @@
     "test:unit": "vitest run --project unit"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^4.0.91",
     "@convex-dev/persistent-text-streaming": "^0.3.3",
     "@firecrawl/anydoc": "^0.1.7",
     "@openrouter/ai-sdk-provider": "^3.0.0",

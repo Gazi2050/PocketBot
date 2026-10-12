@@ -10,25 +10,17 @@ import {
   type RefObject,
 } from "react";
 import {
-  IconBrain,
   IconCheck,
   IconChevronDown,
   IconLoader2,
   IconLockFilled,
   IconFileZip,
-  IconSearch,
 } from "@tabler/icons-react";
 import { AnimatePresence, motion } from "motion/react";
 
-import { clampThinking } from "@/lib/composer-gates";
 import { scoreText } from "@/lib/model-search";
 import { pinRasterPath } from "@/lib/motion";
-import {
-  THINKING_LABELS,
-  isCustomModelKey,
-  type ComposerModel,
-  type ThinkingLevel,
-} from "@/lib/models";
+import type { ComposerModel, ThinkingLevel } from "@/lib/models";
 import { ModelGlyph } from "./model-glyph";
 
 /* The composer's command palette: typing "/" or "@" at a word boundary
@@ -157,14 +149,16 @@ function buildCommands(
     onToggleThinking: () => void;
   },
 ): Command[] {
-  const current =
-    ctx.models.find((model) => model.key === ctx.model) ?? ctx.models[0];
+  void thinkingOpen;
+  void onToggleThinking;
+  void ctx.searchAvailable;
+  void ctx.searchOn;
+  void ctx.setSearchOn;
+  void ctx.thinking;
+  void ctx.setThinking;
 
-  /* Free (key Fast) is the free plan's model — paid users never see it,
-     mirroring the model picker. */
-  const visibleModels = ctx.models.filter(
-    (model) => model.key !== "Fast" || ctx.isPaid === false,
-  );
+  /* Three modes only — no catalog, no Fast/Free special-case. */
+  const visibleModels = ctx.models;
   /* At rest: the user's pinned models (the picker's compact list, same
      fallback to the preset tiers when nothing's starred). Searching: the
      whole cached catalog, locked rows included. */
@@ -174,17 +168,15 @@ function buildCommands(
   const restingModels =
     pinned.length > 0
       ? pinned
-      : visibleModels.filter(
-          (model) => !isCustomModelKey(model.key) && !ctx.locked(model.key),
-        );
+      : visibleModels.filter((model) => !ctx.locked(model.key));
   const modelPool = searching ? visibleModels : restingModels;
 
   const modelCommands: Command[] = modelPool.map((model) => {
     const isLocked = ctx.locked(model.key);
     return {
       id: `model:${model.key}`,
-      // Full maker name, provider dropped — matching the picker's list.
-      label: model.fullName ?? model.name,
+      // Mode label only — never the underlying provider model.
+      label: model.name,
       glyph: (
         <ModelGlyph
           model={model}
@@ -201,92 +193,8 @@ function buildCommands(
     };
   });
 
-  /* Same gate math as the model picker: Auto/Image run the gates
-     themselves, free plans lock them outright. */
-  const planLocksGates = ctx.isPaid === false;
-  const gatesLocked = current?.autoGates ?? false;
-  const levels = current?.thinkingLevels ?? ["none"];
-  const level = clampThinking(current, ctx.thinking);
-  const gateDisabledHint =
-    current?.key === "Auto" ? "Auto decides" : "Not on this model";
-  const thinkingHint = planLocksGates
-    ? "Upgrade"
-    : gatesLocked
-      ? current?.key === "Auto"
-        ? "Auto"
-        : "None"
-      : THINKING_LABELS[level];
-  const searchHint = planLocksGates
-    ? "Upgrade"
-    : gatesLocked
-      ? "Auto"
-      : ctx.searchOn
-        ? "On"
-        : "Off";
-
-  /* Thinking unfolds in place: selecting the row opens the level list
-     right under it (the palette-only dropdown — the model picker keeps
-     its cycle), and picking a level finishes the command. */
-  const thinkingDisabled = !planLocksGates && (gatesLocked || levels.length < 2);
-  const gateCommands: Command[] = [
-    {
-      id: "gate:thinking",
-      label: "Thinking",
-      glyph: (
-        <IconBrain
-          size={15}
-          stroke={2.25}
-          className="shrink-0 text-muted-foreground"
-        />
-      ),
-      keywords: ["reasoning", "reason", "think", "toggle", "level"],
-      hint: thinkingHint,
-      disabled: thinkingDisabled,
-      disabledHint: gateDisabledHint,
-      locked: planLocksGates,
-      keepOpen: !planLocksGates,
-      expandable: !planLocksGates && !thinkingDisabled,
-      expanded: thinkingOpen,
-      onSelect: () =>
-        planLocksGates ? ctx.openBilling() : onToggleThinking(),
-    },
-    ...(thinkingOpen && !thinkingDisabled && !planLocksGates
-      ? levels.map(
-          (option): Command => ({
-            id: `gate:thinking:${option}`,
-            label: THINKING_LABELS[option],
-            glyph: <span aria-hidden className="w-[15px] shrink-0" />,
-            keywords: ["thinking", option],
-            selected: option === level,
-            onSelect: () => ctx.setThinking(option),
-          }),
-        )
-      : []),
-    ...(ctx.searchAvailable
-      ? [
-          {
-            id: "gate:search",
-            label: "Web search",
-            glyph: (
-              <IconSearch
-                size={15}
-                stroke={2.25}
-                className="shrink-0 text-muted-foreground"
-              />
-            ),
-            keywords: ["web", "browse", "lookup", "internet", "toggle", "google"],
-            hint: searchHint,
-            disabled: !planLocksGates && gatesLocked,
-            disabledHint: gateDisabledHint,
-            locked: planLocksGates,
-            onSelect: () =>
-              planLocksGates
-                ? ctx.openBilling()
-                : ctx.setSearchOn(!ctx.searchOn),
-          } satisfies Command,
-        ]
-      : []),
-  ];
+  /* No thinking/search gates — text-only modes. */
+  const gateCommands: Command[] = [];
 
   const imageCommands: Command[] = ctx.images.map((image) => ({
     id: `image:${image.id}`,

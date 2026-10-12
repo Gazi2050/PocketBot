@@ -21,13 +21,7 @@ import {
 } from "@/lib/attachments";
 import { useAskBeforeBigPastePref } from "@/lib/chat-prefs";
 import { useCoarsePointer } from "@/lib/coarse-pointer";
-import { useDeploymentFeatures } from "@/lib/deployment-features";
-import {
-  effectiveGates,
-  useSearchPref,
-  useThinkingPref,
-  type ComposerGates,
-} from "@/lib/composer-gates";
+import type { ComposerGates } from "@/lib/composer-gates";
 import {
   findMentionedTargets,
   mentionRanges,
@@ -218,16 +212,12 @@ export function Composer({
   const plusRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
 
-  /* The gates live here, not in the model picker — the command palette
-     and the picker both read and write the same pair. Sticky across
-     visits like the model pick (lib/composer-gates.ts), so thinking
-     turned off stays off. */
-  const [searchPref, setSearchOn] = useSearchPref();
-  /* Web search is optional per deployment; without it the toggle hides
-     and every send goes out without it. */
-  const { search: searchAvailable } = useDeploymentFeatures();
-  const searchOn = searchAvailable && searchPref;
-  const [thinking, setThinking] = useThinkingPref();
+  /* Text-only: no search, no thinking. Stale prefs are ignored. */
+  const searchAvailable = false;
+  const searchOn = false;
+  const setSearchOn = (_: boolean) => {};
+  const thinking = "none" as const;
+  const setThinking = (_: unknown) => {};
   const coarsePointer = useCoarsePointer();
   const [expanded, setExpanded] = useState(false);
   /* Mirror of `expanded` for the measurement pass — hysteresis needs the
@@ -442,7 +432,7 @@ export function Composer({
         value.trim(),
         sendModel,
         files,
-        effectiveGates(currentModel, { search: searchOn, thinking }, isPaid),
+        { search: false, thinking: "none" as const },
         mentions,
       );
       attachments.clear();
@@ -480,7 +470,7 @@ export function Composer({
       serializeAnswers(activeQuestion.questions, answers),
       sendModel,
       files,
-      effectiveGates(currentModel, { search: searchOn, thinking }, isPaid),
+      { search: false, thinking: "none" as const },
       { integrations: [], skills: [] },
     );
     onQuestionAnswered?.(answers);

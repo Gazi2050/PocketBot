@@ -31,7 +31,6 @@ const NAVIGABLE_ROUTES = [
   "/settings/general",
   "/settings/personalization",
   "/settings/memory",
-  "/settings/models",
   "/settings/account",
   "/settings/billing",
   "/settings/usage",

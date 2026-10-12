@@ -18,7 +18,6 @@ const LABELS: Record<(typeof SETTINGS_SECTIONS)[number], string> = {
   general: "General",
   personalization: "Personalization",
   memory: "Memory",
-  models: "Models",
   account: "Account",
   billing: "Billing",
   usage: "Usage",
